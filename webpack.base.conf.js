@@ -52,12 +52,11 @@ module.exports = {
         host: '127.0.0.1',
         historyApiFallback: true,
         proxy: {
-        '/api/*':{
-            target: 'http://ec2-52-68-78-115.ap-northeast-1.compute.amazonaws.com:5000',
-            changeOrigin: true,
-            secure: false
-        }
-
+            '/api/*':{
+                target: 'http://localhost:5000', // Might need to change this for production
+                changeOrigin: false,             // Also might need to change this to false
+                secure: false
+            }
         }
     },
     plugins:[
