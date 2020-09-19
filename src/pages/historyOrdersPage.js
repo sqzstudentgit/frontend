@@ -69,10 +69,10 @@ class HistoryOrdersPage extends React.Component{
                 console.log(response);
                 let {message,status} = response.data
                 if (status=="success"){
-                    let {history_orders} = response.data.data
-                    console.log(history_orders)
+                    let {orderHistory} = response.data.data
+                    console.log(orderHistory)
                     this.setState({
-                        orders:history_orders,
+                        orders:orderHistory,
                         isHistoryLoading:true,
                     })
                     
@@ -99,16 +99,16 @@ class HistoryOrdersPage extends React.Component{
         if(sessionStorage.getItem('user')&&this.state.isHistoryLoading){
            
             const orders = this.state.orders.map(order =>
-               <OrderItem order={order} key={order.keyPurchaseOrderID}/>
+               <OrderItem order={order} key={order.id}/>
             )
             if(Object.entries(this.props.match.params).length !== 0){
-                let order = this.state.orders.find( e => +e.keyPurchaseOrderID === +this.props.match.params.orderId)
+                let order = this.state.orders.find( e => +e.id === +this.props.match.params.orderId)
                 return (
                     <>
                     <header>
                     <NavigationBar/>
                     </header>
-                    <ul className={style.orderContainer}><Order order={order}/><Summary products={order.products}/></ul>
+                    <ul className={style.orderContainer}><Order order={order}/><Summary products={order.lines}/></ul>
                 </>)
             }
 
