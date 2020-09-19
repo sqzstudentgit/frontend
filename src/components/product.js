@@ -31,7 +31,7 @@ class Product extends React.Component {
                 <span className={style.productBasicContainer}>
                     <span className={style.productBasic}>Product ID: {this.props.product.productCode} </span>
                     <span className={style.productBasic}>Product Name: {this.props.product.productName}</span>
-                    <span className={style.productBasic}>Price: {this.props.product.price||this.props.product.priceExTax}</span>
+                    <span className={style.productBasic}>Price: {this.props.product.price||this.props.product.totalPriceExTax}</span>
                 </span>
 
                 <span className={style.productCustomizeContainer}>
@@ -49,7 +49,7 @@ class Product extends React.Component {
                            <input type="text" value={this.state.quantity} id="quantity" onChange={this._handleChange} placeholder='input quantity here' ref={myInput=>this.myInput=myInput}/>
                         </form>}
                     </span>
-                    <span className={style.productCustomize}>Total Price: {`${+((this.props.product.price||this.props.product.priceExTax) * +this.props.product.quantity).toFixed(2)}`}</span>
+                    <span className={style.productCustomize}>Total Price: {`${+((this.props.product.price||this.props.product.totalPrice) * + this.props.product.quantity).toFixed(2)}`}</span>
 
 
                 </span>

@@ -38,11 +38,11 @@ class CurrentOrderPage extends React.Component{
         this.state.order.products.map(item => {
             let line = {
                 lineType:"PRODUCT",
-                productId:item.keyProductCode,
+                keyProductID:item.keyProductID,
                 productCode:item.productCode,
                 quantity:item.quantity,
-                priceExTax:item.price,
-                priceTotalExTax:item.price*item.quantity,
+                priceTotalExTax:item.price,
+                totalPrice:item.price*item.quantity,
                 productName:item.productName,
             }
             lines.push(line)
@@ -59,13 +59,13 @@ class CurrentOrderPage extends React.Component{
                     "sessionKey": sessionStorage.getItem("sessionKey"),
                     "lines": lines,                   
                 }
-            }             
-            )
+            })
             .then(
                 (response)=>{
-                    console.log(response);
-                    //let {purchaseID} = response.data.data
+                    console.log(response);                    
                     let {message,status} = response.data
+                    console.log("I am a prick")
+                    console.log(status)
                     if (status=="success"){
                         //localStorage.setItem("purchaseID",purchaseID)
                         alert("Submit Successfully!")
@@ -118,7 +118,7 @@ class CurrentOrderPage extends React.Component{
         e.preventDefault();
         let scanCode = parseInt(this.state.barcode);
         console.log(scanCode);        
-        const res = this.state.order.products.some(item => { return item.barcode == scanCode; });
+        const res = this.state.order.products.some(item => item.barcode == scanCode);
         console.log(this.state.order.products);
         console.log(res);
 
@@ -179,22 +179,38 @@ class CurrentOrderPage extends React.Component{
 
         axios({
                 method: 'post',           
-                url: 'api/price',
+                url: 'api/barcode',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
                     "sessionKey": sessionStorage.getItem("sessionKey"),
                     "barcode": barcode,                   
                 }
-            }             
-            )
+            })
             .then(
                 (response)=>{
                     console.log(response);
+                    
                     var {status} = response.data
-                    var {productname, price, keyProductCode,productCode,uri_large,uri_medium,uri_small} = response.data.data
-                    let setP =(barcode, productCode,productname,price,productId,l_img,m_img,s_img) =>{                       
-                        let newProduct = {productCode:productCode,productName:productname,price:price,quantity: 1, barcode: barcode,keyProductCode:productId,uri_large:l_img,uri_medium:m_img,uri_small:s_img}
+                    
+                    // TODO: Fix the returned parameters for Images as we are not returning the list
+                    var {productName, productCode, keyProductID, price, uri_large,uri_medium,uri_small} = response.data.data
+
+                    let setP =(barcode, productCode, productName,price,productId,l_img,m_img,s_img) => {                       
+                        let newProduct = {
+                            productCode:productCode, 
+                            productName:productName,
+                            price:price,
+                            quantity: 1, 
+                            barcode: barcode,
+                            keyProductID:productId,
+                            uri_large:l_img,
+                            uri_medium:m_img,
+                            uri_small:s_img
+                        }
+
+                        
                         let newProductList = this.state.order.products.concat(newProduct)
+
                         this.setState({
                             error:false,
                             order: {
@@ -210,7 +226,7 @@ class CurrentOrderPage extends React.Component{
                             this.add(barcode)
                         }
                         else{
-                            setP(barcode,productCode,productname,price,keyProductCode,uri_large,uri_medium,uri_small)
+                            setP(barcode,productCode,productName,price,keyProductID,uri_large,uri_medium,uri_small)
                         }
                     }
                     else{

@@ -10,18 +10,19 @@ class OrderItem extends React.Component{
     }
 
     _handleClick(){
-        this.props.history.push(`/order_detail_${this.props.order.keyPurchaseOrderID}`)
+        this.props.history.push(`/order_detail_${this.props.order.id}`)
     }
 
 
-    render(){
-        const price = this.props.order.products.reduce((acc, cur) => {
-            return acc + cur.priceTotalExTax
+    render(){ 
+        console.log(this.props.order);
+        const price = this.props.order.lines.reduce((acc, cur) => {
+            return acc + cur.totalPriceExTax;
         },0)
         
         const date = ()=>{
-            let itemdate = new Date(this.props.order.createdDate)
-            //console.log(itemdate)
+            let itemdate = new Date(this.props.order.createdOnDate)
+            console.log(itemdate)
             var seperator1 = "-";
             var seperator2 = ":";
             var month = itemdate.getUTCMonth() + 1;
@@ -67,7 +68,7 @@ class OrderItem extends React.Component{
                 </p>
                 <p>
                     <span>Order Status: </span>
-                    <span>{this.props.order.bill_status.slice(7)}</span>
+                    <span>{this.props.order.billStatus.slice(7)}</span>
                 </p>
                 <p>
                     <span>Amount: </span>
