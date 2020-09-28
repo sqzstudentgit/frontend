@@ -21,16 +21,18 @@ import { Typography } from 'antd';
 
 const { Title, Text } = Typography;
 
-import { InputNumber, Space, Descriptions, Divider } from 'antd';
+import { InputNumber, Space, Descriptions, Divider, Modal, Image } from 'antd';
 
 
 // 3D Image Renderer
-import { ThreeDModelPresenter } from '../components/3DModel/ThreeDModelPresenter';
+// import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 
 
 
 function OrderPage(props) {
+  const [visible, setVisible] = useState(false);
+
 
   const productDataSource = {
     "": "CFP - 600/12 Swirl Diffusers  with  Low Profile Plenum 250 Spigot",
@@ -55,6 +57,12 @@ function OrderPage(props) {
     "Plenum Box Width##LENGTH##MILLIMETERS": "570.000000000000",
     "Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
   }
+
+  
+  const showModal = () => {
+    setVisible(true)
+  }
+
 
   return (
     <div>
@@ -97,20 +105,40 @@ function OrderPage(props) {
       <Row justify="center" gutter={[32, 32]}>
         <Col span={18}>
           <Card hoverable={true} extra={<Button type="danger" shape="circle" icon={<CloseOutlined />} />}>
-            <Row>
 
+
+            <Row>
               {/* 3D Images */}
               <Col span={12}>
-                For images
+                <Image
+                  width={200}
+                  src="https://attachments.pjsas.com.au/products/images_large/21960.jpg"
+                  alt="HolySAS Product"
+                />
               </Col>
 
               {/* Product details */}
-              <Col span={6} offset={6}>
-                <Title level={5}>Product ID</Title><Text>123456</Text>
-                <Title level={5}>Product Name</Title><Text>CFP Radial Blade Swirl</Text>
-                <Title level={5}>Price</Title><Text>$25.55</Text>
+              <Col span={8} offset={4}>
+                <Row gutter={[16, 16]}>
+                  <Col span={12}>
+                    <Title level={5}>Product ID</Title>
+                    <Text>123456</Text>
+                  </Col>
+                  <Col span={12}>
+                    <Title level={5}>Price</Title>
+                    <Text>$25.55</Text>
+                  </Col>
+                </Row>
+                <Row gutter={[16, 32]}>
+                  <Col>
+                    <Title level={5}>Product Name</Title>
+                    <Text>CFP Radial Blade Swirl</Text>
+                  </Col>
+                </Row>
+                <Row gutter={[0, 16]}>
+                  <Button type="secondary" onClick={showModal}>Product Specifications</Button>
+                </Row>
                 <Divider />
-                
                 <Row>
                   <Col span={12}>
                     <Title level={5}>Quantity</Title>
@@ -129,16 +157,23 @@ function OrderPage(props) {
 
       <Row justify="center">
         <Col span={18}>
-
+          {/* <Three3ModelPresenter /> */}
         </Col>
       </Row>
-      
 
 
-      {/* Product 3D image metadata */}
-      <Row justify="center">
-        <Col span={18}>
-          <Descriptions title="Product Parameters" bordered size="small" layout="horizontal" column={2}>
+      {/* Modal for Product 3D Image Metadata */}
+      <Modal 
+        title="Product Specifications" 
+        visible={visible} 
+        centered={true} 
+        onOk={() => setVisible(false)} 
+        onCancel={() => setVisible(false)}
+        style={{ top: 20 }}
+        width="80vw"
+
+      >
+        <Descriptions bordered size="small" layout="horizontal" column={2}>
             {
               Object.entries(productDataSource).map(([param, value]) => {
                 return (
@@ -149,12 +184,9 @@ function OrderPage(props) {
               })
             }
           </Descriptions>
-        </Col>
-      </Row>
-
+      </Modal>
 
     </div>
-
   )
 }
 
