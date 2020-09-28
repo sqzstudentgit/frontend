@@ -8,11 +8,11 @@ import {
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three'
 
-import bottle from "../../WaterBottle.glb";
-import arwing from "../../arwing.glb";
-import model1 from "../../model1.glb";
-import model2 from "../../model2.glb";
-import model3 from "../../model.glb";
+// import bottle from "../../WaterBottle.glb";
+// import arwing from "../../arwing.glb";
+import model1 from "./models/model.glb";
+// import model2 from "../../model2.glb";
+// import model3 from "../../model.glb";
 
 
 function CameraControls ()  {
@@ -271,8 +271,8 @@ class ThreeDModelPresenter extends React.Component
             <Suspense fallback={<Loading />}>
 
 
-            {/*<LoadModel3_shadow position={[-6.5,-0.5,10]} scale={[3,3,3]} rotation={0,0,0} />*/}
-            <LoadModel4 />
+            <LoadModel3_shadow position={[-6.5,-0.5,10]} scale={[3,3,3]} rotation={0,0,0} />
+            {/* <LoadModel4 /> */}
 
             </Suspense>
 
