@@ -23,6 +23,9 @@ function onQuantityChange(value) {
   console.log("Quantity Change to", value);
 }
 
+
+
+
 function ProductDetailPage(){
       
         if(sessionStorage.getItem('user')){
