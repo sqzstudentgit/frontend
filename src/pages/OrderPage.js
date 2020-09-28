@@ -1,192 +1,170 @@
-import React, { useState } from 'react';
-
-
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
+import ProductCard from './ProductCard';
 
-// Components
-import NavigationBar from '../components/navigation_bar';
+// Ant Design Components
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  Input,
+  Layout,
+  Menu,
+  Row,
+  Statistic,
+  Typography
+} from 'antd';
 
+// Ant Design Icons
+import { 
+  BarcodeOutlined,
+  HistoryOutlined, 
+  HomeOutlined, 
+  LogoutOutlined, 
+  ShoppingCartOutlined 
+} from '@ant-design/icons';
 
-// Ant design crap
-
-import { Card, PageHeader, Row, Col, Input } from 'antd';
-
-// Stats from antd
-import { Statistic, Button, Table } from 'antd';
-
-import { BarcodeOutlined, CloseOutlined } from '@ant-design/icons';
-
-
-import { Typography } from 'antd';
-
+// Ant Design Sub-Components
 const { Title, Text } = Typography;
+const { Header, Content, Footer } = Layout;
 
-import { InputNumber, Space, Descriptions, Divider, Modal, Image } from 'antd';
-
-
-// 3D Image Renderer
-// import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
+// 3D Image Rendering Component
+import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 
+function OrderPage({ history }) {
+  // Cart state
+  const [barcode, setBarcode] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
+  // Alert component state
+  const [showAlert, setShowAlert] = useState(false);
+  const [type, setType] = useState(null);
+  const [message, setMessage] = useState(null);
 
-function OrderPage(props) {
-  const [visible, setVisible] = useState(false);
+  // Recalculates total price when cart changes
+  useEffect(() => {
+    const newTotalPrice = products.reduce((acc, cur) => {
+      return acc + cur.price * cur.quantity;
+    }, 0);
+    setTotalPrice(newTotalPrice);
+  }, [products])
 
-
-  const productDataSource = {
-    "": "CFP - 600/12 Swirl Diffusers  with  Low Profile Plenum 250 Spigot",
-    "URL##OTHER##": "http://www.holyoake.com",
-    "Type Comments##OTHER##": " Holyoake Swirl Diffuser CFP-600/12 c/w Low Profile Plenum.",
-    "Static Pressure Min##OTHER##": "2 Pa",
-    "Static Pressure Max##OTHER##": "28 Pa",
-    "Noise Level NC Min##OTHER##": "5 NC",
-    "Noise Level NC Max##OTHER##": "32NC",
-    "Model##OTHER##": "CFP-600/12 Low Profile complete with low profile plenum.",
-    "Min Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "25.000000000000",
-    "Max Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "200.000000000000",
-    "Material Body##OTHER##": "Holyoake-Aluminium",
-    "Material - Face##OTHER##": "Holyoake White",
-    "Manufacturer##OTHER##": "Holyoake",
-    "d_r##LENGTH##MILLIMETERS": "125.000000000000",
-    "Inlet Spigot Diameter##LENGTH##MILLIMETERS": "250.000000000000",
-    "Plenum Box Height##LENGTH##MILLIMETERS": "250.000000000000",
-    "Holyoake Product Range##OTHER##": "Holyoake Swirl Diffusers.",
-    "Flow Nom##HVAC_AIR_FLOW##LITERS_PER_SECOND": "112.500000000000",
-    "Diffuser Width##LENGTH##MILLIMETERS": "595.000000000000",
-    "Plenum Box Width##LENGTH##MILLIMETERS": "570.000000000000",
-    "Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
+  // Handles click of navigation bar menu item
+  const handleClick = ({ key }) => {
+    // TODO: Fix this to handle logout call
+    if (key != "4") {
+      history.push(key)
+    }
   }
 
-  
-  const showModal = () => {
-    setVisible(true)
+  // Handles removal of single product from the cart
+  const handleRemove = (keyProductID) => {
+    setProducts(prev => prev.filter(product => product.keyProductID != keyProductID))
   }
 
+  // Handles quantity change for a single product
+  const handleQuantityChange = (keyProductID, quantity) => {
+    let product = { ...products.find(product => product.keyProductID == keyProductID) }
+    product.quantity = quantity;
+    setProducts(prev => [ ...prev.filter(product => product.keyProductID != keyProductID), product ])
+  }
+
+  // Handles barcode scan
+  const handleScan = async (barcode) => {
+    try {
+      const response = await axios.get('/api/barcode', {
+        params: {
+          sessionKey: sessionStorage.getItem("sessionKey"),
+          barcode: barcode
+        }
+      }, {
+        headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
+      })
+
+      // Check if product already exists in the cart
+      const newProduct = response.data.data;
+      const exists = products.some((product) => product.keyProductID == newProduct.keyProductID );
+
+      if (!exists) {
+        setProducts(prev => [...prev, { ...newProduct, quantity: 1 } ]);
+      } else {
+        setMessage("You have already added this product");
+        setType("warning");
+        setShowAlert(exists);
+      }
+      setBarcode(null);
+
+    } catch (err) {
+      console.log(err);
+      if (err.response.status == 500) {
+        setMessage("The barcode you have entered is invalid, please try again");
+        setType("error");
+        setShowAlert(true);
+      }
+    }
+  }
 
   return (
-    <div>
-      <NavigationBar />
+    <Layout>
+      {/* Top navigation bar */}
+      <Header>
+        <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['3']}>
+          <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
+          <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
+          <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
+          <Menu.Item icon={<LogoutOutlined />} key="4">Logout</Menu.Item>
+        </Menu>
+      </Header>
 
-      {/* Upper sticky cart card */}
-      <Row justify="center" gutter={[32, 32]}>
-        <Col span={18}>
-          <Card>
-            <Row>
-              <Col span={8}>
-                <Title level={4}>Add Product</Title>
-                <Input placeholder="Enter barcode" prefix={<BarcodeOutlined />} />
-                <Button style={{ marginTop: 16 }} type="secondary">Scan</Button>
-              </Col>
-              <Col span={8} offset={8}>
-                <Row>
-                  <Col span={12}>
-                    <Statistic 
-                      title="Total Price (AUD)" value={50.50} prefix="$" precision={2} />
-                  </Col>
-                  <Col span={12}>
-                    <Statistic title="GST" value={11} prefix="$" precision={2} />
-                    <Button style={{ marginTop: 16 }} type="primary">
-                      Checkout
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
+      {/* Content body */}
+      <Content style={{ padding: '16px 32px', height: '100vh'}}>
 
-
-
-
-      {/* Note: use Space component for spacing b/w product cards */}
-
-      <Row justify="center" gutter={[32, 32]}>
-        <Col span={18}>
-          <Card hoverable={true} extra={<Button type="danger" shape="circle" icon={<CloseOutlined />} />}>
-
-
-            <Row>
-              {/* 3D Images */}
-              <Col span={12}>
-                <Image
-                  width={200}
-                  src="https://attachments.pjsas.com.au/products/images_large/21960.jpg"
-                  alt="HolySAS Product"
-                />
-              </Col>
-
-              {/* Product details */}
-              <Col span={8} offset={4}>
-                <Row gutter={[16, 16]}>
-                  <Col span={12}>
-                    <Title level={5}>Product ID</Title>
-                    <Text>123456</Text>
-                  </Col>
-                  <Col span={12}>
-                    <Title level={5}>Price</Title>
-                    <Text>$25.55</Text>
-                  </Col>
-                </Row>
-                <Row gutter={[16, 32]}>
-                  <Col>
-                    <Title level={5}>Product Name</Title>
-                    <Text>CFP Radial Blade Swirl</Text>
-                  </Col>
-                </Row>
-                <Row gutter={[0, 16]}>
-                  <Button type="secondary" onClick={showModal}>Product Specifications</Button>
-                </Row>
-                <Divider />
-                <Row>
-                  <Col span={12}>
-                    <Title level={5}>Quantity</Title>
-                    <InputNumber min={1} max={100} defaultValue={1} />
-                  </Col>
-                  <Col span={12}>
-                    <Title level={5}>Subtotal</Title>
-                    <Statistic value={11} prefix="$" precision={2} />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
-
-      <Row justify="center">
-        <Col span={18}>
-          {/* <Three3ModelPresenter /> */}
-        </Col>
-      </Row>
-
-
-      {/* Modal for Product 3D Image Metadata */}
-      <Modal 
-        title="Product Specifications" 
-        visible={visible} 
-        centered={true} 
-        onOk={() => setVisible(false)} 
-        onCancel={() => setVisible(false)}
-        style={{ top: 20 }}
-        width="80vw"
-
-      >
-        <Descriptions bordered size="small" layout="horizontal" column={2}>
-            {
-              Object.entries(productDataSource).map(([param, value]) => {
-                return (
-                  <Descriptions.Item label={param.replace(/##[\w]*/g, "")}>
-                    {value}
-                  </Descriptions.Item>
-                ) 
-              })
-            }
-          </Descriptions>
-      </Modal>
-
-    </div>
+        {/* Add product form and cart information */}
+        <Row justify="center" gutter={[32, 32]}>
+          <Col span={18}>
+            <Card>
+              <Row>
+                <Col span={8}>
+                  <Title level={4}>Add Product</Title>
+                  <Input placeholder="Enter barcode" prefix={<BarcodeOutlined />} value={barcode} onChange={(e) => setBarcode(e.target.value)} />
+                  {showAlert && <Alert style={{ marginTop: 16 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable  />}
+                  <Button style={{ marginTop: 16 }} type="secondary" onClick={() => handleScan(barcode)}>Scan</Button>
+                </Col>
+                <Col span={8} offset={8}>
+                  <Row>
+                    <Col span={12}>
+                      <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                      <Button style={{ marginTop: 16 }} type="danger" onClick={() => setProducts([])}>
+                        Reset Cart
+                      </Button>
+                    </Col>
+                    <Col span={12}>
+                      <Statistic title="GST" value={0} prefix="$" precision={2} />
+                      <Button style={{ marginTop: 16 }} type="primary">
+                        Checkout
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+        {
+          // Map each product in the cart to a product card
+          products.map(product => {
+            return <ProductCard product={product} onRemove={handleRemove} onQuantityChange={handleQuantityChange}/>
+          })
+        }
+      </Content>
+      
+      {/* Footer */}
+      <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+    </Layout>
   )
 }
 
