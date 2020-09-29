@@ -5,6 +5,7 @@ import ProductCard from './ProductCard';
 
 // Ant Design Components
 import {
+  Affix,
   Alert,
   Button,
   Card,
@@ -68,6 +69,7 @@ function OrderPage({ history }) {
 
   // Handles quantity change for a single product
   const handleQuantityChange = (keyProductID, quantity) => {
+    // TODO: Fix this bug where products switch
     let product = { ...products.find(product => product.keyProductID == keyProductID) }
     product.quantity = quantity;
     setProducts(prev => [ ...prev.filter(product => product.keyProductID != keyProductID), product ])
@@ -109,10 +111,10 @@ function OrderPage({ history }) {
   }
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
-      <Header>
-        <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['3']}>
+      <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+        <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['/order']}>
           <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
           <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
           <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
@@ -121,43 +123,53 @@ function OrderPage({ history }) {
       </Header>
 
       {/* Content body */}
-      <Content style={{ padding: '16px 32px', height: '100vh'}}>
+      <Content style={{ padding: '80px 16px' }}>
 
         {/* Add product form and cart information */}
-        <Row justify="center" gutter={[32, 32]}>
-          <Col span={18}>
-            <Card>
-              <Row>
-                <Col span={8}>
-                  <Title level={4}>Add Product</Title>
-                  <Input placeholder="Enter barcode" prefix={<BarcodeOutlined />} value={barcode} onChange={(e) => setBarcode(e.target.value)} />
-                  {showAlert && <Alert style={{ marginTop: 16 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable  />}
-                  <Button style={{ marginTop: 16 }} type="secondary" onClick={() => handleScan(barcode)}>Scan</Button>
-                </Col>
-                <Col span={8} offset={8}>
-                  <Row>
-                    <Col span={12}>
-                      <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                      <Button style={{ marginTop: 16 }} type="danger" onClick={() => setProducts([])}>
-                        Reset Cart
-                      </Button>
-                    </Col>
-                    <Col span={12}>
-                      <Statistic title="GST" value={0} prefix="$" precision={2} />
-                      <Button style={{ marginTop: 16 }} type="primary">
-                        Checkout
-                      </Button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-        </Row>
+        <Affix offsetTop={80}>
+          <Row justify="center" gutter={[32, 32]}>
+            <Col span={18}>
+              <Card>
+                <Row>
+                  <Col span={8}>
+                    <Title level={4}>Add Product</Title>
+                    <Input placeholder="Enter barcode" prefix={<BarcodeOutlined />} value={barcode} onChange={(e) => setBarcode(e.target.value)} />
+                    {showAlert && <Alert style={{ marginTop: 16 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable  />}
+                    <Button style={{ marginTop: 16 }} type="secondary" onClick={() => handleScan(barcode)}>Scan</Button>
+                  </Col>
+                  <Col span={8} offset={8}>
+                    <Row>
+                      <Col span={12}>
+                        <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => setProducts([])}>
+                          Reset Cart
+                        </Button>
+                      </Col>
+                      <Col span={12}>
+                        <Statistic title="GST" value={0} prefix="$" precision={2} />
+                        <Button style={{ marginTop: 16 }} type="primary">
+                          Checkout
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          </Row>
+        </Affix>
+        
         {
           // Map each product in the cart to a product card
           products.map(product => {
-            return <ProductCard product={product} onRemove={handleRemove} onQuantityChange={handleQuantityChange}/>
+            return (
+              <ProductCard
+                key={product.keyProductID}
+                product={product} 
+                onRemove={handleRemove} 
+                onQuantityChange={handleQuantityChange}
+              />
+            )
           })
         }
       </Content>

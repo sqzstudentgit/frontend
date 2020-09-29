@@ -53,7 +53,7 @@ function ProductCard({ product, onQuantityChange, onRemove }) {
   )
 
   return (
-    <Row justify="center" gutter={[32, 32]}>
+    <Row justify="center" gutter={[32, 32]} >
       <Col span={18}>
         <Card hoverable={true} extra={removeButton}>
 
@@ -121,7 +121,7 @@ function ProductCard({ product, onQuantityChange, onRemove }) {
               {
                 Object.entries(productDataSource).map(([param, value]) => {
                   return (
-                    <Descriptions.Item label={param.replace(/##[\w]*/g, "")}>
+                    <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
                       {value}
                     </Descriptions.Item>
                   ) 
