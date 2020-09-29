@@ -174,6 +174,7 @@ function OrderPage({ history }) {
       {/* Top navigation bar */}
       <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
         <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['/order']}>
+        <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif;", fontSize: '1.25rem' }} key="/">HOLYSAS</Menu.Item>
           <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
           <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
           <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
