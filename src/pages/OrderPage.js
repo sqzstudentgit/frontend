@@ -52,7 +52,14 @@ function OrderPage({ history }) {
       return acc + cur.price * cur.quantity;
     }, 0);
     setTotalPrice(newTotalPrice);
-  }, [products])
+  }, [products]);
+
+  // Sets alert message, type, and whether to show alert
+  const setAlert = (message, type, showAlert) => {
+    setMessage(message);
+    setType(type);
+    setShowAlert(showAlert);
+  }
 
   // Handles click of navigation bar menu item
   const handleClick = ({ key }) => {
@@ -69,10 +76,17 @@ function OrderPage({ history }) {
 
   // Handles quantity change for a single product
   const handleQuantityChange = (keyProductID, quantity) => {
-    // TODO: Fix this bug where products switch
-    let product = { ...products.find(product => product.keyProductID == keyProductID) }
-    product.quantity = quantity;
-    setProducts(prev => [ ...prev.filter(product => product.keyProductID != keyProductID), product ])
+    // Find index for product to update
+    let index = products.findIndex((product) => product.keyProductID == keyProductID);
+
+    // Update the quantity for that product, without mutating the original array
+    if (index != -1) {
+      let updatedProducts = [ ...products ];
+      let product = { ...updatedProducts[index] };
+      product.quantity = quantity;
+      updatedProducts[index] = product;
+      setProducts(updatedProducts);
+    }
   }
 
   // Handles barcode scan
@@ -93,19 +107,16 @@ function OrderPage({ history }) {
 
       if (!exists) {
         setProducts(prev => [...prev, { ...newProduct, quantity: 1 } ]);
+        setAlert("Your product has been added", "success", true);
       } else {
-        setMessage("You have already added this product");
-        setType("warning");
-        setShowAlert(exists);
+        setAlert("You have already added this product", "warning", exists);
       }
       setBarcode(null);
 
     } catch (err) {
       console.log(err);
       if (err.response.status == 500) {
-        setMessage("The barcode you have entered is invalid, please try again");
-        setType("error");
-        setShowAlert(true);
+        setAlert("The barcode you have entered is invalid, please try again", "error", true);
       }
     }
   }
@@ -148,7 +159,7 @@ function OrderPage({ history }) {
                       <Col span={12}>
                         <Statistic title="GST" value={0} prefix="$" precision={2} />
                         <Button style={{ marginTop: 16 }} type="primary">
-                          Checkout
+                          Submit Order
                         </Button>
                       </Col>
                     </Row>
