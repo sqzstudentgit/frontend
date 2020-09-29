@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import ProductCard from './ProductCard';
+import ProductCard from '../components/ProductCard';
 
 // Ant Design Components
 import {
@@ -13,6 +13,7 @@ import {
   Input,
   Layout,
   Menu,
+  notification,
   Row,
   Statistic,
   Typography
@@ -45,6 +46,7 @@ function OrderPage({ history }) {
   const [showAlert, setShowAlert] = useState(false);
   const [type, setType] = useState(null);
   const [message, setMessage] = useState(null);
+
 
   // Recalculates total price when cart changes
   useEffect(() => {
@@ -115,11 +117,57 @@ function OrderPage({ history }) {
 
     } catch (err) {
       console.log(err);
-      if (err.response.status == 500) {
+      if (err.response && err.response.status == 500) {
         setAlert("The barcode you have entered is invalid, please try again", "error", true);
       }
     }
   }
+
+  // Handles order submission
+  const handleSubmit = async () => {
+    if (products.length == 0) {
+      notification.warning({
+        message: 'Your cart is empty',
+        description: 'Please add a product to your cart before submitting an order'
+      })
+      return;
+    }
+
+    let lines = products.map(product => ({ 
+      ...product,
+      lineType: "PRODUCT",
+      priceTotalExTax: product.price,
+      totalPrice: product.price * product.quantity
+    }))
+
+    try {
+      const response = await axios.post('/api/purchase', {
+        lines: lines,
+        sessionKey: sessionStorage.getItem('sessionKey')
+      }, {
+        headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
+      });
+      console.log(response);
+
+      if (response.status == 200) {
+        notification.success({
+          message: 'Your order has been submitted!'
+        })
+        setTimeout(() => {
+          history.push('/');
+        }, 4500);
+      }
+    } catch (err) {
+      console.log(err);
+      if (err.response && err.response.status == 500) {
+        notification.error({
+          message: 'Could not submit order',
+          description: 'There was an error submitting your order, please try again.'
+        })
+      }
+    }
+  }
+
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -158,7 +206,7 @@ function OrderPage({ history }) {
                       </Col>
                       <Col span={12}>
                         <Statistic title="GST" value={0} prefix="$" precision={2} />
-                        <Button style={{ marginTop: 16 }} type="primary">
+                        <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()}>
                           Submit Order
                         </Button>
                       </Col>

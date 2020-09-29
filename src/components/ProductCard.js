@@ -70,7 +70,7 @@ function ProductCard({ product, onQuantityChange, onRemove }) {
               </Row>
             </Col>
 
-            {/* Product details, quantity and subtotal */}
+            {/* Product details, specification, quantity and subtotal */}
             <Col span={8} offset={4}>
               <Row gutter={[16, 16]}>
                 <Col span={16}>
