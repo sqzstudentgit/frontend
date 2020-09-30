@@ -332,7 +332,7 @@ class SignUpForm extends React.Component{
                         <Grid container justify="flex-end">
                             <Grid item>
                                     Already have an account?
-                                <Link href="#" variant="body2">
+                                <Link href="\login" variant="body2">
                                     Sign in
                                 </Link>
                             </Grid>
