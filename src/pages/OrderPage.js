@@ -10,10 +10,12 @@ import {
   Button,
   Card,
   Col,
+  Form,
   Input,
   Layout,
   Menu,
   notification,
+  Radio,
   Row,
   Statistic,
   Typography
@@ -23,22 +25,21 @@ import {
 import { 
   BarcodeOutlined,
   HistoryOutlined, 
-  HomeOutlined, 
+  HomeOutlined,
+  KeyOutlined,
   LogoutOutlined, 
   ShoppingCartOutlined 
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { Header, Content, Footer } = Layout;
-
-// 3D Image Rendering Component
-import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 
 function OrderPage({ history }) {
   // Cart state
-  const [barcode, setBarcode] = useState(null);
+  const [input, setInput] = useState(null);
+  const [inputType, setInputType] = useState('barcode');
   const [products, setProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -56,29 +57,30 @@ function OrderPage({ history }) {
     setTotalPrice(newTotalPrice);
   }, [products]);
 
-  // Sets alert message, type, and whether to show alert
-  const setAlert = (message, type, showAlert) => {
-    setMessage(message);
-    setType(type);
-    setShowAlert(showAlert);
-  }
 
   // Handles click of navigation bar menu item
   const handleClick = ({ key }) => {
     // TODO: Fix this to handle logout call
-    if (key != "4") {
+    if (key.startsWith('/')) {
       history.push(key)
     }
   }
+
+  // Sets alert message, type, and whether to display the alert
+  const setAlert = (message, type, showAlert) => {
+    setMessage(message); setType(type); setShowAlert(showAlert);
+  }
+
 
   // Handles removal of single product from the cart
   const handleRemove = (keyProductID) => {
     setProducts(prev => prev.filter(product => product.keyProductID != keyProductID))
   }
 
+
   // Handles quantity change for a single product
   const handleQuantityChange = (keyProductID, quantity) => {
-    // Find index for product to update
+    // Find index of product to update
     let index = products.findIndex((product) => product.keyProductID == keyProductID);
 
     // Update the quantity for that product, without mutating the original array
@@ -91,17 +93,21 @@ function OrderPage({ history }) {
     }
   }
 
-  // Handles barcode scan
-  const handleScan = async (barcode) => {
+
+  // Handles addition of product to the cart
+  const handleAddProduct = async () => {
     try {
-      const response = await axios.get('/api/barcode', {
+      const response = await axios.get(`/api/${inputType}`, {
         params: {
           sessionKey: sessionStorage.getItem("sessionKey"),
-          barcode: barcode
+          barcode: input,
+          id: input
         }
       }, {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
+
+      console.log(response);
 
       // Check if product already exists in the cart
       const newProduct = response.data.data;
@@ -113,15 +119,22 @@ function OrderPage({ history }) {
       } else {
         setAlert("You have already added this product", "warning", exists);
       }
-      setBarcode(null);
+
+      // Reset input field
+      setInput(null);
 
     } catch (err) {
       console.log(err);
       if (err.response && err.response.status == 500) {
-        setAlert("The barcode you have entered is invalid, please try again", "error", true);
+        if (inputType == 'product') {
+          setAlert("The product record ID you have entered is invalid", "error", true);
+        } else {
+          setAlert("The barcode you have entered is invalid", "error", true);
+        }
       }
     }
-  }
+  } 
+
 
   // Handles order submission
   const handleSubmit = async () => {
@@ -168,17 +181,16 @@ function OrderPage({ history }) {
     }
   }
 
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
       <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
         <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['/order']}>
-        <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif;", fontSize: '1.25rem' }} key="/">HOLYSAS</Menu.Item>
+        <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
           <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
           <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
           <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
-          <Menu.Item icon={<LogoutOutlined />} key="4">Logout</Menu.Item>
+          <Menu.Item icon={<LogoutOutlined />}>Logout</Menu.Item>
         </Menu>
       </Header>
 
@@ -191,13 +203,36 @@ function OrderPage({ history }) {
             <Col span={18}>
               <Card>
                 <Row>
-                  <Col span={8}>
+                  <Col span={10}>
+                    {/* Add product form */}
                     <Title level={4}>Add Product</Title>
-                    <Input placeholder="Enter barcode" prefix={<BarcodeOutlined />} value={barcode} onChange={(e) => setBarcode(e.target.value)} />
-                    {showAlert && <Alert style={{ marginTop: 16 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable  />}
-                    <Button style={{ marginTop: 16 }} type="secondary" onClick={() => handleScan(barcode)}>Scan</Button>
+                    <Form>
+                      <Form.Item label="Type">
+                        <Radio.Group
+                          value={inputType}
+                          options={[{ label: 'Product ID', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
+                          onChange={(e) => setInputType(e.target.value)}
+                          optionType="button"
+                        />
+                      </Form.Item>
+                      <Form.Item label="Product">
+                        <Input
+                          prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
+                          placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product record ID"}
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                        />
+                      </Form.Item>
+                      <Form.Item>
+                        <Button type="secondary" onClick={() => handleAddProduct()}>Add</Button>
+                      </Form.Item>
+                    </Form>
+
+                    {/* Alert message */}
+                    {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
                   </Col>
-                  <Col span={8} offset={8}>
+
+                  <Col span={8} offset={6}>
                     <Row>
                       <Col span={12}>
                         <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
@@ -232,6 +267,7 @@ function OrderPage({ history }) {
             )
           })
         }
+
       </Content>
       
       {/* Footer */}

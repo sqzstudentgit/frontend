@@ -12,7 +12,7 @@ import * as THREE from 'three'
 
 //import bottle from "../../WaterBottle.glb";
 //import arwing from "../../arwing.glb";
-//import model1 from "./models/model.glb";
+//import model1 from "./models/model1.glb";
 //import model2 from "../../model2.glb";
 //import model3 from "../../model.glb";
 
@@ -61,7 +61,8 @@ function Light2 (position,intensity) {
 
 // Function to add the offset in the loaded model
 function LoadModel3_shadow(props) {
-  const gltf = useLoader(GLTFLoader, "../../../public/model1.glb");
+  const gltf = useLoader(GLTFLoader, "https://holysas-3d-images.s3.amazonaws.com/model1.glb");
+  //const gltf = useLoader(GLTFLoader, "http://127.0.0.1:5000/public/model1.glb");
 
 
   gltf.scene.traverse(function(child) {
