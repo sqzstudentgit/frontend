@@ -6,6 +6,7 @@ import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import HistoryOrdersPage from './pages/historyOrdersPage';
 import CurrentOrderPage from './pages/currentOrderPage';
+import SignUpPage from './pages/signUpPage';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -23,6 +24,7 @@ export default class App extends React.Component {
                     <Route path="/viewHistoryOrder" component={HistoryOrdersPage}/>
                     <Route path="/order_detail_:orderId" component={HistoryOrdersPage}/>
                     <Route path="/order" exact component={CurrentOrderPage}/>
+                    <Route path="/signUp" exact component={SignUpPage}/>
                 </div>
                 <footer/>
             </Router>
