@@ -6,7 +6,6 @@ import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import HistoryOrdersPage from './pages/historyOrdersPage';
 import CurrentOrderPage from './pages/currentOrderPage';
-import SignUpPage from './pages/signUpPage.js';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -21,7 +20,6 @@ export default class App extends React.Component {
                 <div className="App" style={{height: '100%', width:'100%'}}>
                     <Route path="/" exact component={HomePage}/>
                     <Route path="/login" exact component={LoginPage}/>
-                    <Route path="/signUp" exact component={SignUpPage}/>
                     <Route path="/viewHistoryOrder" component={HistoryOrdersPage}/>
                     <Route path="/order_detail_:orderId" component={HistoryOrdersPage}/>
                     <Route path="/order" exact component={CurrentOrderPage}/>
