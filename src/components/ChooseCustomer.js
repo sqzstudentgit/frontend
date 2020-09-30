@@ -7,8 +7,6 @@ import {withRouter, Redirect} from 'react-router-dom'
 
 class ChooseCustomer extends React.Component{
 
-// Testing it out for fun
-
     render() {
         return (
             <StyledForm className='customer-list'>
