@@ -57,7 +57,7 @@ class SignUpForm extends React.Component{
         
        axios({
                 method: 'post',           
-                url: 'api/signup',
+                url: 'api/customers',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
                     "firstName": this.state.firstName,
