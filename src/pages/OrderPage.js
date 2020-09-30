@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
+import CartProduct from '../components/CartProduct';
 
 // Ant Design Components
 import {
@@ -258,7 +258,7 @@ function OrderPage({ history }) {
           // Map each product in the cart to a product card
           products.map(product => {
             return (
-              <ProductCard
+              <CartProduct
                 key={product.keyProductID}
                 product={product} 
                 onRemove={handleRemove} 

@@ -27,7 +27,7 @@ const { Title, Text } = Typography;
 import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 
-function ProductCard({ product, onQuantityChange, onRemove }) {
+function CartProduct({ product, onQuantityChange, onRemove }) {
   const [subtotal, setSubtotal] = useState(product.price);
   const [quantity, setQuantity] = useState(1);
   const [visible, setVisible] = useState(false);
@@ -173,4 +173,4 @@ const productDataSource = {
   "Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
 }
 
-export default ProductCard;
+export default CartProduct;
