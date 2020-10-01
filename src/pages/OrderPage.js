@@ -110,7 +110,22 @@ function OrderPage({ history }) {
 
       console.log(response);
 
-      // Check if product already exists in the cart
+      // Check if the product exists in the database
+      if (response.data.status == 'error') {
+        switch (inputType) {
+          case 'product':
+            setAlert("The product code you have entered is invalid", "error", true);
+            break;
+          case 'barcode':
+            setAlert("The barcode you have entered is invalid", "error", true);
+            break;
+          default:
+            setAlert("The input you have entered is invalid", "error", true);
+        }
+        return;
+      }
+
+      // If valid product, check if it already exists in the cart
       const newProduct = response.data.data;
       const exists = products.some((product) => product.keyProductID == newProduct.keyProductID );
 

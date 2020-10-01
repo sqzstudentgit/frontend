@@ -136,6 +136,7 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
           footer={<Button type="secondary" onClick={() => setVisible(false)}>Close</Button>}
           style={{ top: 20 }}
           width="80vw"
+          maskClosable={true}
         >
           <Descriptions bordered size="small" layout="horizontal" column={2}>
               {
