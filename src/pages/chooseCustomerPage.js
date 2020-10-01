@@ -1,10 +1,10 @@
 import React from "react";
 import { Route } from 'react-router-dom';
 import ChooseCustomer from '../components/ChooseCustomer';
-
+import { Row, Col } from 'antd';
+import 'antd/dist/antd.css';
 import axios from 'axios';
 import {withRouter} from 'react-router-dom'
-import styled from 'styled-components';
 
 class ChooseCustomerPage extends React.Component{
     state = {
@@ -26,9 +26,11 @@ class ChooseCustomerPage extends React.Component{
 
     render() {
         return (
-            <div>
+            <Row style={{ height:  "100%"}} justify="space-around" align="middle">
+                <Col>
                 <ChooseCustomer customers={this.state.customers} />
-            </div>
+                </Col>
+            </Row>
         )
         //window.history.back(-1)
         this.props.history.push('/login')

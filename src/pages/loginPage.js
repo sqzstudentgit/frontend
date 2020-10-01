@@ -50,5 +50,5 @@ const Page = styled.div`
 
 const Logo = styled.img`
     max-width: 30%;
-    max-height: 30%;
+    max-height: 100%;
 `
