@@ -4,13 +4,13 @@ import { Title } from "../components/Title"
 import axios from 'axios';
 
 import ImageViewer from "../components/ImageViewer";
-import NavigationBar from "../components/navigation_bar";
+import NavigationBar from "../components/navigation_bar2";
 import style from  '../css/productDetailPage.module.css'
 import antdStyle from 'antd/dist/antd.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { Row, Col, Divider } from 'antd';
 import { Tabs } from 'antd';
-import { Descriptions,InputNumber,Statistic } from "antd";
+import { Affix,Descriptions,InputNumber,Statistic } from "antd";
 import { Button, Tooltip } from 'antd';
 
 import { 
@@ -19,7 +19,8 @@ import {
     HomeOutlined,
     KeyOutlined,
     LogoutOutlined, 
-    ShoppingCartOutlined 
+    ShoppingCartOutlined,
+    ReconciliationOutlined
   } from '@ant-design/icons';
 
 const { Header, Content, Footer } = Layout;
@@ -34,13 +35,6 @@ function onQuantityChange(value) {
 }
 
 
-// Handles click of navigation bar menu item
-const handleClick = ({ key }) => {
-// TODO: Fix this to handle logout call
-if (key.startsWith('/')) {
-    history.push(key)
-}
-}
 
 
 // Load Product Data
@@ -49,7 +43,7 @@ if (key.startsWith('/')) {
 
 
 
-function ProductDetailPage(){
+function ProductDetailPage({ history }){
     
     /*
     const [data, setData] = useState(null);
@@ -81,25 +75,34 @@ function ProductDetailPage(){
     
     getProductData();
     */
+    const handleClick = ({ key }) => {
+        // TODO: Fix this to handle logout call
+        if (key.startsWith('/')) {
+            history.push(key)
+        }
+    }
 
     if(sessionStorage.getItem('user')){
         //Layout
         return (
             <>
-            {/*<Layout className="layout">*/}
+            <Layout style={{ minHeight: '100vh' }}>
 
-            <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-                <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['/order']}>
-                <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
-                <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
-                <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
-                <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
-                <Menu.Item icon={<LogoutOutlined />}>Logout</Menu.Item>
-                </Menu>
-            </Header>
+                {/* Top navigation bar */}
+                <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+                    <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['/product']}>
+                    <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
+                    <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
+                    <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
+                    <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
+                    <Menu.Item icon={<ReconciliationOutlined />} key="/product">Product Detail</Menu.Item>
+                    <Menu.Item icon={<LogoutOutlined />}>Logout</Menu.Item>
+                    </Menu>
+                </Header>
 
-                <Content style={{ padding: '0 50px'}}> 
-                    <div style = {{borderRadius: "2%"}} className={style.site_layout_content}>
+                <div style={{ marginTop: '50px'}}>
+                <Content style={{ padding: '50px 50px'}}> 
+                    <div style = {{borderRadius: "2%" , backgroundColor:'white'}} className={style.site_layout_content}>
 
                         {/* Title */}
                         <Row  gutter={[16, 16]}>
@@ -200,9 +203,10 @@ function ProductDetailPage(){
 
                     </div>
                 </Content>
-                       
+                </div>
+                                
                 <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
-            {/*</Layout>*/}
+            </Layout>
             </>
         )
     }
