@@ -4,16 +4,19 @@ import {
   useLoader,
   useFrame,
   useThree,
+  extend,
 } from "react-three-fiber";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from 'three'
 
-import bottle from "../../WaterBottle.glb";
-import arwing from "../../arwing.glb";
-import model1 from "../../model1.glb";
-import model2 from "../../model2.glb";
-import model3 from "../../model.glb";
+//import bottle from "../../WaterBottle.glb";
+//import arwing from "../../arwing.glb";
+//import model1 from "./models/model1.glb";
+//import model2 from "../../model2.glb";
+//import model3 from "../../model.glb";
 
+extend({ OrbitControls });
 
 function CameraControls ()  {
   // https://threejs.org/docs/#examples/en/controls/OrbitControls
@@ -58,7 +61,8 @@ function Light2 (position,intensity) {
 
 // Function to add the offset in the loaded model
 function LoadModel3_shadow(props) {
-  const gltf = useLoader(GLTFLoader, model1);
+  const gltf = useLoader(GLTFLoader, "https://holysas-3d-images.s3.amazonaws.com/model1.glb");
+  //const gltf = useLoader(GLTFLoader, "http://127.0.0.1:5000/public/model1.glb");
 
 
   gltf.scene.traverse(function(child) {
@@ -92,7 +96,8 @@ function LoadModel3_shadow(props) {
 
 // Auto calculate model distance and height for camera position
 function LoadModel4 (props) {
-  const gltf = useLoader(GLTFLoader, bottle);
+  //const gltf = useLoader(GLTFLoader, "./src/components/3DModel/models/model1.glb");
+  const gltf = useLoader(GLTFLoader, "./models/model1.glb");
 
   console.log(gltf.scene);
   
@@ -271,8 +276,8 @@ class ThreeDModelPresenter extends React.Component
             <Suspense fallback={<Loading />}>
 
 
-            {/*<LoadModel3_shadow position={[-6.5,-0.5,10]} scale={[3,3,3]} rotation={0,0,0} />*/}
-            <LoadModel4 />
+            {<LoadModel3_shadow position={[-6.5,-0.5,10]} scale={[3,3,3]} rotation={0,0,0} />}
+            {/*<LoadModel4 />*/}
 
             </Suspense>
 
