@@ -7,6 +7,13 @@ import HomePage from './pages/homePage';
 import HistoryOrdersPage from './pages/historyOrdersPage';
 import CurrentOrderPage from './pages/currentOrderPage';
 
+
+import OrderPage from './pages/OrderPage';
+
+
+import 'antd/dist/antd.css';
+
+
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -22,7 +29,7 @@ export default class App extends React.Component {
                     <Route path="/login" exact component={LoginPage}/>
                     <Route path="/viewHistoryOrder" component={HistoryOrdersPage}/>
                     <Route path="/order_detail_:orderId" component={HistoryOrdersPage}/>
-                    <Route path="/order" exact component={CurrentOrderPage}/>
+                    <Route path="/order" exact component={OrderPage}/>
                 </div>
                 <footer/>
             </Router>
