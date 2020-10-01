@@ -1,12 +1,12 @@
 //ant design
-import { Form, Input, Button, Card, Image} from 'antd';
+import { Form, Input, Button, Card} from 'antd';
+import {message as antdMessage} from 'antd' ;
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 
 //React
 import React from "react";
 import axios from 'axios';
-import ErrorMessage from './errorMessage'
 import {withRouter, Redirect} from 'react-router-dom'
 
 
@@ -68,6 +68,7 @@ class LoginForm extends React.Component{
                             error:true,
                             errorMassage:"Sorry, your username and/or password are incorrect. Please try again."
                         })
+                        antdMessage.info(this.state.errorMassage);
                     } 
                 }
             )
@@ -78,9 +79,10 @@ class LoginForm extends React.Component{
                         error:true,
                         errorMassage: e.response.data
                     })
+                    antdMessage.info(this.state.errorMassage);
                 }
             )
-    }
+    }//end _handleSubmit
 
 
     render() {
@@ -88,8 +90,6 @@ class LoginForm extends React.Component{
             this.state.isLogout = true
             return <Redirect to = {{ pathname: "/" }} />
         }//end if
-
-        const {error, errorMassage} = this.state
         
         return (
             <Card  bordered={false} style={{ width: 300 }} cover={<img alt="example" src="https://media-exp1.licdn.com/dms/image/C511BAQF1N9JzP5PU8Q/company-background_10000/0?e=2159024400&v=beta&t=SogtI3ymEudS4fqNFeyKMxH7j5-2i7R1kH9LndNbPTg" />}>
@@ -132,10 +132,9 @@ class LoginForm extends React.Component{
                     </Form.Item>
                 </Form>
             </Card>
-
             
         )//end return
-    }
+    }//end render
 }
 
 export default LoginForm
