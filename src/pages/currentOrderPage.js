@@ -177,17 +177,15 @@ class CurrentOrderPage extends React.Component{
     // product price retrieve request 
     remoteAdd(barcode){
 
-        axios({
-                method: 'post',           
-                url: 'api/barcode',
-                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-                data:{
+        axios.get('api/barcode', {
+                params: {
                     "sessionKey": sessionStorage.getItem("sessionKey"),
-                    "barcode": barcode,                   
-                }
-            })
+                    "barcode": barcode,     
+                    }
+                })
             .then(
                 (response)=>{
+                    console.log("---------------")
                     console.log(response);
                     
                     var {status} = response.data

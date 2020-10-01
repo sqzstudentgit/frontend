@@ -6,6 +6,7 @@ import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import HistoryOrdersPage from './pages/historyOrdersPage';
 import CurrentOrderPage from './pages/currentOrderPage';
+import ProductDetailPage from './pages/productDetailPage';
 
 
 import OrderPage from './pages/OrderPage';
@@ -30,6 +31,7 @@ export default class App extends React.Component {
                     <Route path="/viewHistoryOrder" component={HistoryOrdersPage}/>
                     <Route path="/order_detail_:orderId" component={HistoryOrdersPage}/>
                     <Route path="/order" exact component={OrderPage}/>
+                    <Route path="/product" exact component={ProductDetailPage} />
                 </div>
                 <footer/>
             </Router>

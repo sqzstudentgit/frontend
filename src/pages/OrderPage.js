@@ -28,7 +28,8 @@ import {
   HomeOutlined,
   KeyOutlined,
   LogoutOutlined, 
-  ShoppingCartOutlined 
+  ShoppingCartOutlined,
+  ReconciliationOutlined
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
@@ -190,6 +191,7 @@ function OrderPage({ history }) {
           <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
           <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
           <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
+          <Menu.Item icon={<ReconciliationOutlined />} key="/product">Product Detail</Menu.Item>
           <Menu.Item icon={<LogoutOutlined />}>Logout</Menu.Item>
         </Menu>
       </Header>
