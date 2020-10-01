@@ -203,10 +203,9 @@ function OrderPage({ history }) {
             <Col span={18}>
               <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
                 <Row>
-                  <Col span={10}>
+                  <Col span={12}>
                     {/* Add product form */}
-                    <Title level={4}>Add Product</Title>
-                    <Form labelCol={{ span: 4 }} >
+                    <Form labelCol={{ span: 3 }} >
                       <Form.Item label="Type">
                         <Radio.Group
                           value={inputType}
@@ -217,14 +216,13 @@ function OrderPage({ history }) {
                       </Form.Item>
                       <Form.Item label="Product">
                         <Input
+                          style={{ width: '80%' }}
                           prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
                           placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
                         />
-                      </Form.Item>
-                      <Form.Item>
-                        <Button type="secondary" onClick={() => handleAddProduct()}>Add</Button>
+                        <Button style={{ display: 'inline-block', marginLeft: 8 }} type="secondary" onClick={() => handleAddProduct()}>Add</Button>
                       </Form.Item>
                     </Form>
 
@@ -232,7 +230,7 @@ function OrderPage({ history }) {
                     {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
                   </Col>
 
-                  <Col span={8} offset={6}>
+                  <Col span={8} offset={4}>
                     <Row>
                       <Col span={12}>
                         <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
