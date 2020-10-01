@@ -101,7 +101,7 @@ function OrderPage({ history }) {
         params: {
           sessionKey: sessionStorage.getItem("sessionKey"),
           barcode: input,
-          id: input
+          productCode: input
         }
       }, {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
