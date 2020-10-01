@@ -14,7 +14,7 @@ class SignUpForm extends React.Component{
         this.state = {
             firstName:'',
             lastName:'',
-            nickName:'',
+            preferredName:'',
             phone:'',
             email:'',
             password:'',
@@ -47,7 +47,7 @@ class SignUpForm extends React.Component{
                 data:{
                     "firstName": this.state.firstName,
                     "lastName": this.state.lastName,
-                    "nickName": this.state.nickName,
+                    "nickName": this.state.preferredName,
                     "phone": this.state.phone,
                     "email": this.state.email,
                     "password": this.state.password,
@@ -125,7 +125,7 @@ render(){
             </div>
 
             <div style={{marginLeft:'50px', alignItems: 'center', width:'95%'}}>
-                <Row justify="space-around">
+                <Row justify="space-between">
                     <Col span={4}>
                     <Form.Item
                         style={{fontSize: '16px'}}
@@ -192,18 +192,18 @@ render(){
                     <Col span={4}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        value={this.state.nickName}
+                        value={this.state.preferredName}
                         onChange={this._handleChange}
-                        rules={[{required: true,message: 'Please input your nick name!'}]}
+                        rules={[{required: true,message: 'Please input your preferred name!'}]}
                     >
-                        Nick Name:
+                        Preferred Name:
                         <Input 
                             size="large"    
                             variant="outlined"
                             required
-                            id="nickName"
-                            name="nickName"
-                            autoComplete="nickName"
+                            id="preferredName"
+                            name="preferredName"
+                            autoComplete="preferredName"
                             prefix={<UserOutlined className="site-form-item-icon" />}
                         />
                     </Form.Item>
@@ -233,7 +233,7 @@ render(){
                         </Form.Item>
                     </Col>
 
-                    <Col span={8}>
+                    <Col span={9}>
                     <Form.Item
                         style={{fontSize: '16px'}}
                         value={this.state.phone}
@@ -275,7 +275,7 @@ render(){
                         </Form.Item>
                     </Col>
 
-                    <Col span={8}>
+                    <Col span={9}>
                     <Form.Item
                         style={{fontSize: '16px'}}
                         value={this.state.email}
@@ -315,7 +315,7 @@ render(){
                         </Form.Item>
                     </Col>
 
-                    <Col span={8}>
+                    <Col span={9}>
                     <Form.Item
                         style={{fontSize: '16px'}}
                         value={this.state.password}
