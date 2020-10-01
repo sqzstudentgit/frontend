@@ -127,7 +127,7 @@ function OrderPage({ history }) {
       console.log(err);
       if (err.response && err.response.status == 500) {
         if (inputType == 'product') {
-          setAlert("The product record ID you have entered is invalid", "error", true);
+          setAlert("The product code you have entered is invalid", "error", true);
         } else {
           setAlert("The barcode you have entered is invalid", "error", true);
         }
@@ -206,11 +206,11 @@ function OrderPage({ history }) {
                   <Col span={10}>
                     {/* Add product form */}
                     <Title level={4}>Add Product</Title>
-                    <Form>
+                    <Form labelCol={{ span: 4 }} >
                       <Form.Item label="Type">
                         <Radio.Group
                           value={inputType}
-                          options={[{ label: 'Product ID', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
+                          options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
                           onChange={(e) => setInputType(e.target.value)}
                           optionType="button"
                         />
@@ -218,7 +218,7 @@ function OrderPage({ history }) {
                       <Form.Item label="Product">
                         <Input
                           prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
-                          placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product record ID"}
+                          placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
                         />
