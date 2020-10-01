@@ -17,7 +17,7 @@ import {
 
 // Ant Design Icons
 import { 
-  CloseOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
@@ -52,13 +52,13 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
 
   // Button to remove product from cart
   const removeButton = (
-    <Button type="danger" onClick={() => onRemove(product.keyProductID)} shape="circle" icon={<CloseOutlined />} />
+    <Button type="secondary" onClick={() => onRemove(product.keyProductID)} shape="circle" icon={<DeleteOutlined />} />
   )
 
   return (
     <Row justify="center" gutter={[32, 32]} >
       <Col span={18}>
-        <Card hoverable={true} extra={removeButton}>
+        <Card style={{ borderRadius: '1.25rem' }} hoverable={true} extra={removeButton}>
 
           {/* Product image */}
           <Row>
@@ -103,9 +103,13 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
                   <Text>{product.productName}</Text>
                 </Col>
               </Row>
-              <Row gutter={[0, 16]}>
-                <Button type="secondary" onClick={() => showModal()}>Product Specifications</Button>
-              </Row>
+              { !product.barcode ? (
+                <Row gutter={[0, 16]}>
+                  <Button type="secondary" onClick={() => showModal()}>
+                    Product Specifications
+                  </Button>
+                </Row>
+              ) : null }
               <Divider />
               <Row>
                 <Col span={12}>
@@ -125,10 +129,10 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
       {/* Modal for Product 3D Image Metadata */}
       <Modal 
           title="Product Specifications" 
-          visible={visible} 
-          centered={true} 
-          onOk={() => setVisible(false)} 
-          onCancel={() => setVisible(false)}
+          visible={visible}
+          centered={true}
+          closable={false}
+          footer={<Button type="secondary" onClick={() => setVisible(false)}>Close</Button>}
           style={{ top: 20 }}
           width="80vw"
         >
@@ -150,7 +154,7 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
 
 // Mock parameter data for products
 const productDataSource = {
-  "": "CFP - 600/12 Swirl Diffusers  with  Low Profile Plenum 250 Spigot",
+  "Name": "CFP - 600/12 Swirl Diffusers  with  Low Profile Plenum 250 Spigot",
   "URL##OTHER##": "http://www.holyoake.com",
   "Type Comments##OTHER##": " Holyoake Swirl Diffuser CFP-600/12 c/w Low Profile Plenum.",
   "Static Pressure Min##OTHER##": "2 Pa",
