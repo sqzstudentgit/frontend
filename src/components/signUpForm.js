@@ -112,8 +112,8 @@ render(){
         onFinish={this._handleSubmit}
         >
             <Form.Item style={{marginTop:'20px', fontSize: '14px',textAlign: 'right', alignItems: 'center'}}>
-                Already have an account?
-                <Button type="link" href="\login">Sign in.</Button>
+                Go back to
+                <Button type="link" href="\login">choose customer</Button>
             </Form.Item>
 
             <div style={{display:'flex', alignItems: 'center', flexDirection:'column'}}>
@@ -121,7 +121,7 @@ render(){
                     <UserAddOutlined style={{color:'#4169e1'}}/>
                 </div>
                 
-                <Title level={2} style={{marginBottom:'20px'}}>Create my account!</Title>
+                <Title level={2} style={{marginBottom:'20px'}}>Create Customer Account</Title>
             </div>
 
             <div style={{marginLeft:'50px', alignItems: 'center', width:'95%'}}>
@@ -315,7 +315,7 @@ render(){
                         </Form.Item>
                     </Col>
 
-                    <Col span={9}>
+                    {/* <Col span={9}>
                     <Form.Item
                         style={{fontSize: '16px'}}
                         value={this.state.password}
@@ -335,18 +335,18 @@ render(){
                             iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                         />
                     </Form.Item>
-                    </Col>
+                    </Col> */}
 
                     <Col span={12} offset={2}>
                     </Col>
                 </Row> 
             </div>
 
-            <Form.Item name="allowEmails" valuePropName="checked" style={{textAlign: 'center', alignItems: 'center'}}>
+            {/* <Form.Item name="allowEmails" valuePropName="checked" style={{textAlign: 'center', alignItems: 'center'}}>
                 <Checkbox value="allowExtraEmails" color="primary">
                     I want to receive inspiration, marketing promotions and updates via email.
                 </Checkbox>
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item style={{textAlign: 'center', alignItems: 'center'}}>
                 <Button type="primary" htmlType="submit" className="signup-form-button">
