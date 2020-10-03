@@ -8,31 +8,72 @@ import {
     ShoppingCartOutlined,
     ReconciliationOutlined
 } from '@ant-design/icons';
+import axios from 'axios';
+import { Redirect } from 'react-router';
 
+import Logout from '../components/Logout'
 const { Header, Content, Footer } = Layout;
 
 
-// Handles click of navigation bar menu item
-const handleClick = ({ key }) => {
-    // TODO: Fix this to handle logout call
-    if (key.startsWith('/')) {
-        history.push(key)
-    }
-}
+
 
 class NavigationBar extends React.PureComponent{
 
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            isLogout:false        
+        }
+
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    // Handles click of navigation bar menu item
+    handleClick = ({ key }) => {
+        // TODO: Fix this to handle logout call
+        if(key==='/logout')
+        {
+            axios(
+                {
+                    method: 'get',           
+                    url: 'api/logout',
+                }             
+            )
+            .then(
+                (response)=>{
+                    console.log(response);
+                    sessionStorage.removeItem('user')
+                    this.setState({ isLogout: true })
+                }
+            )
+            .catch(
+                (error)=>{
+                    console.log(error)
+                }
+            )
+        }
+        else if (key.startsWith('/')) {
+            this.props.history.push(key)
+        }
+    }
+
     render() {
+        if (this.state.isLogout){
+            this.setState({isLogout:false})
+            
+            return <Redirect to = {{ pathname: "/" }} />
+        }
         return(
 
             <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-                <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['/order']}>
+                <Menu onClick={this.handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={[this.props.defaultSelected]}>
                 <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
                 <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
                 <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
                 <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
                 <Menu.Item icon={<ReconciliationOutlined />} key="/product">Product Detail</Menu.Item>
-                <Menu.Item icon={<LogoutOutlined />}>Logout</Menu.Item>
+                <Menu.Item icon={<LogoutOutlined />} key="/logout">Logout</Menu.Item>
                 </Menu>
             </Header>
 
