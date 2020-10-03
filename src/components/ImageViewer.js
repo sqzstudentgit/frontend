@@ -27,7 +27,7 @@ class ImageViewer extends React.Component {
                 </TabPane>
                 <TabPane tab="3D Model" key="4">
                     <div style={{height: "400", width:"400"}} >
-                        <ThreeDModelPresenter modelUrl="https://holysas-3d-images.s3.amazonaws.com/model1.glb" />
+                        <ThreeDModelPresenter modelUrl="https://holysas-3d-images.s3.amazonaws.com/model2.glb" />
                     </div>
                 </TabPane>
             </Tabs>

@@ -32,8 +32,8 @@ function CameraControls ()  {
 
 function Shadow_Light (position,intensity) {
   //Create a PointLight and turn on shadows for the light
-  const light = new THREE.DirectionalLight(0xffffff, 0.5, 100)
-  light.position.set(10, 10, 10)
+  const light = new THREE.DirectionalLight(0xffffff, 0.5, 10)
+  light.position.set(10, 5, 2)
   light.castShadow = true // default false
   light.receiveShadow = true
   //Set up shadow properties for the light
@@ -96,8 +96,7 @@ function LoadModel3_shadow(props) {
 
 // Auto calculate model distance and height for camera position
 function LoadModel4 (props) {
-  //const gltf = useLoader(GLTFLoader, "./src/components/3DModel/models/model1.glb");
-  const gltf = useLoader(GLTFLoader, "./models/model1.glb");
+  const gltf = useLoader(GLTFLoader, props.modelUrl);
 
   console.log(gltf.scene);
   
@@ -105,6 +104,8 @@ function LoadModel4 (props) {
   var bb;
 
   gltf.scene.traverse(function(child) {
+      child.position.set(0,0,0);
+      child.scale.set(1.7,1.7,1.7);
       child.castShadow = true;
       child.receiveShadow = true;
       if ( child instanceof THREE.Mesh  ) 
@@ -115,67 +116,11 @@ function LoadModel4 (props) {
       }
   });
 
-  console.log("====================");
-
-  //const [geometry, setGeometry] = useState();
-  const geometryRef = useRef();
-  const groupRef = useRef();
-
-  const geometry = geometryRef.current;
-  
-  const ref = useRef();
-  gltf.castShadow = true;
-  gltf.receiveShadow = true;
-  gltf.scene.castShadow = true;
-  gltf.scene.receiveShadow = true;
-
-  //gltf.position = [0,0,0];
-  const {
-    camera,
-    gl: { domElement },
-  } = useThree();
-
-  
-  //camera.position.x = 0;
-  //camera.position.y = 0;
-  //camera.position.z = 0;
-
   /*
-  camera.attach(gltf.scene)
-  gltf.scene.position.x = 0;    
-  gltf.scene.position.y = 0;
-  gltf.scene.position.z = 0;
+  //gltf.position = [0,0,0];
+  const {camera} = useThree();
+
   
-
-  const [state, setstate] = useState(0);
-  const localPos = gltf.scene.localToWorld(camera.worldToLocal(camera.position));
-
-  gltf.scene.position.x = localPos.x;
-  gltf.scene.position.y = localPos.y;
-  gltf.scene.position.z = localPos.z-0.5;
-  
-
-  camera.add(gltf.scene)
-  gltf.scene.position.x = 0;    
-  gltf.scene.position.y = 0;
-  gltf.scene.position.z = 0;
-  
-  gltf.scene.position.z = 5;
-    
-  console.log("camera.position");
-  console.log(camera.position);
-    
-  console.log("model.position");
-  console.log(gltf.scene.position);
-
-  console.log("global position of camera");
-  console.log(camera.getWorldPosition(camera.position));
-
-  console.log("model.globalPos");
-  console.log(gltf.scene.getWorldPosition(gltf.scene.position));
-  */
-
-
   camera.add( gltf.scene );
   gltf.scene.position.set(0, 0, 0);
     
@@ -208,10 +153,6 @@ function LoadModel4 (props) {
   }else {
     
     let boundingBox = bb;// geometry.computeBoundingBox();
-    
-    console.log ("+++++++++++++++++")
-
-    console.log(boundingBox);
 
     let front = boundingBox.max;
     let cz = boundingBox.max.z - boundingBox.min.z;
@@ -220,16 +161,9 @@ function LoadModel4 (props) {
     
   }
 
-  if (result.lights && result.lights.length) {
-  }
-  else{ }
-
-  //---------------------------------
-
-  
+  */
   
   const primitiveProps = {
-		geometryRef,
     object: gltf.scene,
     castShadow: true,
     receiveShadow: true,
@@ -276,12 +210,12 @@ class ThreeDModelPresenter extends React.Component
             <Suspense fallback={<Loading />}>
 
 
-            {<LoadModel3_shadow position={[-6.5,-0.5,10]} scale={[3,3,3]} rotation={0,0,0} />}
-            {/*<LoadModel4 />*/}
+            {/*<LoadModel3_shadow position={[-6.5,-0.5,10]} scale={[3,3,3]} rotation={0,0,0} />*/}
+            {<LoadModel4 modelUrl = {this.props.modelUrl}/>}
 
             </Suspense>
 
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
               <planeBufferGeometry attach="geometry" args={[100, 100]} />
               <shadowMaterial attach="material" transparent opacity={0.4} />
             </mesh>
