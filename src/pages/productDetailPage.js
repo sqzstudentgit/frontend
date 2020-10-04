@@ -95,10 +95,11 @@ function ProductDetailPage({ history }){
                             </Col>
                         </Row>
                         <Row  gutter={[16, 16]}>
+
                             {/* Image Viewer */}
                             <Col flex={9} >
                                 {/*<div style={{backgroundColor: "lightblue",minHeight:400}}> Image Viewer Component</div>*/}
-                                <ImageViewer imageList={null}/>
+                                <ImageViewer height={400} width={700} imageList={null}/>
                             </Col>
 
                             {/* CheckOut Box */}
