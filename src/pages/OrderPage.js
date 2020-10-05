@@ -36,7 +36,7 @@ const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
 
-function OrderPage({ history }) {
+const OrderPage = ({ history }) => {
   // Cart state
   const [input, setInput] = useState(null);
   const [inputType, setInputType] = useState('barcode');
