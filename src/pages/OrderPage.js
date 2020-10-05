@@ -22,7 +22,7 @@ import {
 } from 'antd';
 
 // Ant Design Icons
-import { 
+import {
   BarcodeOutlined,
   HistoryOutlined, 
   HomeOutlined,
