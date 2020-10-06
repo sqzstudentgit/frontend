@@ -18,11 +18,10 @@ import {
   Radio,
   Row,
   Statistic,
-  Typography
 } from 'antd';
 
 // Ant Design Icons
-import { 
+import {
   BarcodeOutlined,
   HistoryOutlined, 
   HomeOutlined,
@@ -33,16 +32,18 @@ import {
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
-const { Title } = Typography;
 const { Header, Content, Footer } = Layout;
+const { Search } = Input;
 
 
-function OrderPage({ history }) {
+const OrderPage = ({ history }) => {
   // Cart state
   const [input, setInput] = useState(null);
   const [inputType, setInputType] = useState('barcode');
   const [products, setProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   // Alert component state
   const [showAlert, setShowAlert] = useState(false);
@@ -97,7 +98,9 @@ function OrderPage({ history }) {
 
   // Handles addition of product to the cart
   const handleAddProduct = async () => {
+    
     try {
+      setSearchLoading(true);
       const response = await axios.get(`/api/${inputType}`, {
         params: {
           sessionKey: sessionStorage.getItem("sessionKey"),
@@ -107,6 +110,7 @@ function OrderPage({ history }) {
       }, {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
+      setSearchLoading(false);
 
       console.log(response);
 
@@ -142,11 +146,7 @@ function OrderPage({ history }) {
     } catch (err) {
       console.log(err);
       if (err.response && err.response.status == 500) {
-        if (inputType == 'product') {
-          setAlert("The product code you have entered is invalid", "error", true);
-        } else {
-          setAlert("The barcode you have entered is invalid", "error", true);
-        }
+        setAlert("There was an error searching for your product, please try again", "error", true);
       }
     }
   } 
@@ -170,6 +170,7 @@ function OrderPage({ history }) {
     }))
 
     try {
+      setSubmitLoading(true);
       const response = await axios.post('/api/purchase', {
         lines: lines,
         sessionKey: sessionStorage.getItem('sessionKey')
@@ -177,6 +178,7 @@ function OrderPage({ history }) {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       });
       console.log(response);
+      setSubmitLoading(false);
 
       if (response.status == 200) {
         notification.success({
@@ -222,7 +224,7 @@ function OrderPage({ history }) {
                 <Row>
                   <Col span={12}>
                     {/* Add product form */}
-                    <Form labelCol={{ span: 3 }} >
+                    <Form labelCol={{ span: 4 }} >
                       <Form.Item label="Type">
                         <Radio.Group
                           value={inputType}
@@ -232,14 +234,15 @@ function OrderPage({ history }) {
                         />
                       </Form.Item>
                       <Form.Item label="Product">
-                        <Input
-                          style={{ width: '80%' }}
+                        <Search
+                          placeholder="Input value please"
                           prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
                           placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
                           value={input}
+                          loading={searchLoading}
                           onChange={(e) => setInput(e.target.value)}
+                          onSearch={() => handleAddProduct()}
                         />
-                        <Button style={{ display: 'inline-block', marginLeft: 8 }} type="secondary" onClick={() => handleAddProduct()}>Add</Button>
                       </Form.Item>
                     </Form>
 
@@ -257,7 +260,7 @@ function OrderPage({ history }) {
                       </Col>
                       <Col span={12}>
                         <Statistic title="GST" value={0} prefix="$" precision={2} />
-                        <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()}>
+                        <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
                           Submit Order
                         </Button>
                       </Col>
