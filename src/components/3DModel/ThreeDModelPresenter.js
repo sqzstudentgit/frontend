@@ -1,4 +1,4 @@
-import React, { Suspense, useRef} from "react";
+import React, { Suspense, useRef } from "react";
 import {
   Canvas,
   useLoader,
@@ -6,15 +6,9 @@ import {
   useThree,
   extend,
 } from "react-three-fiber";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from 'three'
-
-//import bottle from "../../WaterBottle.glb";
-//import arwing from "../../arwing.glb";
-//import model1 from "./models/model1.glb";
-//import model2 from "../../model2.glb";
-//import model3 from "../../model.glb";
 
 extend({ OrbitControls });
 
