@@ -1,29 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import {Link, withRouter} from 'react-router-dom'
-import { Title } from "../components/Title"
+import {withRouter} from 'react-router-dom'
 import axios from 'axios';
-
 import ImageViewer from "../components/ImageViewer";
 import NavigationBar from "../components/navigation_bar2";
 import style from  '../css/productDetailPage.module.css'
-import antdStyle from 'antd/dist/antd.css';
-import { Layout, Menu, Breadcrumb } from 'antd';
-import { Row, Col, Divider } from 'antd';
-import { Tabs } from 'antd';
-import { Affix,Descriptions,InputNumber,Statistic } from "antd";
-import { Button, Tooltip } from 'antd';
-
+import { 
+    Layout,
+    Row, 
+    Col, 
+    Tabs,
+    Descriptions,
+    InputNumber,
+    Statistic,
+    Button, 
+    Typography 
+} from 'antd';
 import {  ShoppingCartOutlined } from '@ant-design/icons';
+
+
 
 const { Header, Content, Footer } = Layout;
 const { TabPane } = Tabs;
+const { Title } = Typography;
 
 function callback(key) {
   console.log(key);
 }
 
 function onQuantityChange(value) {
-  console.log("Quantity Change to", value);
 }
 
 
@@ -81,7 +85,7 @@ function ProductDetailPage({ history }){
                             {/* Title */}
                             <Row  gutter={[16, 16]}>
                                 <Col flex={7} >
-                                    <div style={{ marginLeft: '120px' }}> <h2 style={{fontFamily: "Open Sans"}}> {productInfo.productName} </h2> </div>
+                                    <Title level={2} style={{ marginLeft: '120px',fontFamily: 'sans-serif'}}> {productInfo.productName}</Title>
                                 </Col>
                             </Row>
 
@@ -110,26 +114,7 @@ function ProductDetailPage({ history }){
                                     
                                     </div>
                                 </Col>
-                            </Row>
-                            
-
-                            {/* Extra Information */}
-                            <div style={{ padding: '30px 16px' }}>
-                                <Divider orientation="left" style={{ paddingBottom: '40px' }} >Extra Information</Divider>
-                                <Row gutter={[16, 16]}>
-                                    <Descriptions bordered size="small" layout="horizontal" column={2}>
-                                    {
-                                        Object.entries(productDataSource).map(([param, value]) => {
-                                        return (
-                                            <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                                            {value}
-                                            </Descriptions.Item>
-                                        ) 
-                                        })
-                                    }
-                                    </Descriptions>
-                                </Row>
-                            </div>
+                            </Row>                            
 
                             {/* Tabs */}
                             <div style={{ padding: '25px 16px' }}>
@@ -142,7 +127,22 @@ function ProductDetailPage({ history }){
                                         <TabPane tab="Specification" key="2">
                                         
                                         </TabPane>
-                                        <TabPane tab="Downloads" key="3">
+                                        <TabPane tab="Parameter" key="3">
+                                        <Row gutter={[16, 16]}>
+                                            <Descriptions bordered size="small" layout="horizontal" column={2}>
+                                            {
+                                                Object.entries(productDataSource).map(([param, value]) => {
+                                                return (
+                                                    <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
+                                                    {value}
+                                                    </Descriptions.Item>
+                                                ) 
+                                                })
+                                            }
+                                            </Descriptions>
+                                        </Row>
+                                        </TabPane>
+                                        <TabPane tab="Downloads" key="4">
                                         
                                         </TabPane>
                                     </Tabs>
