@@ -26,7 +26,8 @@ const App = () => {
         actions => [
           actions.addProduct, 
           actions.removeProduct, 
-          actions.changeQuantity
+          actions.changeQuantity,
+          actions.emptyCart
         ],
         (state, _) => {
           state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
@@ -48,6 +49,9 @@ const App = () => {
           return product;
         })
       }),
+      emptyCart: action((state) => {
+        state.products = []
+      })
     }
   })
 

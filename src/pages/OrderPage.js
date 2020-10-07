@@ -36,8 +36,8 @@ const OrderPage = ({ history }) => {
   // Cart state
   const [input, setInput] = useState(null);
   const [inputType, setInputType] = useState('barcode');
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [products, setProducts] = useState([]);
+  // const [totalPrice, setTotalPrice] = useState(0);
+  // const [products, setProducts] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -47,7 +47,8 @@ const OrderPage = ({ history }) => {
   const [message, setMessage] = useState(null);
 
   // ============================
-  const productsEZ = useStoreState(state => state.cart.products);
+  const products = useStoreState(state => state.cart.products);
+  const totalPrice = useStoreState(state => state.cart.totalPrice);
 
   // const { addProduct, removeProduct, changeQuantity } = useStoreActions(actions => ({
   //   addProduct: actions.cart.addProduct,
@@ -62,17 +63,6 @@ const OrderPage = ({ history }) => {
   // ============================
 
 
-
-
-  // Recalculates total price when cart changes
-  useEffect(() => {
-    const newTotalPrice = products.reduce((acc, cur) => {
-      return acc + cur.price * cur.quantity;
-    }, 0);
-    setTotalPrice(newTotalPrice);
-  }, [products]);
-
-
   // Sets alert message, type, and whether to display the alert
   const setAlert = (message, type, showAlert) => {
     setMessage(message); setType(type); setShowAlert(showAlert);
@@ -81,8 +71,6 @@ const OrderPage = ({ history }) => {
 
   // Handles removal of single product from the cart
   const handleRemove = (keyProductID) => {
-    setProducts(prev => prev.filter(product => product.keyProductID != keyProductID))
-
     // EZPZ
     removeProduct(keyProductID);
 
@@ -91,18 +79,6 @@ const OrderPage = ({ history }) => {
 
   // Handles quantity change for a single product
   const handleQuantityChange = (keyProductID, quantity) => {
-    // Find index of product to update
-    let index = products.findIndex((product) => product.keyProductID == keyProductID);
-
-    // Update the quantity for that product, without mutating the original array
-    if (index != -1) {
-      let updatedProducts = [ ...products ];
-      let product = { ...updatedProducts[index] };
-      product.quantity = quantity;
-      updatedProducts[index] = product;
-      setProducts(updatedProducts);
-    }
-
     // EZPZ
     changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
@@ -146,8 +122,6 @@ const OrderPage = ({ history }) => {
       const exists = products.some((product) => product.keyProductID == newProduct.keyProductID );
 
       if (!exists) {
-        setProducts(prev => [...prev, { ...newProduct, quantity: 1 } ]);
-
         // EZPZ
         addProduct({ ...newProduct, quantity: 1 });
 

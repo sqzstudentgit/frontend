@@ -20,6 +20,8 @@ import {
   CaretDownOutlined,
   CaretUpOutlined,
   DeleteOutlined,
+  MinusOutlined,
+  PlusOutlined,
   ProfileOutlined
 } from '@ant-design/icons';
 
@@ -32,7 +34,7 @@ import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 function CartProduct({ product, onQuantityChange, onRemove }) {
   const [subtotal, setSubtotal] = useState(product.price);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(product.quantity);
   const [visible, setVisible] = useState(false);
 
   // Handles subtotal change as a result of quantity change.
@@ -134,9 +136,9 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
               <Row>
                 <Col span={12}>
                   <Title level={5}>Quantity</Title>
-                  <Button type="secondary" icon={<CaretDownOutlined />} onClick={() => handleIncrement(-1)} />
+                  <Button type="secondary" icon={<MinusOutlined />} onClick={() => handleIncrement(-1)} />
                   <InputNumber min={1} max={100} defaultValue={1} value={quantity} onChange={(value) => handleChange(value)} />
-                  <Button type="secondary" icon={<CaretUpOutlined />} onClick={() => handleIncrement(1)} />
+                  <Button type="secondary" icon={<PlusOutlined />} onClick={() => handleIncrement(1)} />
                 </Col>
                 <Col>
                   <Title level={5}>Subtotal (ex GST)</Title>
