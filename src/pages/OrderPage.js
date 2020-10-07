@@ -108,7 +108,7 @@ const OrderPage = ({ history }) => {
 
       // If valid product, check if it already exists in the cart
       const newProduct = response.data.data;
-      const exists = products.some((product) => product.keyProductID == newProduct.keyProductID );
+      const exists = products.some((product) => product.keyProductID == newProduct.keyProductID);
 
       if (!exists) {
         addProduct({ ...newProduct, quantity: 1 });

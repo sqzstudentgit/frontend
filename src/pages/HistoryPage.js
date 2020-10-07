@@ -4,40 +4,20 @@ import { withRouter } from 'react-router-dom';
 
 // Ant Design Components
 import {
-  Affix,
-  Alert,
   Button,
-  Card,
   Col,
-  Form,
-  Input,
   Layout,
-  Menu,
-  notification,
-  Radio,
   Row,
   Spin,
-  Statistic,
   Table,
   Tag,
   Typography
 } from 'antd';
 
-// Ant Design Icons
-import {
-  BarcodeOutlined,
-  HistoryOutlined, 
-  HomeOutlined,
-  KeyOutlined,
-  LogoutOutlined, 
-  ShoppingCartOutlined,
-  ReconciliationOutlined
-} from '@ant-design/icons';
 
 // Ant Design Sub-Components
-const { Header, Content, Footer } = Layout;
-const { Search } = Input;
-const { Title, Text } = Typography;
+const { Content, Footer } = Layout;
+const { Title } = Typography;
 
 // Application components
 import NavigationBar from '../components/NavigationBar';
@@ -45,9 +25,9 @@ import OrderDetails from '../components/OrderDetails';
 
 
 const HistoryPage = ({ history }) => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [order, setOrder] = useState(null);
+  const [orders, setOrders] = useState([]);      // List of all orders
+  const [order, setOrder] = useState(null);      // The current order being viewed
+  const [loading, setLoading] = useState(true);  // Whether the page is loading (i.e. orders are still being retrieved)
 
   useEffect(() => {
     const fetchOrders = async () => {

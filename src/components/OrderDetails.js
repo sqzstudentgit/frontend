@@ -1,78 +1,105 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
+import { useStoreActions } from 'easy-peasy';
 
 // Ant Design Components
 import {
-  Affix,
-  Alert,
   Button,
-  Card,
   Col,
-  Form,
-  Input,
-  Layout,
-  Menu,
-  notification,
-  Radio,
   PageHeader,
   Row,
   Spin,
   Statistic,
-  Table,
-  Tag,
-  Typography
 } from 'antd';
 
 // Ant Design Icons
-import {
-  BarcodeOutlined,
-  HistoryOutlined, 
-  HomeOutlined,
-  KeyOutlined,
-  LogoutOutlined, 
-  ShoppingCartOutlined,
-  ReconciliationOutlined
-} from '@ant-design/icons';
+import { ShoppingCartOutlined } from '@ant-design/icons';
 
-// Ant Design Sub-Components
-const { Header, Content, Footer } = Layout;
-const { Search } = Input;
-const { Title, Text } = Typography;
-
-
+// Application components
 import HistoryProduct from './HistoryProduct';
 
 
-
-const OrderDetails = ({ order, history, onBack }) => {
+const OrderDetails = ({ order, onBack }) => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
   const { lines } = order;
   const totalPrice = lines.reduce((acc, cur) => acc + cur.totalPrice, 0);
+  const readdOrder = useStoreActions(actions => actions.cart.readdOrder);
+
+
+  // When mounting the component, first retrieve the product data
+  // for each product in the order. This information is needed to
+  // be able to readd the entire order, or invividual products, back
+  // to the cart
+  useEffect(() => {
+    const fetchProduct = async (line) => {
+      const { productCode } = line;
+      const response = await axios.get('/api/product', {
+        params: {
+          sessionKey: sessionStorage.getItem('sessionKey'),
+          productCode: productCode
+        }
+      }, {
+        headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
+      })
+      console.log(response);
+      setProducts(prev => [...prev, {...response.data.data, ...line}]);
+    }
+
+    for (let line of lines) {
+      try {
+        fetchProduct(line);
+      } catch (err) {
+        console.log(err);
+        console.log(err.response);
+      }
+    }
+    setLoading(false);
+  }, []);
+
+  // Button to readd entire order to cart
+  const readdButton = (
+    <Button 
+      icon={<ShoppingCartOutlined />} 
+      type="primary"
+      onClick={() => readdOrder(products)}
+    >
+      Add Order To Cart
+    </Button>
+  )
 
   return (
-    <Row justify="center">
-      <Col span={18}>
-        <PageHeader
-          style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)", marginBottom: 32 }}
-          title={`Order ID: ${order.id}`}
-          ghost={false}
-          onBack={() => onBack()}
-          extra={<Button icon={<ShoppingCartOutlined />} type="primary">Add Order To Cart</Button>}
-        >
-          <Statistic
-            title="Total Price (ex GST)"
-            prefix="$"
-            value={totalPrice}
-            precision={2}
-            style={{
-              margin: '0 32px',
-            }}
-          />
-        </PageHeader>
-
-        {lines.map(line => <HistoryProduct key={line.id} line={line} />)}
-      </Col>
-    </Row>
+    <>
+      <Row justify="center">
+        <Col span={18}>
+          <PageHeader
+            style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)", marginBottom: 32 }}
+            title={`Order ID: ${order.id}`}
+            ghost={false}
+            onBack={() => onBack()}
+            extra={readdButton}
+          >
+            <Statistic
+              title="Total Price (ex GST)"
+              prefix="$"
+              value={totalPrice}
+              precision={2}
+              style={{
+                margin: '0 32px',
+              }}
+            />
+          </PageHeader>
+          {!loading && products.map(product => <HistoryProduct key={product.id} product={product} />)}
+        </Col>
+      </Row>
+      {loading ? (
+        <Row gutter={[0, 32]} justify="center" align="middle">
+          {<Spin size="large" />}
+        </Row>
+      ) : null}
+    </>
   )
 }
 

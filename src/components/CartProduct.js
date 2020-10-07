@@ -17,8 +17,6 @@ import {
 
 // Ant Design Icons
 import {
-  CaretDownOutlined,
-  CaretUpOutlined,
   DeleteOutlined,
   MinusOutlined,
   PlusOutlined,
@@ -117,12 +115,7 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
                   <Text>${Number(product.price).toFixed(2)}</Text>
                 </Col>
               </Row>
-              {/* <Row gutter={[0, 32]}>
-                <Col>
-                  <Title level={5}>Product Name</Title>
-                  <Text>{product.productName}</Text>
-                </Col>
-              </Row> */}
+              
               {!product.barcode ? (
                 <Row gutter={[0, 16]}>
                   <Button type="secondary" onClick={() => showModal()} icon={<ProfileOutlined />}>

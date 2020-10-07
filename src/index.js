@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { action, actionOn, computed, createStore, StoreProvider } from 'easy-peasy';
+import { action, actionOn, createStore, StoreProvider } from 'easy-peasy';
 import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import ProductDetailPage from './pages/productDetailPage';
@@ -27,20 +27,29 @@ const App = () => {
           actions.addProduct, 
           actions.removeProduct, 
           actions.changeQuantity,
-          actions.emptyCart
+          actions.emptyCart,
+          actions.readdProduct,
+          actions.readdOrder
         ],
         (state, _) => {
           state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
         }
       ),
 
-      // Cart actions
+      // -- CART ACTIONS --
+
+      // Adds a product to the cart. Note that this action does not check whether
+      // a product with the same keyProductID has already been added to the cart
       addProduct: action((state, product) => {
         state.products.push(product);
       }),
+
+      // Removes a product from the cart with the given keyProductID
       removeProduct: action((state, keyProductID) => {
         state.products = state.products.filter((product => product.keyProductID != keyProductID))
       }),
+
+      // Changes the quantity for a product with the given keyProductID
       changeQuantity: action((state, { keyProductID, quantity }) => {
         state.products = state.products.map(product => {
           if (product.keyProductID == keyProductID) {
@@ -49,11 +58,49 @@ const App = () => {
           return product;
         })
       }),
+
+      // Empties the cart
       emptyCart: action((state) => {
         state.products = []
+      }),
+
+      // Adds a product (and its corresponding quantity) from a previous order to the cart.
+      // First, checks if the given product exists in the cart, and sets the quantity accordingly
+      readdProduct: action((state, product) => {
+        const exists = state.products.some((curr) => curr.keyProductID == product.keyProductID);
+        if (exists) {
+          state.products.map(curr => {
+            if (curr.keyProductID == product.keyProductID) {
+              curr.quantity += product.quantity;
+            }
+            return curr;
+          })
+        } else {
+          state.products.push(product);
+        }
+      }),
+
+      // Adds an entire order from the order history to the cart
+      readdOrder: action((state, products) => {
+        for (let product of products) {
+          const exists = state.products.some((curr) => curr.keyProductID == product.keyProductID);
+          if (exists) {
+            state.products.map(curr => {
+              if (curr.keyProductID == product.keyProductID) {
+                curr.quantity += product.quantity;
+              }
+              return curr;
+            })
+          } else {
+            state.products.push(product);
+          }
+        }
       })
     }
   })
+
+
+
 
   return (
     <StoreProvider store={store}>
