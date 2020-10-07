@@ -3,7 +3,7 @@ import {withRouter} from 'react-router-dom'
 import Product from "../components/product";
 import Summary from "../components/Summary";
 import axios from 'axios';
-import NavigationBar from '../components/navigation_bar';
+import NavigationBar from '../components/navigation_bar2';
 import ErrorMessage from '../components/errorMessage'
 import style from '../css/currentOrder.module.css';
 
@@ -279,7 +279,7 @@ class CurrentOrderPage extends React.Component{
             if(!this.state.edit){
                 return (
                     <>
-                        <NavigationBar/>
+                        <NavigationBar  history={history} defaultSelected='/product'/>
                         <div className={style.body}>
                             <h1 className={style.title} data-testid='currentOrder'>Current Order:</h1>
                             {error && <ErrorMessage massage={errorMassage}/>}

@@ -4,8 +4,11 @@ import OrderItem from '../components/orderItem'
 import Order from '../components/order'
 import Summary from "../components/Summary";
 import style from '../css/history.module.css';
-import NavigationBar from '../components/navigation_bar';
+import NavigationBar from '../components/navigation_bar2';
 import axios from 'axios';
+
+import { Layout} from 'antd';
+const { Header, Content, Footer } = Layout;
 
 
 class HistoryOrdersPage extends React.Component{
@@ -105,54 +108,56 @@ class HistoryOrdersPage extends React.Component{
                 let order = this.state.orders.find( e => +e.id === +this.props.match.params.orderId)
                 return (
                     <>
-                    <header>
-                    <NavigationBar/>
-                    </header>
-                    <ul className={style.orderContainer}><Order order={order}/><Summary products={order.lines}/></ul>
-                </>)
+                    <Layout style={{ minHeight: '100vh' }}>
+                        <NavigationBar history={this.props.history} defaultSelected='/viewHistoryOrder'/>
+                        <div style={{ marginTop: '50px'}}>
+                            <Content style={{ padding: '50px 50px'}}> 
+                                <ul className={style.orderContainer}><Order order={order}/>
+                                    <Summary products={order.lines}/>
+                                </ul>
+                            </Content>
+                        </div>
+                        <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+                    </Layout>
+                    </>)
             }
 
             return (
                 <div>
-                    <div>
-                        <NavigationBar/>
-                        <h1 className= {style.title} data-testid='historyOrders'>History Orders</h1>
-                    </div>
-                    <div id={style.primary} className={style.primaryContent}>
-                        <div className={style.relativeWrapper}>
-                {/*// <div className="relative-wrapper-order-history-tablet relative wrapper">*/}
-                            <div className={style.orderResultWrapper}>
-                                <ul className={style.orderSearchResult}>
-                                    {orders}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    {/*    <div>*/}
-                    {/*<table className={style.orderTable}>*/}
-                    {/*    <thead>*/}
-                    {/*        <tr>*/}
-                    {/*            <th>Order ID</th>*/}
-                    {/*            <th>Status</th>*/}
-                    {/*            <th>Date</th>*/}
-                    {/*            <th> Amount</th>*/}
-                    {/*        </tr>*/}
-                    {/*    </thead>*/}
-                    {/*    <tbody>*/}
-                    {/*        {orders}*/}
-                    {/*    </tbody>*/}
+                    
+                    <Layout style={{ minHeight: '100vh' }}>
+                        <NavigationBar  history={this.props.history} defaultSelected='/viewHistoryOrder'/>
 
-                    {/*</table>*/}
-                    {/*</div>*/}
+                        <div style={{ marginTop: '50px'}}>
+                            <Content style={{ padding: '50px 50px'}}> 
+                                <h1 className= {style.title} data-testid='historyOrders'>History Orders</h1>
+                            
+                                <div id={style.primary} className={style.primaryContent}>
+                                    <div className={style.relativeWrapper}>
+                                        <div className={style.orderResultWrapper}>
+                                            <ul className={style.orderSearchResult}>
+                                                {orders}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Content>
+                        </div>
+                        <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+                    </Layout>
 
                 </div>
             )
         }
         else{
             return(
-                <div>
+                <Layout style={{ minHeight: '100vh' }}>
+                    <NavigationBar history={this.props.history} defaultSelected='/viewHistoryOrder'/>
 
-                </div>
+                    {/* Empty */}
+
+                    <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+                </Layout>
             )
         }
         this.props.history.push('/login')

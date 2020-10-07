@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import CartProduct from '../components/CartProduct';
+import NavigationBar from "../components/navigation_bar2";
 
 // Ant Design Components
 import {
@@ -202,16 +203,8 @@ const OrderPage = ({ history }) => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
-      <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-        <Menu onClick={handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={['/order']}>
-        <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
-          <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
-          <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
-          <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
-          <Menu.Item icon={<ReconciliationOutlined />} key="/product">Product Detail</Menu.Item>
-          <Menu.Item icon={<LogoutOutlined />}>Logout</Menu.Item>
-        </Menu>
-      </Header>
+      <NavigationBar  history={history} defaultSelected='/order'/>
+      
 
       {/* Content body */}
       <Content style={{ padding: '80px 16px' }}>
