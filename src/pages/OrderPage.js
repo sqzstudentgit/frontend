@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
 import CartProduct from '../components/CartProduct';
@@ -28,16 +28,14 @@ import {
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 const { Search } = Input;
 
 
 const OrderPage = ({ history }) => {
-  // Cart state
+  // General page state
   const [input, setInput] = useState(null);
   const [inputType, setInputType] = useState('barcode');
-  // const [totalPrice, setTotalPrice] = useState(0);
-  // const [products, setProducts] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -46,43 +44,34 @@ const OrderPage = ({ history }) => {
   const [type, setType] = useState(null);
   const [message, setMessage] = useState(null);
 
-  // ============================
-  const products = useStoreState(state => state.cart.products);
-  const totalPrice = useStoreState(state => state.cart.totalPrice);
+  // Global cart state
+  const { products, totalPrice } = useStoreState(state => ({
+    products: state.cart.products,
+    totalPrice: state.cart.totalPrice
+  }))
 
-  // const { addProduct, removeProduct, changeQuantity } = useStoreActions(actions => ({
-  //   addProduct: actions.cart.addProduct,
-  //   removeProduct: actions.cart.removeProduct,
-  //   changeQuantity: actions.cart.changeQuantity
-  // }))
-
-  const addProduct = useStoreActions(actions => actions.cart.addProduct);
-  const removeProduct = useStoreActions(actions => actions.cart.removeProduct);
-  const changeQuantity = useStoreActions(actions => actions.cart.changeQuantity);
-
-  // ============================
-
+  // Global cart actions
+  const { addProduct, removeProduct, changeQuantity, emptyCart } = useStoreActions(actions => ({
+    addProduct: actions.cart.addProduct,
+    removeProduct: actions.cart.removeProduct,
+    changeQuantity: actions.cart.changeQuantity,
+    emptyCart: actions.cart.emptyCart
+  }))
 
   // Sets alert message, type, and whether to display the alert
   const setAlert = (message, type, showAlert) => {
     setMessage(message); setType(type); setShowAlert(showAlert);
   }
 
-
   // Handles removal of single product from the cart
   const handleRemove = (keyProductID) => {
-    // EZPZ
     removeProduct(keyProductID);
-
   }
-
 
   // Handles quantity change for a single product
   const handleQuantityChange = (keyProductID, quantity) => {
-    // EZPZ
     changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
-
 
   // Handles addition of product to the cart
   const handleAddProduct = async () => {
@@ -122,9 +111,7 @@ const OrderPage = ({ history }) => {
       const exists = products.some((product) => product.keyProductID == newProduct.keyProductID );
 
       if (!exists) {
-        // EZPZ
         addProduct({ ...newProduct, quantity: 1 });
-
         setAlert("Your product has been added", "success", true);
       } else {
         setAlert("You have already added this product", "warning", exists);
@@ -144,6 +131,7 @@ const OrderPage = ({ history }) => {
 
   // Handles order submission
   const handleSubmit = async () => {
+    // Check if the cart is empty
     if (products.length == 0) {
       notification.warning({
         message: 'Your cart is empty',
@@ -152,6 +140,7 @@ const OrderPage = ({ history }) => {
       return;
     }
 
+    // Map products in the cart to 'lines'
     let lines = products.map(product => ({ 
       ...product,
       lineType: "PRODUCT",
@@ -159,6 +148,7 @@ const OrderPage = ({ history }) => {
       totalPrice: product.price * product.quantity
     }))
 
+    // Submit the order to the backend API endpoint
     try {
       setSubmitLoading(true);
       const response = await axios.post('/api/purchase', {
@@ -236,11 +226,12 @@ const OrderPage = ({ history }) => {
                     {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
                   </Col>
 
+                  {/* Total price, reset cart button, GST, and submit order button */}
                   <Col span={8} offset={4}>
                     <Row>
                       <Col span={12}>
                         <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => setProducts([])}>
+                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => emptyCart()}>
                           Reset Cart
                         </Button>
                       </Col>
