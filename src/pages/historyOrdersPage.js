@@ -4,7 +4,7 @@ import OrderItem from '../components/orderItem'
 import Order from '../components/order'
 import Summary from "../components/Summary";
 import style from '../css/history.module.css';
-import NavigationBar from '../components/navigation_bar2';
+import NavigationBar from '../components/NavigationBar';
 import axios from 'axios';
 
 import { Layout} from 'antd';

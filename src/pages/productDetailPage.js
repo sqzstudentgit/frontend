@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {withRouter} from 'react-router-dom'
 import axios from 'axios';
 import ImageViewer from "../components/ImageViewer";
-import NavigationBar from "../components/navigation_bar2";
+import NavigationBar from "../components/NavigationBar";
 import style from  '../css/productDetailPage.module.css'
 import { 
     Layout,

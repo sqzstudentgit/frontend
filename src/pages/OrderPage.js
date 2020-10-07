@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import CartProduct from '../components/CartProduct';
-import NavigationBar from "../components/navigation_bar2";
+import NavigationBar from "../components/NavigationBar";
 
 // Ant Design Components
 import {
@@ -60,14 +60,6 @@ const OrderPage = ({ history }) => {
     setTotalPrice(newTotalPrice);
   }, [products]);
 
-
-  // Handles click of navigation bar menu item
-  const handleClick = ({ key }) => {
-    // TODO: Fix this to handle logout call
-    if (key.startsWith('/')) {
-      history.push(key)
-    }
-  }
 
   // Sets alert message, type, and whether to display the alert
   const setAlert = (message, type, showAlert) => {
@@ -200,10 +192,15 @@ const OrderPage = ({ history }) => {
     }
   }
 
+  // Check if authenticated before rendering the page
+  if (!sessionStorage.getItem('user')) {
+    history.push('/login');
+  }
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
-      <NavigationBar  history={history} defaultSelected='/order'/>
+      <NavigationBar history={history} defaultSelected='/order'/>
       
 
       {/* Content body */}
@@ -228,7 +225,6 @@ const OrderPage = ({ history }) => {
                       </Form.Item>
                       <Form.Item label="Product">
                         <Search
-                          placeholder="Input value please"
                           prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
                           placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
                           value={input}

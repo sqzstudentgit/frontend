@@ -4,11 +4,11 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './index.css';
 import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
-import HistoryOrdersPage from './pages/historyOrdersPage';
-import CurrentOrderPage from './pages/currentOrderPage';
+// import HistoryOrdersPage from './pages/historyOrdersPage';
 import ProductDetailPage from './pages/productDetailPage';
 
 
+import HistoryPage from './pages/HistoryPage';
 import OrderPage from './pages/OrderPage';
 
 
@@ -24,12 +24,10 @@ export default class App extends React.Component {
     render() {
         return (
             <Router>
-                
                 <div className="App" style={{height: '100%', width:'100%'}}>
                     <Route path="/" exact component={HomePage}/>
                     <Route path="/login" exact component={LoginPage}/>
-                    <Route path="/viewHistoryOrder" component={HistoryOrdersPage}/>
-                    <Route path="/order_detail_:orderId" component={HistoryOrdersPage}/>
+                    <Route path="/history" exact component={HistoryPage}/>
                     <Route path="/order" exact component={OrderPage}/>
                     <Route path="/product" exact component={ProductDetailPage} />
                 </div>
@@ -39,7 +37,4 @@ export default class App extends React.Component {
     }
 }
 
-ReactDOM.render(
-    <App/>,
-    document.getElementById('root')
-);
+ReactDOM.render(<App/>, document.getElementById('root'));
