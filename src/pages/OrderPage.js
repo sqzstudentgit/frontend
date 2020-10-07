@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
 import CartProduct from '../components/CartProduct';
 import NavigationBar from "../components/NavigationBar";
@@ -14,7 +15,6 @@ import {
   Form,
   Input,
   Layout,
-  Menu,
   notification,
   Radio,
   Row,
@@ -24,12 +24,7 @@ import {
 // Ant Design Icons
 import {
   BarcodeOutlined,
-  HistoryOutlined, 
-  HomeOutlined,
   KeyOutlined,
-  LogoutOutlined, 
-  ShoppingCartOutlined,
-  ReconciliationOutlined
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
@@ -41,8 +36,8 @@ const OrderPage = ({ history }) => {
   // Cart state
   const [input, setInput] = useState(null);
   const [inputType, setInputType] = useState('barcode');
-  const [products, setProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [products, setProducts] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -50,6 +45,23 @@ const OrderPage = ({ history }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [type, setType] = useState(null);
   const [message, setMessage] = useState(null);
+
+  // ============================
+  const productsEZ = useStoreState(state => state.cart.products);
+
+  // const { addProduct, removeProduct, changeQuantity } = useStoreActions(actions => ({
+  //   addProduct: actions.cart.addProduct,
+  //   removeProduct: actions.cart.removeProduct,
+  //   changeQuantity: actions.cart.changeQuantity
+  // }))
+
+  const addProduct = useStoreActions(actions => actions.cart.addProduct);
+  const removeProduct = useStoreActions(actions => actions.cart.removeProduct);
+  const changeQuantity = useStoreActions(actions => actions.cart.changeQuantity);
+
+  // ============================
+
+
 
 
   // Recalculates total price when cart changes
@@ -70,6 +82,10 @@ const OrderPage = ({ history }) => {
   // Handles removal of single product from the cart
   const handleRemove = (keyProductID) => {
     setProducts(prev => prev.filter(product => product.keyProductID != keyProductID))
+
+    // EZPZ
+    removeProduct(keyProductID);
+
   }
 
 
@@ -86,6 +102,9 @@ const OrderPage = ({ history }) => {
       updatedProducts[index] = product;
       setProducts(updatedProducts);
     }
+
+    // EZPZ
+    changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
 
 
@@ -128,6 +147,10 @@ const OrderPage = ({ history }) => {
 
       if (!exists) {
         setProducts(prev => [...prev, { ...newProduct, quantity: 1 } ]);
+
+        // EZPZ
+        addProduct({ ...newProduct, quantity: 1 });
+
         setAlert("Your product has been added", "success", true);
       } else {
         setAlert("You have already added this product", "warning", exists);
@@ -158,7 +181,7 @@ const OrderPage = ({ history }) => {
     let lines = products.map(product => ({ 
       ...product,
       lineType: "PRODUCT",
-      priceTotalExTax: product.price,
+      priceTotalExTax: product.price, // TODO: Change LHS of this to unitPrice
       totalPrice: product.price * product.quantity
     }))
 
