@@ -7,6 +7,7 @@ import { useStoreActions } from 'easy-peasy';
 import {
   Button,
   Col,
+  notification,
   PageHeader,
   Row,
   Spin,
@@ -59,16 +60,26 @@ const OrderDetails = ({ order, onBack }) => {
     setLoading(false);
   }, []);
 
+
   // Button to readd entire order to cart
   const readdButton = (
     <Button 
       icon={<ShoppingCartOutlined />} 
       type="primary"
-      onClick={() => readdOrder(products)}
+      onClick={() => handleClick()}
     >
       Add Order To Cart
     </Button>
   )
+
+  // Handles click of readd button
+  const handleClick = () => {
+    readdOrder(products);
+    notification.success({ 
+      message: 'Order was successfully readded to the cart',
+      placement: 'topLeft'
+    });
+  }
 
   return (
     <>

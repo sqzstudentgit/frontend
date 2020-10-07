@@ -110,9 +110,11 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
                   <Title level={5}>Key Product ID</Title>
                   <Text>{product.keyProductID}</Text>
                 </Col>
-                <Col span={12}>
+                <Col offset={1}>
                   <Title level={5}>Price (ex GST)</Title>
-                  <Text>${Number(product.price).toFixed(2)}</Text>
+                  <div style={{ textAlign: 'end' }}>
+                    <Text>${Number(product.price).toFixed(2)}</Text>
+                  </div>
                 </Col>
               </Row>
               

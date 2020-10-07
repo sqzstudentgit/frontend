@@ -11,6 +11,7 @@ import {
   Divider,
   Image,
   Modal,
+  notification,
   Row,
   Statistic,
   Typography
@@ -39,11 +40,21 @@ const HistoryProduct = ({ history, product }) => {
     <Button 
       icon={<ShoppingCartOutlined />} 
       type="secondary"
-      onClick={() => readdProduct(product)}
+      onClick={() => handleClick()}
     >
       Add To Cart
     </Button>
   )
+
+  // Handles click of readd button
+  const handleClick = () => {
+    readdProduct(product);
+    notification.success({ 
+      message: 'Product was successfully readded to the cart',
+      placement: 'topLeft'
+    });
+  }
+
 
   return (
     <Row justify="center" gutter={[32, 32]}>
