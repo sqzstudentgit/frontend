@@ -16,7 +16,7 @@ class ImageViewer extends React.Component {
             const tab3DList = this.props.imageList.filter((imageInfo)=>imageInfo.is3DModelType == "Y" ).map((imageInfo) => {
                 return imageInfo.is3DModelType=="Y" 
                 ?
-                    <TabPane  key={"3D"+imageInfo.id.toString()} tab={<img width="70" height="70" style = {{borderRadius: "10%"}} src={modelIcon} alt="3D Model"/>} >
+                    <TabPane  key={"3D"+imageInfo.id.toString()} tab={<img width="50" height="50" style = {{borderRadius: "10%"}} src={modelIcon} alt="3D Model"/>} >
                         <div style={{height:this.props.height, width:'100%'}} >
                             <ThreeDModelPresenter modelUrl={imageInfo.threeDModelLocation} />
                         </div>
@@ -30,7 +30,7 @@ class ImageViewer extends React.Component {
             const tabImageList = this.props.imageList.filter((imageInfo)=>imageInfo.is3DModelType == "N" ).map((imageInfo) => {
                 return imageInfo.is3DModelType=="N" 
                 ?
-                    <TabPane key={imageInfo.id.toString()} tab={<img width="70" height="70" style = {{borderRadius: "10%"}}  src={imageInfo.smallImageLocation}/>} >
+                    <TabPane key={imageInfo.id.toString()} tab={<img width="50" height="50" style = {{borderRadius: "10%"}}  src={imageInfo.smallImageLocation}/>} >
                         <img style = {{height: this.props.height,borderRadius: "5%"}}  src = {imageInfo.largeImageLocation}/>
                     </TabPane>
                 :
