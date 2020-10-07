@@ -95,7 +95,7 @@ const HistoryProduct = ({ history, product }) => {
                 <Col offset={1}>
                   <Title level={5}>Price (ex GST)</Title>
                   <div style={{ textAlign: 'end' }}>
-                    <Text>${Number(product.totalPriceExTax).toFixed(2)}</Text>
+                    <Text>${Number(product.unitPrice).toFixed(2)}</Text>
                   </div>
                 </Col>
               </Row>

@@ -140,12 +140,13 @@ const OrderPage = ({ history }) => {
       return;
     }
 
-    // Map products in the cart to 'lines'
+    // Map products in the cart to 'lines' (i.e. order details)
     let lines = products.map(product => ({ 
       ...product,
       lineType: "PRODUCT",
-      priceTotalExTax: product.price, // TODO: Change LHS of this to unitPrice
-      totalPrice: product.price * product.quantity
+      unitPrice: product.price,
+      totalPrice: product.price * product.quantity,
+      priceTotalExTax: product.price * product.quantity
     }))
 
     // Submit the order to the backend API endpoint
