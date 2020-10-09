@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import { useStoreActions } from 'easy-peasy';
 
 // Ant Design Components
 import {
@@ -8,8 +10,8 @@ import {
   Descriptions,
   Divider,
   Image,
-  InputNumber,
   Modal,
+  notification,
   Row,
   Statistic,
   Typography
@@ -17,10 +19,8 @@ import {
 
 // Ant Design Icons
 import {
-  DeleteOutlined,
-  MinusOutlined,
-  PlusOutlined,
-  ProfileOutlined
+  ProfileOutlined,
+  ShoppingCartOutlined
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
@@ -30,55 +30,38 @@ const { Title, Text } = Typography;
 import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 
-function CartProduct({ product, onQuantityChange, onRemove }) {
-  const [subtotal, setSubtotal] = useState(product.price);
-  const [quantity, setQuantity] = useState(product.quantity);
-  const [visible, setVisible] = useState(false);
+const HistoryProduct = ({ history, product }) => {
+  const [showModal, setShowModal] = useState(false);
 
-  // Handles subtotal change as a result of quantity change.
-  // Also notifies the wrapper OrderPage component of the quantity change
-  useEffect(() => {
-    setSubtotal(quantity * product.price);
-    onQuantityChange(product.keyProductID, quantity);
-  }, [quantity]);
+  const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
 
-
-  // Shows product specification modal
-  const showModal = () => {
-    setVisible(true)
-  }
-
-  // Handles quantity change as a result of changing input field value
-  const handleChange = (newQuantity) => {
-    setQuantity(Math.trunc(newQuantity))
-  }
-
-  // Handles quantity change as a result of clicking buttons
-  const handleIncrement = (delta) => {
-    const newQuantity = quantity + delta;
-    if (newQuantity > 0 && newQuantity <= 100) {
-      setQuantity(newQuantity);
-    }
-  }
-
-  // Button to remove product from cart
-  const removeButton = (
+  // Button to readd product from order history to the cart
+  const readdButton = (
     <Button 
-      type="danger" 
-      onClick={() => onRemove(product.keyProductID)}  
-      icon={<DeleteOutlined />}
+      icon={<ShoppingCartOutlined />} 
+      type="secondary"
+      onClick={() => handleClick()}
     >
-      Remove
+      Add To Cart
     </Button>
   )
 
-  return (
-    <Row justify="center" gutter={[32, 32]} >
-      <Col span={18}>
-        <Card title={product.productName} style={{ borderRadius: '1.25rem' }} hoverable={true} extra={removeButton}>
+  // Handles click of readd button
+  const handleClick = () => {
+    readdProduct(product);
+    notification.success({ 
+      message: 'Product was successfully readded to the cart',
+      placement: 'topLeft'
+    });
+  }
 
-          {/* Product image */}
+
+  return (
+    <Row justify="center" gutter={[32, 32]}>
+      <Col span={24}>
+        <Card title={product.productName} style={{ borderRadius: '1.25rem'}} extra={readdButton} hoverable>
           <Row>
+            {/* Product image */}
             <Col span={12}>
               <Row justify="center" align="middle">
                 {
@@ -99,7 +82,6 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
                     </Col>
                   )
                 }
-                
               </Row>
             </Col>
 
@@ -108,19 +90,19 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
               <Row gutter={[0, 32]}>
                 <Col span={12}>
                   <Title level={5}>Key Product ID</Title>
-                  <Text>{product.keyProductID}</Text>
+                  <Text>{product.keyProductId}</Text>
                 </Col>
                 <Col offset={1}>
                   <Title level={5}>Price (ex GST)</Title>
                   <div style={{ textAlign: 'end' }}>
-                    <Text>${Number(product.price).toFixed(2)}</Text>
+                    <Text>${Number(product.unitPrice).toFixed(2)}</Text>
                   </div>
                 </Col>
               </Row>
-              
+
               {!product.barcode ? (
                 <Row gutter={[0, 16]}>
-                  <Button type="secondary" onClick={() => showModal()} icon={<ProfileOutlined />}>
+                  <Button type="secondary" onClick={() => setShowModal(true)} icon={<ProfileOutlined />}>
                     Product Specifications
                   </Button>
                 </Row>
@@ -131,14 +113,12 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
               <Row>
                 <Col span={12}>
                   <Title level={5}>Quantity</Title>
-                  <Button type="secondary" icon={<MinusOutlined />} onClick={() => handleIncrement(-1)} />
-                  <InputNumber min={1} max={100} defaultValue={1} value={quantity} onChange={(value) => handleChange(value)} />
-                  <Button type="secondary" icon={<PlusOutlined />} onClick={() => handleIncrement(1)} />
+                  <Text>{product.quantity}</Text>
                 </Col>
                 <Col>
                   <Title level={5}>Subtotal (ex GST)</Title>
                   <div style={{ textAlign: 'end'}}>
-                    <Statistic value={subtotal} prefix="$" precision={2} />
+                    <Statistic value={product.totalPrice} prefix="$" precision={2} />
                   </div>
                 </Col>
               </Row>
@@ -147,27 +127,27 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
         </Card>
       </Col>
 
-      {/* Modal for Product 3D Image Metadata */}
+      {/* Modal for 3D image parameter data */}
       <Modal 
-          title="Product Specifications" 
-          visible={visible}
-          centered={true}
-          closable={false}
-          footer={<Button type="secondary" onClick={() => setVisible(false)}>Close</Button>}
-          style={{ top: 20 }}
-          width="80vw"
-          maskClosable={true}
-        >
-          <Descriptions bordered size="small" layout="horizontal" column={2}>
-            {Object.entries(productDataSource).map(([param, value]) => {
-                return (
-                  <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                    {value}
-                  </Descriptions.Item>
-                )
-              })
-            }
-          </Descriptions>
+        title="Product Specifications" 
+        visible={showModal}
+        centered={true}
+        closable={false}
+        footer={<Button type="secondary" onClick={() => setShowModal(false)}>Close</Button>}
+        style={{ top: 20 }}
+        width="80vw"
+        maskClosable={true}
+      >
+        <Descriptions bordered size="small" layout="horizontal" column={2}>
+          {Object.entries(productDataSource).map(([param, value]) => {
+              return (
+                <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
+                  {value}
+                </Descriptions.Item>
+              )
+            })
+          }
+        </Descriptions>
       </Modal>
     </Row>
   )
@@ -198,4 +178,5 @@ const productDataSource = {
   "Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
 }
 
-export default CartProduct;
+
+export default withRouter(HistoryProduct);

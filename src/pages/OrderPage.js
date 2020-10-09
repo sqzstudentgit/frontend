@@ -1,8 +1,9 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
 import CartProduct from '../components/CartProduct';
-import NavigationBar from "../components/navigation_bar2";
+import NavigationBar from "../components/NavigationBar";
 
 // Ant Design Components
 import {
@@ -14,7 +15,6 @@ import {
   Form,
   Input,
   Layout,
-  Menu,
   notification,
   Radio,
   Row,
@@ -24,25 +24,18 @@ import {
 // Ant Design Icons
 import {
   BarcodeOutlined,
-  HistoryOutlined, 
-  HomeOutlined,
   KeyOutlined,
-  LogoutOutlined, 
-  ShoppingCartOutlined,
-  ReconciliationOutlined
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 const { Search } = Input;
 
 
 const OrderPage = ({ history }) => {
-  // Cart state
+  // General page state
   const [input, setInput] = useState(null);
   const [inputType, setInputType] = useState('barcode');
-  const [products, setProducts] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
   const [searchLoading, setSearchLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -51,51 +44,34 @@ const OrderPage = ({ history }) => {
   const [type, setType] = useState(null);
   const [message, setMessage] = useState(null);
 
+  // Global cart state
+  const { products, totalPrice } = useStoreState(state => ({
+    products: state.cart.products,
+    totalPrice: state.cart.totalPrice
+  }))
 
-  // Recalculates total price when cart changes
-  useEffect(() => {
-    const newTotalPrice = products.reduce((acc, cur) => {
-      return acc + cur.price * cur.quantity;
-    }, 0);
-    setTotalPrice(newTotalPrice);
-  }, [products]);
-
-
-  // Handles click of navigation bar menu item
-  const handleClick = ({ key }) => {
-    // TODO: Fix this to handle logout call
-    if (key.startsWith('/')) {
-      history.push(key)
-    }
-  }
+  // Global cart actions
+  const { addProduct, removeProduct, changeQuantity, emptyCart } = useStoreActions(actions => ({
+    addProduct: actions.cart.addProduct,
+    removeProduct: actions.cart.removeProduct,
+    changeQuantity: actions.cart.changeQuantity,
+    emptyCart: actions.cart.emptyCart
+  }))
 
   // Sets alert message, type, and whether to display the alert
   const setAlert = (message, type, showAlert) => {
     setMessage(message); setType(type); setShowAlert(showAlert);
   }
 
-
   // Handles removal of single product from the cart
   const handleRemove = (keyProductID) => {
-    setProducts(prev => prev.filter(product => product.keyProductID != keyProductID))
+    removeProduct(keyProductID);
   }
-
 
   // Handles quantity change for a single product
   const handleQuantityChange = (keyProductID, quantity) => {
-    // Find index of product to update
-    let index = products.findIndex((product) => product.keyProductID == keyProductID);
-
-    // Update the quantity for that product, without mutating the original array
-    if (index != -1) {
-      let updatedProducts = [ ...products ];
-      let product = { ...updatedProducts[index] };
-      product.quantity = quantity;
-      updatedProducts[index] = product;
-      setProducts(updatedProducts);
-    }
+    changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
-
 
   // Handles addition of product to the cart
   const handleAddProduct = async () => {
@@ -132,10 +108,10 @@ const OrderPage = ({ history }) => {
 
       // If valid product, check if it already exists in the cart
       const newProduct = response.data.data;
-      const exists = products.some((product) => product.keyProductID == newProduct.keyProductID );
+      const exists = products.some((product) => product.keyProductID == newProduct.keyProductID);
 
       if (!exists) {
-        setProducts(prev => [...prev, { ...newProduct, quantity: 1 } ]);
+        addProduct({ ...newProduct, quantity: 1 });
         setAlert("Your product has been added", "success", true);
       } else {
         setAlert("You have already added this product", "warning", exists);
@@ -155,6 +131,7 @@ const OrderPage = ({ history }) => {
 
   // Handles order submission
   const handleSubmit = async () => {
+    // Check if the cart is empty
     if (products.length == 0) {
       notification.warning({
         message: 'Your cart is empty',
@@ -163,13 +140,16 @@ const OrderPage = ({ history }) => {
       return;
     }
 
+    // Map products in the cart to 'lines' (i.e. order details)
     let lines = products.map(product => ({ 
       ...product,
       lineType: "PRODUCT",
-      priceTotalExTax: product.price,
-      totalPrice: product.price * product.quantity
+      unitPrice: product.price,
+      totalPrice: product.price * product.quantity,
+      priceTotalExTax: product.price * product.quantity
     }))
 
+    // Submit the order to the backend API endpoint
     try {
       setSubmitLoading(true);
       const response = await axios.post('/api/purchase', {
@@ -200,10 +180,15 @@ const OrderPage = ({ history }) => {
     }
   }
 
+  // Check if authenticated before rendering the page
+  if (!sessionStorage.getItem('user')) {
+    history.push('/login');
+  }
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
-      <NavigationBar  history={history} defaultSelected='/order'/>
+      <NavigationBar history={history} defaultSelected='/order'/>
       
 
       {/* Content body */}
@@ -228,7 +213,6 @@ const OrderPage = ({ history }) => {
                       </Form.Item>
                       <Form.Item label="Product">
                         <Search
-                          placeholder="Input value please"
                           prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
                           placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
                           value={input}
@@ -243,11 +227,12 @@ const OrderPage = ({ history }) => {
                     {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
                   </Col>
 
+                  {/* Total price, reset cart button, GST, and submit order button */}
                   <Col span={8} offset={4}>
                     <Row>
                       <Col span={12}>
                         <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => setProducts([])}>
+                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => emptyCart()}>
                           Reset Cart
                         </Button>
                       </Col>

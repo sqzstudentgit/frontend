@@ -11,7 +11,7 @@ import {
 import axios from 'axios';
 import { Redirect } from 'react-router';
 
-import Logout from '../components/Logout'
+import Logout from './Logout'
 const { Header, Content, Footer } = Layout;
 
 
@@ -70,7 +70,7 @@ class NavigationBar extends React.PureComponent{
                 <Menu onClick={this.handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={[this.props.defaultSelected]}>
                 <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
                 <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
-                <Menu.Item icon={<HistoryOutlined />} key="/viewHistoryOrder">Order History</Menu.Item>
+                <Menu.Item icon={<HistoryOutlined />} key="/history">Order History</Menu.Item>
                 <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
                 <Menu.Item icon={<ReconciliationOutlined />} key="/product">Product Detail</Menu.Item>
                 <Menu.Item icon={<LogoutOutlined />} key="/logout">Logout</Menu.Item>
