@@ -52,12 +52,15 @@ const OrderDetails = ({ order, onBack }) => {
     for (let line of lines) {
       try {
         fetchProduct(line);
+
       } catch (err) {
         console.log(err);
         console.log(err.response);
       }
     }
     setLoading(false);
+
+    
   }, []);
 
 

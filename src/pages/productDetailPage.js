@@ -59,7 +59,7 @@ function ProductDetailPage({ history }){
     }
     
     useEffect(() => {
-        getProductData('01200');
+        getProductData(102716);
     },[]);
 
 
@@ -109,7 +109,7 @@ function ProductDetailPage({ history }){
                                             <InputNumber min={1} max={10} defaultValue={1} onChange={onQuantityChange} />
                                         </div>
                                         <div style={{padding: 20}}>
-                                            <Button icon={<ShoppingCartOutlined />}>CheckOut</Button>
+                                            <Button icon={<ShoppingCartOutlined />}>Checkout</Button>
                                         </div>
                                     
                                     </div>
