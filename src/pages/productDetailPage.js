@@ -13,7 +13,10 @@ import {
     InputNumber,
     Statistic,
     Button, 
-    Typography 
+    Typography,
+    Spin,
+    Affix,
+    Card,
 } from 'antd';
 import {  ShoppingCartOutlined } from '@ant-design/icons';
 
@@ -66,8 +69,39 @@ function ProductDetailPage({ history }){
     
     if(sessionStorage.getItem('user')){
         
-        if(productInfo==null) 
-            return (<>Loading Product Info...</>)
+        if(productInfo==null || productInfo==0) 
+            return (
+                <Layout style={{ minHeight: '100vh' }}>
+
+                    {/* Top navigation bar */}
+                    <NavigationBar  history={history} defaultSelected='/product'/>
+
+
+                    {/* Main Content */}
+                    <div style={{ marginTop: '50px'}}>
+                        <Content style={{ padding: '50px 50px'}}> 
+                        <Affix offsetTop={80}>
+                            <Row justify="center" gutter={[32, 32]}>
+                                <Col span={18}>
+                                    <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
+                                        <Title level={2} style={{ margin: '120px',fontFamily: 'sans-serif'}}> 
+                                            <Row  gutter={[16, 16]}>  
+                                                <Col flex={9} > Loading Product Information </Col>
+                                                <Col flex={3} > <Spin/> </Col>
+                                                <Col flex={9}></Col>
+                                            </Row>
+                                        </Title>
+                                    </Card>
+                                </Col>
+                            </Row>
+                            </Affix>
+                        </Content>
+                    </div>
+
+                    {/* Footer */}
+                    <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+                </Layout>
+            )
         else
             console.log("Loaded Product Info: ");
             console.log(productInfo)
@@ -80,7 +114,7 @@ function ProductDetailPage({ history }){
                     {/* Main Content */}
                     <div style={{ marginTop: '50px'}}>
                     <Content style={{ padding: '50px 50px'}}> 
-                        <div style = {{borderRadius: "2%" , backgroundColor:'white'}} className={style.site_layout_content}>
+                        <Card style={{ borderRadius: '1.25rem' }} hoverable={true} >
 
                             {/* Title */}
                             <Row  gutter={[16, 16]}>
@@ -151,7 +185,7 @@ function ProductDetailPage({ history }){
                             
                             </div>
 
-                        </div>
+                        </Card>
                     </Content>
                     </div>
 
