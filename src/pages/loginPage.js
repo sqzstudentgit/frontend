@@ -41,7 +41,6 @@ const Page = styled.div`
     -webkit-justify-content: center;
     background: #f1f1f3; // this is the color of the background of the login page
     // background: white;
-    height: 100%
 `
 
 // const Loginform = styled.LoginForm`
@@ -50,5 +49,5 @@ const Page = styled.div`
 
 const Logo = styled.img`
     max-width: 30%;
-    max-height: 100%;
+    max-height: 30%;
 `

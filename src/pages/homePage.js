@@ -5,7 +5,7 @@ import { Title } from "../components/Title"
 // import styled from '../css/slider.css'
 import Slider from '../components/Slider'
 import Logout from '../components/Logout'
-import NavigationBar from "../components/navigation_bar";
+import NavigationBar from "../components/NavigationBar";
 
 const slideData = [
     {

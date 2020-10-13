@@ -3,7 +3,7 @@ import {withRouter} from 'react-router-dom'
 import Product from "../components/product";
 import Summary from "../components/Summary";
 import axios from 'axios';
-import NavigationBar from '../components/navigation_bar';
+import NavigationBar from '../components/NavigationBar';
 import ErrorMessage from '../components/errorMessage'
 import style from '../css/currentOrder.module.css';
 
