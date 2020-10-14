@@ -1,9 +1,9 @@
 import React from "react";
 import {withRouter} from 'react-router-dom'
-import SignUpForm from '../components/signUpForm'
+import CreateForm from '../components/createForm'
 import styled from 'styled-components';
 
-class SignUpPage extends React.Component{
+class CreatePage extends React.Component{
 
     constructor(props) {
         super(props);
@@ -15,14 +15,14 @@ class SignUpPage extends React.Component{
         return (
             <Page>
                     <div>
-                        <SignUpForm />
+                        <CreateForm />
                     </div>  
             </Page>
         )
     }
 }
 
-export default withRouter(SignUpPage)
+export default withRouter(CreatePage)
 
 const Page = styled.div`
     display: flex;
@@ -31,5 +31,5 @@ const Page = styled.div`
     min-height: 90vh;
     -webkit-justify-content: center;
     background: #f1f1f3; // this is the color of the background of the login page
-    height: 110%
+    height: 240%
 `
