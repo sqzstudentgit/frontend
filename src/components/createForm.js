@@ -12,23 +12,36 @@ class CreateForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            customerCodeList: ["001"],
 
+            title:'',
             firstName:'',
             lastName:'',
+            nationalitycode:'',
             phone:'',
             email:'',
 
-            billingAddress:'',
-            deliveryAddress:'',
+            billingAddressLine1:'',
+            deliveryAddressLine1:'',
+            billingAddressLine2:'',
+            deliveryAddressLine2:'', 
+            billingRegionName:'', 
+            deliveryRegionName:'', 
+            billingCountryName:'',
+            deliveryCountryName:'',
+            billingPostcode:'',
+            deliveryPostcode:'',
 
             details:'',
 
             error: false,
             errorMassage:'',
-            isLogout:true
+            //isLogout:true
         }
         this._handleChange =  this._handleChange.bind(this)
         this._handleSubmit =  this._handleSubmit.bind(this)
+    }
+    componentDidMount() {
     }
 
     _handleChange(e){
@@ -45,13 +58,23 @@ class CreateForm extends React.Component{
                 url: 'api/customers',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
+                    "title":this.state.title,
                     "firstName": this.state.firstName,
                     "lastName": this.state.lastName,
+                    "nationalitycode":this.state.nationalitycode,
                     "phone": this.state.phone,
                     "email": this.state.email,
 
-                    "billingAddress": this.state.billingAddress,
-                    "deliveryAddress": this.state.deliveryAddress,
+                    "billingAddressLine1":this.state.billingAddressLine1,
+                    "deliveryAddressLine1":this.state.deliveryAddressLine1,
+                    "billingAddressLine2":this.state.billingAddressLine2,
+                    "deliveryAddressLine2":this.state.deliveryAddressLine2, 
+                    "billingRegionName":this.state.billingRegionName, 
+                    "deliveryRegionName":this.state.deliveryRegionName, 
+                    "billingCountryName":this.state.billingCountryName,
+                    "deliveryCountryName":this.state.deliveryCountryName,
+                    "billingPostcode":this.state.billingPostcode,
+                    "deliveryPostcode":this.state.deliveryPostcode,
 
                     "details": this.state.details,   
                 }
@@ -75,7 +98,7 @@ class CreateForm extends React.Component{
                     else{
                         this.setState({
                             error:true,
-                            errorMassage:""
+                            errorMassage:"Please enter in the correct format!"
                         })
                     } 
                 }
@@ -101,12 +124,18 @@ render(){
     const { TextArea } = Input;
     const { Option } = Select;
 
+    const children = [];
+    for (let i=0; i < this.state.customerCodeList.length; i++) {
+        children.push(<Option key={this.state.customerCodeList[i]}>{this.state.customerCodeList[i]}</Option>);
+    }
+
     return (
         <Form style={{width:'100%'}}
         className="register-form"
         initialValues={{remember: true}}
         onFinish={this._handleSubmit}
         >
+            {error && <ErrorMessage massage={errorMassage}/>} 
             <Form.Item style={{marginTop:'20px', fontSize: '14px',textAlign: 'right', alignItems: 'center'}}>
                 Go back to
                 <Button type="link" href="\login">Choose Customer</Button>
@@ -141,10 +170,7 @@ render(){
                             autoFocus
                             placeholder="Choose a code:"
                             >
-                                <Option value="code1">000001</Option>
-                                <Option value="code2">000002</Option>
-                                <Option value="code3">000003</Option>
-                                <Option value="code4">000004</Option>
+                                {children}
                             </Select>
                         </Form.Item>                       
                     </Col>

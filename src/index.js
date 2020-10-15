@@ -115,7 +115,7 @@ const App = () => {
           <Route path="/history" exact component={HistoryPage}/>
           <Route path="/order" exact component={OrderPage}/>
           <Route path="/product" exact component={ProductDetailPage} />
-		  <Route path="/create" exact component={CreatePage}/>
+		      <Route path="/create" exact component={CreatePage}/>
         </div>
       </Router>
     </StoreProvider>
