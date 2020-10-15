@@ -1,20 +1,18 @@
-import React, { Suspense, useRef} from "react";
+import React, { Suspense, useRef } from "react";
 import {
   Canvas,
   useLoader,
   useFrame,
   useThree,
+  extend,
 } from "react-three-fiber";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from 'three'
 
-import bottle from "../../WaterBottle.glb";
-import arwing from "../../arwing.glb";
-import model1 from "../../model1.glb";
-import model2 from "../../model2.glb";
-import model3 from "../../model.glb";
+extend({ OrbitControls });
 
-
+// Camera control for orbiting, zooming and panning.
 function CameraControls ()  {
   // https://threejs.org/docs/#examples/en/controls/OrbitControls
   const {
@@ -27,10 +25,11 @@ function CameraControls ()  {
   return <orbitControls ref={controls} args={[camera, domElement]} />;
 };
 
-function Shadow_Light (position,intensity) {
+// Create a light to cast the shadow on  the obejct to highlight contours.
+function ShadowLight (position,intensity) {
   //Create a PointLight and turn on shadows for the light
-  const light = new THREE.DirectionalLight(0xffffff, 0.5, 100)
-  light.position.set(10, 10, 10)
+  const light = new THREE.DirectionalLight(0xffffff, 0.5, 10)
+  light.position.set(10, 5, 2)
   light.castShadow = true // default false
   light.receiveShadow = true
   //Set up shadow properties for the light
@@ -48,188 +47,42 @@ function Shadow_Light (position,intensity) {
   return <primitive object={light}/>
 }
 
+// Creates a light to lighen up the shadow created by the ShadowLight
 function Light2 (position,intensity) {
-  //Create a PointLight and turn on shadows for the light
   const light = new THREE.DirectionalLight(0xffffff, 0.2, 100)
   light.position.set(-10, -10, -10)
 
   return <primitive object={light}/>
 }
 
-// Function to add the offset in the loaded model
-function LoadModel3_shadow(props) {
-  const gltf = useLoader(GLTFLoader, model1);
-
-
-  gltf.scene.traverse(function(child) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-  });
-
-  gltf.castShadow = true;
-  gltf.receiveShadow = true;
-  gltf.scene.castShadow = true;
-  gltf.scene.receiveShadow = true;
-
-  gltf.position = [0,0,0];
-
-  const primitiveProps = {
-    object: gltf.scene,
-    position: props.position || [0,0,0],
-    rotation: props.rotation || [0,0,0],
-    scale: props.scale || [1,1,1],
-    castShadow: true,
-    receiveShadow: true,
-  };
-
-
-  //return <primitive object={gltf.scene} />
-  
-  return <mesh> <primitive {...primitiveProps}/> </mesh>;
-  
-}
-
 
 // Auto calculate model distance and height for camera position
-function LoadModel4 (props) {
-  const gltf = useLoader(GLTFLoader, bottle);
+function LoadModel (props) {
+  const gltf = useLoader(GLTFLoader, props.modelUrl);
 
-  console.log(gltf.scene);
-  
-  console.log("====================");
-  var bb;
+  var boundingBox;
 
   gltf.scene.traverse(function(child) {
+      child.position.set(0,0,0);
+      child.scale.set(1.7,1.7,1.7);
       child.castShadow = true;
       child.receiveShadow = true;
       if ( child instanceof THREE.Mesh  ) 
       {
-        //if(bb==null) 
-        bb = (child.geometry.boundingBox);
+        boundingBox = (child.geometry.boundingBox);
         
       }
   });
 
-  console.log("====================");
-
-  //const [geometry, setGeometry] = useState();
-  const geometryRef = useRef();
-  const groupRef = useRef();
-
-  const geometry = geometryRef.current;
-  
-  const ref = useRef();
-  gltf.castShadow = true;
-  gltf.receiveShadow = true;
-  gltf.scene.castShadow = true;
-  gltf.scene.receiveShadow = true;
-
-  //gltf.position = [0,0,0];
-  const {
-    camera,
-    gl: { domElement },
-  } = useThree();
-
-  
-  //camera.position.x = 0;
-  //camera.position.y = 0;
-  //camera.position.z = 0;
-
-  /*
-  camera.attach(gltf.scene)
-  gltf.scene.position.x = 0;    
-  gltf.scene.position.y = 0;
-  gltf.scene.position.z = 0;
-  
-
-  const [state, setstate] = useState(0);
-  const localPos = gltf.scene.localToWorld(camera.worldToLocal(camera.position));
-
-  gltf.scene.position.x = localPos.x;
-  gltf.scene.position.y = localPos.y;
-  gltf.scene.position.z = localPos.z-0.5;
-  
-
-  camera.add(gltf.scene)
-  gltf.scene.position.x = 0;    
-  gltf.scene.position.y = 0;
-  gltf.scene.position.z = 0;
-  
-  gltf.scene.position.z = 5;
-    
-  console.log("camera.position");
-  console.log(camera.position);
-    
-  console.log("model.position");
-  console.log(gltf.scene.position);
-
-  console.log("global position of camera");
-  console.log(camera.getWorldPosition(camera.position));
-
-  console.log("model.globalPos");
-  console.log(gltf.scene.getWorldPosition(gltf.scene.position));
-  */
-
-
-  camera.add( gltf.scene );
-  gltf.scene.position.set(0, 0, 0);
-    
-  var result = {};
-
-  gltf.scene.traverse( n=> { 
-    // traverseScene(n, result);
-    if (n instanceof THREE.Camera) {
-      if (!result.cameras)
-        result.cameras = [];
-      
-      result.cameras.push(n);
-    }
-    // Look for lights
-    if (n instanceof THREE.Light) {
-      if (!result.lights)
-        result.lights = [];
-      
-      result.lights.push(n);
-    }
-
-  });
-
-  if (result.cameras && result.cameras.length){
-      this.camera = result.cameras[0];
-      this.camera.position.copy( 
-        this.camera.position.clone().add(new THREE.Vector3(0,0,.01))
-    )
-
-  }else {
-    
-    let boundingBox = bb;// geometry.computeBoundingBox();
-    
-    console.log ("+++++++++++++++++")
-
-    console.log(boundingBox);
-
-    let front = boundingBox.max;
-    let cz = boundingBox.max.z - boundingBox.min.z;
-    // debugger
-    camera.position.set(front.x, front.y, front.z+cz*1);
-    
-  }
-
-  if (result.lights && result.lights.length) {
-  }
-  else{ }
-
-  //---------------------------------
-
-  
-  
   const primitiveProps = {
-		geometryRef,
     object: gltf.scene,
     castShadow: true,
     receiveShadow: true,
   };
   
+  {/* Removed the code of find the camera positon with respect to the model */}
+  {/* Because model distance will be same always*/}
+
   return <mesh > <primitive {...primitiveProps} /> </mesh>;
 }
 
@@ -261,22 +114,22 @@ class ThreeDModelPresenter extends React.Component
         return (
       
           <Canvas colorManagement shadowMap> 
-      
+
+            {/* Orbital, Zoom and Panning Control for the camera*/}
             <CameraControls />
-    
+
+            {/* Adding Lights in the Scene*/}
             <ambientLight intensity={0.17} />
-            <Shadow_Light/>
+            <ShadowLight/>
             <Light2/>
       
+            {/* Rendergin Model with fallback Loading model */}
             <Suspense fallback={<Loading />}>
-
-
-            {/*<LoadModel3_shadow position={[-6.5,-0.5,10]} scale={[3,3,3]} rotation={0,0,0} />*/}
-            <LoadModel4 />
-
+              {<LoadModel modelUrl = {this.props.modelUrl}/>}
             </Suspense>
 
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
+            {/* Creating the plain to cast shadow on */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
               <planeBufferGeometry attach="geometry" args={[100, 100]} />
               <shadowMaterial attach="material" transparent opacity={0.4} />
             </mesh>
