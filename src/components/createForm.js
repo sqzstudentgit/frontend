@@ -7,13 +7,14 @@ import React from "react";
 import Axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom';
 import ErrorMessage from './errorMessage';
-
+const {Option} = Select;
 class CreateForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             customerCodeList: ["001"],
 
+            customerCode:'',
             title:'',
             firstName:'',
             lastName:'',
@@ -38,7 +39,7 @@ class CreateForm extends React.Component{
             errorMassage:'',
             //isLogout:true
         }
-        this._handleChange =  this._handleChange.bind(this)
+        this._handleChangeInput =  this._handleChangeInput.bind(this)
         this._handleSubmit =  this._handleSubmit.bind(this)
     }
 
@@ -46,12 +47,14 @@ class CreateForm extends React.Component{
 
     }
 
-    _handleChange(e){
-        let id = e.target.id
-        this.setState({
-            [id]: e.target.value
-        })
-    }
+     _handleChangeInput(e){
+         let id = e.target.id
+         this.setState({
+             [id]: e.target.value
+         })
+     }
+
+
 
     _handleSubmit(e){
         // e.preventDefault();//test need
@@ -78,41 +81,25 @@ class CreateForm extends React.Component{
                     //"billingPostcode":this.state.billingPostcode,
                     //"deliveryPostcode":this.state.deliveryPostcode,
 
-                    //"details": this.state.details,   
-                    // "customer":{
-                    //             "customer_code": "ALLUNEED",
-                    //             "title": "Mr",
-                    //             "organization_desc": "holySAS",
-                    //             "first_name": "ax",
-                    //             "last_name": "ZX",
-                    //             "phone": "0123456789",
-                    //             "email": "233456@123.com"
-                    //         },
-                    // "address": {
-                    //             "contact": "9876541230",
-                    //             "address_line1": "Unit 5",
-                    //             "address_line2": "Candy Ave, Caulfield, VIC",
-                    //             "postcode": "VIC0000",
-                    //             "region": "Victoria",
-                    //             "country": "Australia"
-                    //         }
-                    "customer":{
-                                "customer_code": "ALLUNEED",
-                                "title": "Mr",
-                                "organization_desc": "holySAS",
-                                "first_name": "ax",
-                                "last_name": "ZX",
-                                "phone": "0123456789",
-                                "email": "233456@123.com"
-                            },
-                    "address": {
-                                "contact": "9876541230",
-                                "address_line1": "Unit 5",
-                                "address_line2": "Candy Ave, Caulfield, VIC",
-                                "postcode": "VIC0000",
-                                "region": "Victoria",
-                                "country": "Australia"
-                            }
+                    //"details": this.state.details,  
+
+                      "customer":{
+                                  "customer_code": "ALLUNEED",
+                                  "title": this.state.title,
+                                  "organization_desc": this.state.details,
+                                  "first_name": this.state.firstName,
+                                  "last_name": this.state.lastName,
+                                  "phone": this.state.phone,
+                                  "email": this.state.email
+                              },
+                      "address": {
+                                  "contact": this.state.phone,
+                                  "address_line1": this.state.deliveryAddressLine1,
+                                  "address_line2": this.state.deliveryAddressLine2,
+                                  "postcode": this.state.deliveryPostcode,
+                                  "region": this.state.deliveryRegionName,
+                                  "country": this.state.deliveryCountryName
+                              }
                 }
             }             
             )
@@ -159,7 +146,7 @@ render(){
     const {error, errorMassage} = this.state;
     const { Title } = Typography;
     const { TextArea } = Input;
-    const { Option } = Select;
+    // const { Option } = Select;
 
     const children = [];
     for (let i=0; i < this.state.customerCodeList.length; i++) {
@@ -192,9 +179,8 @@ render(){
                     <Col span={5} >
                         <Form.Item
                             style={{fontSize: '16px'}}
-                            value={this.state.customerCode}
-                            onChange={this._handleChange}
-                            rules={[{required: true,message: 'Please choose your code!'}]}
+                            // value={this.state.customerCode}
+                            // onChange={this._handleChangeSelect}
                         >
                             Customer Code:
                             <Select 
@@ -206,8 +192,8 @@ render(){
                             required
                             autoFocus
                             placeholder="Choose a code:"
-                            //value={this.state.customerCode}
-                            //onChange={this._handleChange}
+                            // value={this.state.customerCode}
+                            onChange={(value) => {this.state.customerCode = value}}
                             >
                                 {children}
                             </Select>
@@ -218,9 +204,8 @@ render(){
                     <Col span={5}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        value={this.state.title}
-                        onChange={this._handleChange}
-                        rules={[{required: true,message: 'Please choose your title!'}]}
+                        // value={this.state.title}
+                        // onChange={this._handleChangeSelect}
                     >
                         Title:
                         <Select 
@@ -231,8 +216,8 @@ render(){
                             variant="outlined"
                             required
                             autoFocus
-                            //value={this.state.customerCode}
-                            //onChange={this._handleChange}
+                            // value={this.state.title}
+                            onChange={(value) => {this.state.title = value}}
                         >
                                 <Option value="Mr.">Mr.</Option>
                                 <Option value="Mrs.">Mrs.</Option>
@@ -245,8 +230,8 @@ render(){
                     <Col span={5}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        value={this.state.firstName}
-                        onChange={this._handleChange}
+                        //value={this.state.firstName}
+                        // onChange={this._handleChangeInput}
                         rules={[{required: true,message: 'Please input your first name!'}]}
                     >
                         First Name:
@@ -259,6 +244,8 @@ render(){
                             required
                             autoFocus
                             prefix={<UserOutlined className="site-form-item-icon" />}
+                            value={this.state.firstName}
+                            onChange={this._handleChangeInput}
                         />
                     </Form.Item>
                     </Col>
@@ -266,8 +253,8 @@ render(){
                     <Col span={5} >
                         <Form.Item
                             style={{fontSize: '16px'}}
-                            value={this.state.lastName}
-                            onChange={this._handleChange}
+                            // value={this.state.lastName}
+                            //  onChange={this._handleChangeInput}
                             rules={[{required: true,message: 'Please input your last name!'}]}
                         >
                             Last Name:
@@ -279,6 +266,8 @@ render(){
                                 name="lastName"
                                 autoComplete="lastName"
                                 prefix={<UserOutlined className="site-form-item-icon" />}
+                                value={this.state.lastName}
+                                onChange={this._handleChangeInput}
                             />
                         </Form.Item>                       
                     </Col>
@@ -287,8 +276,7 @@ render(){
                     <Form.Item
                         style={{fontSize: '16px'}}
                         //value={this.state.nationalitycode}
-                        //onChange={this._handleChange}
-                        rules={[{required: true,message: 'Please choose your nationality code!'}]}
+                        //onChange={this._handleChangeSelect}
                     >
                         Nationality Code:
                         <Select 
@@ -300,6 +288,8 @@ render(){
                             required
                             autoFocus
                             placeholder="Choose your nationality:"
+                            // value={this.state.nationalitycode}
+                            onChange={(value) => {this.state.nationalitycode = value}}
                             >
                                 <Option value="AU">AU</Option>
                                 <Option value="CA">CA</Option>
@@ -315,9 +305,8 @@ render(){
                     <Col span={11}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        value={this.state.phone}
-                        onChange={this._handleChange}
-                        rules={[{required: true,message: 'Please input your phone number!'}]}
+                        // value={this.state.phone}
+                        // onChange={this._handleChangeInput}
                     >
                         Phone Number:
                         <Input 
@@ -329,6 +318,8 @@ render(){
                             autoComplete="phone"
                             placeholder="XXXXXXXX"
                             prefix={<PhoneOutlined className="site-form-item-icon" />}
+                            value={this.state.phone}
+                            onChange={this._handleChangeInput}
                         />
                     </Form.Item>
                     </Col>
@@ -336,9 +327,7 @@ render(){
                     <Col span={11}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        value={this.state.email}
-                        onChange={this._handleChange}
-                        rules={[{required: true,message: 'Please input your email!'}]}
+                        
                     >
                         Email Address:
                         <Input 
@@ -351,6 +340,8 @@ render(){
                             placeholder="XXXXXXXX@XXXX.com"
                             type="email"
                             prefix={<MailOutlined className="site-form-item-icon" />}
+                            value={this.state.email}
+                            onChange={this._handleChangeInput}
                         />
                     </Form.Item>
                     </Col>
@@ -375,9 +366,7 @@ render(){
                     <Col span={9}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
-                            value={this.state.billingAddressLine1}
-                            onChange={this._handleChange}
-                            rules={[{required: true,message: 'Street address, P.O.box, company name, c/o'}]}
+                            
                         >
                             Address Line 1:
                             <Input 
@@ -389,6 +378,8 @@ render(){
                                 autoComplete="billingAddressLine1"
                                 placeholder="Street address, P.O.box, company name, c/o"
                                 prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                                value={this.state.billingAddressLine1}
+                                onChange={this._handleChangeInput}
                             />
                         </Form.Item>
                     </Col>
@@ -396,9 +387,7 @@ render(){
                     <Col span={9}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
-                            value={this.state.deliveryAddressLine1}
-                            onChange={this._handleChange}
-                            rules={[{required: true,message: 'Street address, P.O.box, company name, c/o'}]}
+                            
                         >
                             Address Line 1:
                             <Input 
@@ -410,6 +399,8 @@ render(){
                                 autoComplete="deliveryAddressLine1"
                                 placeholder="Street address, P.O.box, company name, c/o"
                                 prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                                value={this.state.deliveryAddressLine1}
+                                onChange={this._handleChangeInput}
                             />
                         </Form.Item>
                     </Col>
@@ -417,9 +408,7 @@ render(){
                     <Col span={9}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
-                            value={this.state.billingAddressLine2}
-                            onChange={this._handleChange}
-                            rules={[{required: true,message: 'Apartment, suite, unit, building, floor, etc.'}]}
+                            
                         >
                             Address Line 2:
                             <Input 
@@ -431,6 +420,8 @@ render(){
                                 autoComplete="billingAddressLine2"
                                 placeholder="Apartment, suite, unit, building, floor, etc."
                                 prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                                value={this.state.billingAddressLine2}
+                                onChange={this._handleChangeInput}
                             />
                         </Form.Item>
                     </Col>
@@ -438,9 +429,7 @@ render(){
                     <Col span={9}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
-                            value={this.state.deliveryAddressLine2}
-                            onChange={this._handleChange}
-                            rules={[{required: true,message: 'Apartment, suite, unit, building, floor, etc.'}]}
+                            
                         >
                             Address Line 2:
                             <Input 
@@ -452,6 +441,8 @@ render(){
                                 autoComplete="deliveryAddressLine2"
                                 placeholder="Apartment, suite, unit, building, floor, etc."
                                 prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                                value={this.state.deliveryAddressLine2}
+                                onChange={this._handleChangeInput}
                             />
                         </Form.Item>
                     </Col>
@@ -460,7 +451,7 @@ render(){
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.billingRegionName}
-                            onChange={this._handleChange}
+                            onChange={this._handleChangeInput}
                             rules={[{required: true,message: ''}]}
                         >
                             State/Province/Region:
@@ -480,7 +471,7 @@ render(){
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.deliveryRegionName}
-                            onChange={this._handleChange}
+                            onChange={this._handleChangeInput}
                             rules={[{required: true,message: ''}]}
                         >
                             State/Province/Region:
@@ -501,7 +492,7 @@ render(){
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.billingCountryName}
-                            onChange={this._handleChange}
+                            onChange={this._handleChangeInput}
                             rules={[{required: true,message: ''}]}
                         >
                             Country:
@@ -521,7 +512,7 @@ render(){
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.deliveryCountryName}
-                            onChange={this._handleChange}
+                            onChange={this._handleChangeInput}
                             rules={[{required: true,message: ''}]}
                         >
                             Country:
@@ -541,7 +532,7 @@ render(){
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.billingPostcode}
-                            onChange={this._handleChange}
+                            onChange={this._handleChangeInput}
                             rules={[{required: true,message: ''}]}
                         >
                             Postcode:
@@ -561,7 +552,7 @@ render(){
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.deliveryPostcode}
-                            onChange={this._handleChange}
+                            onChange={this._handleChangeInput}
                             rules={[{required: true,message: ''}]}
                         >
                             Postcode:
@@ -583,7 +574,7 @@ render(){
                         <Form.Item   
                             style={{ fontSize: '16px'}}
                             value={this.state.details}
-                            onChange={this._handleChange}
+                            onChange={this._handleChangeInput}
                         >
                             Details:
                             <TextArea 
