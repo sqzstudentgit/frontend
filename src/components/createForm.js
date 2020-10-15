@@ -41,7 +41,9 @@ class CreateForm extends React.Component{
         this._handleChange =  this._handleChange.bind(this)
         this._handleSubmit =  this._handleSubmit.bind(this)
     }
+
     componentDidMount() {
+
     }
 
     _handleChange(e){
@@ -58,25 +60,59 @@ class CreateForm extends React.Component{
                 url: 'api/customers',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
-                    "title":this.state.title,
-                    "firstName": this.state.firstName,
-                    "lastName": this.state.lastName,
-                    "nationalitycode":this.state.nationalitycode,
-                    "phone": this.state.phone,
-                    "email": this.state.email,
+                    //"title":this.state.title,
+                    //"firstName": this.state.firstName,
+                    //"lastName": this.state.lastName,
+                    //"nationalitycode":this.state.nationalitycode,
+                    //"phone": this.state.phone,
+                    //"email": this.state.email,
 
-                    "billingAddressLine1":this.state.billingAddressLine1,
-                    "deliveryAddressLine1":this.state.deliveryAddressLine1,
-                    "billingAddressLine2":this.state.billingAddressLine2,
-                    "deliveryAddressLine2":this.state.deliveryAddressLine2, 
-                    "billingRegionName":this.state.billingRegionName, 
-                    "deliveryRegionName":this.state.deliveryRegionName, 
-                    "billingCountryName":this.state.billingCountryName,
-                    "deliveryCountryName":this.state.deliveryCountryName,
-                    "billingPostcode":this.state.billingPostcode,
-                    "deliveryPostcode":this.state.deliveryPostcode,
+                    //"billingAddressLine1":this.state.billingAddressLine1,
+                    //"deliveryAddressLine1":this.state.deliveryAddressLine1,
+                    //"billingAddressLine2":this.state.billingAddressLine2,
+                    //"deliveryAddressLine2":this.state.deliveryAddressLine2, 
+                    //"billingRegionName":this.state.billingRegionName, 
+                    //"deliveryRegionName":this.state.deliveryRegionName, 
+                    //"billingCountryName":this.state.billingCountryName,
+                    //"deliveryCountryName":this.state.deliveryCountryName,
+                    //"billingPostcode":this.state.billingPostcode,
+                    //"deliveryPostcode":this.state.deliveryPostcode,
 
-                    "details": this.state.details,   
+                    //"details": this.state.details,   
+                    // "customer":{
+                    //             "customer_code": "ALLUNEED",
+                    //             "title": "Mr",
+                    //             "organization_desc": "holySAS",
+                    //             "first_name": "ax",
+                    //             "last_name": "ZX",
+                    //             "phone": "0123456789",
+                    //             "email": "233456@123.com"
+                    //         },
+                    // "address": {
+                    //             "contact": "9876541230",
+                    //             "address_line1": "Unit 5",
+                    //             "address_line2": "Candy Ave, Caulfield, VIC",
+                    //             "postcode": "VIC0000",
+                    //             "region": "Victoria",
+                    //             "country": "Australia"
+                    //         }
+                    "customer":{
+                                "customer_code": "ALLUNEED",
+                                "title": "Mr",
+                                "organization_desc": "holySAS",
+                                "first_name": "ax",
+                                "last_name": "ZX",
+                                "phone": "0123456789",
+                                "email": "233456@123.com"
+                            },
+                    "address": {
+                                "contact": "9876541230",
+                                "address_line1": "Unit 5",
+                                "address_line2": "Candy Ave, Caulfield, VIC",
+                                "postcode": "VIC0000",
+                                "region": "Victoria",
+                                "country": "Australia"
+                            }
                 }
             }             
             )
@@ -84,15 +120,16 @@ class CreateForm extends React.Component{
                 (response)=>{
                     console.log(response);
                     let {status, message} = response.data;
-                    let {session_id} = response.data.data;
+                    //let {session_id} = response.data.data;
                     console.log(message);
                     //alert(message);
                     if(status=="success"){
-                        sessionStorage.setItem('user', this.state.username);
-                        sessionStorage.setItem('sessionKey', session_id);
+                        console.log("Create successfully!");
+                        //sessionStorage.setItem('user', this.state.username);
+                        //sessionStorage.setItem('sessionKey', session_id);
                         this.setState({
                             error:false,
-                            isLogout:false
+                            //isLogout:false
                         })
                     }
                     else{
@@ -169,6 +206,8 @@ render(){
                             required
                             autoFocus
                             placeholder="Choose a code:"
+                            //value={this.state.customerCode}
+                            //onChange={this._handleChange}
                             >
                                 {children}
                             </Select>
@@ -192,6 +231,8 @@ render(){
                             variant="outlined"
                             required
                             autoFocus
+                            //value={this.state.customerCode}
+                            //onChange={this._handleChange}
                         >
                                 <Option value="Mr.">Mr.</Option>
                                 <Option value="Mrs.">Mrs.</Option>
@@ -245,15 +286,15 @@ render(){
                     <Col span={5}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        value={this.state.nationalitycode}
-                        onChange={this._handleChange}
+                        //value={this.state.nationalitycode}
+                        //onChange={this._handleChange}
                         rules={[{required: true,message: 'Please choose your nationality code!'}]}
                     >
                         Nationality Code:
                         <Select 
-                            name="customerCode"
-                            id="customerCode"
-                            autoComplete="customerCode"
+                            name="nationalitycode"
+                            id="nationalitycode"
+                            autoComplete="nationalitycode"
                             size="large"    
                             variant="outlined"
                             required
