@@ -7,12 +7,15 @@ import React from "react";
 import Axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom';
 import ErrorMessage from './errorMessage';
+
+//Axios.defaults.baseURL = 'http://127.0.0.1:5000/';
 const {Option} = Select;
 class CreateForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            customerCodeList: ["001"],
+            customerCodeList: ["001","002"],
+            //customerCodeList: [],
 
             customerCode:'',
             title:'',
@@ -43,9 +46,22 @@ class CreateForm extends React.Component{
         this._handleSubmit =  this._handleSubmit.bind(this)
     }
 
-    componentDidMount() {
-
-    }
+     componentDidMount() {
+        //  Axios({
+        //          method: 'get',           
+        //          url: 'http://127.0.0.1:5000/api/customer_codes',
+        //          //headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+        //      }             
+        //      )
+             Axios.get('http://127.0.0.1:5000/api/customer_codes')
+             .then(
+                 (response)=>{
+                     this.setState({
+                         customerCodeList: response.data
+                     })
+                 }
+             )
+     }
 
      _handleChangeInput(e){
          let id = e.target.id
