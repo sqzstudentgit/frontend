@@ -5,6 +5,10 @@ import { withRouter } from 'react-router-dom';
 import CartProduct from '../components/CartProduct';
 import NavigationBar from "../components/NavigationBar";
 
+// Todo: This is the temp design for Checkout - Add Billing Address & Delivery Address function
+import AddAddressForm from '../components/AddAddressForm';
+
+
 // Ant Design Components
 import {
   Affix,
@@ -245,6 +249,16 @@ const OrderPage = ({ history }) => {
                     </Row>
                   </Col>
                 </Row>
+              </Card>
+            </Col>
+          </Row>
+        </Affix>
+
+        <Affix offsetTop={80}>
+          <Row justify="center" gutter={[32, 32]}>
+            <Col span={18}>
+              <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
+                  <AddAddressForm></AddAddressForm>
               </Card>
             </Col>
           </Row>

@@ -1,8 +1,7 @@
 //ant design
-import { Form, Input, Button, Card} from 'antd';
-import {message as antdMessage} from 'antd' ;
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card, Row, Col, Divider,Select,Image} from 'antd';
 import 'antd/dist/antd.css';
+import { CheckCircleTwoTone, GlobalOutlined, UserAddOutlined, UserOutlined, EnvironmentOutlined,PhoneOutlined,MailOutlined,MessageOutlined,EyeTwoTone,EyeInvisibleOutlined } from '@ant-design/icons';
 
 //React
 import React from "react";
@@ -21,6 +20,8 @@ class AddAddressForm extends React.Component{
             region:'',
             country:''
         }
+        this._handleChange =  this._handleChange.bind(this)
+        this._handleSubmit =  this._handleSubmit.bind(this)
     }
 
     _handleChange(e){
@@ -31,26 +32,93 @@ class AddAddressForm extends React.Component{
     }
 
     _handleSubmit(e){
-        console.log("address saved")
+        console.log()
+        axios({
+            method:'get',
+            url:'/api/customer/1',
+            headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+            data:{
+                
+            },
+        })
     }
 
     render(){
+        console.log("Start Site")
         return(
-            <Form>
-                <Form.Item
-                name="contact"
-                label="Contact"
-                rules={[{ required: true, message: 'Please input your phone number!' }]}
+            <Form
+            onFinish={this._handleSubmit}
+            >
+                <Form.Item     
+                    name="addr1"
+                    value={this.state.addr1}
+                    onChange={this._handleChange}
+                    rules={[{required:true}]}
                 >
-                <Input style={{ width: '100%' }} />
+                    Address Line 1:
+                    <Input 
+                        placeholder="Street address, P.O.box, company name, c/o"
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                    />
                 </Form.Item>
 
                 <Form.Item
-                name="addr1"
-                label="Address1"
-                rules={[{ required: true, message: 'Please input your phone number!' }]}
+                    name="addr2"
+                    value={this.state.addr2}
+                    onChange={this._handleChange}
+                    rules={[{required:true}]}
                 >
-                <Input style={{ width: '100%' }} />
+                    Address Line 2:
+                    <Input 
+                        placeholder="Apartment, suite, unit, building, floor, etc."
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                    />
+                </Form.Item>
+
+                <Form.Item     
+                    name="region"
+                    value={this.state.region}
+                    onChange={this._handleChange}
+                    rules={[{required:true}]}
+                >
+                    State/Province/Region:
+                    <Input 
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                    />
+                </Form.Item>
+
+                <Form.Item     
+                    name="postcode"
+                    value={this.state.postcode}
+                    onChange={this._handleChange}
+                    rules={[{required:true}]}
+                    >
+                        Postcode:
+                        <Input 
+                            prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                        />
+                </Form.Item>
+
+                <Form.Item     
+                    name="country"
+                    value={this.state.country}
+                    onChange={this._handleChange}
+                    rules={[{required:true}]}
+                >
+                    Country:
+                    <Input 
+                        prefix={<GlobalOutlined className="site-form-item-icon" />}
+                    />
+                </Form.Item>
+
+                <Form.Item style={{ fontSize: '16px', textAlign: 'center', alignItems: 'center'}}>
+                    <Button 
+                        type="primary"
+                        htmlType="submit" 
+                        className="addaddress-form-button"
+                    >
+                    Add New Address
+                    </Button>
                 </Form.Item>
 
             </Form>
