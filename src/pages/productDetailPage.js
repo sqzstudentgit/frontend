@@ -61,8 +61,13 @@ function ProductDetailPage({ history }){
         }
     }
     
+
     useEffect(() => {
-        getProductData(102716);
+        getProductData('OD-11');
+        // 00089 -> No Image
+        // 01224 -> 404 image
+        // HFS -> model and 3 images
+        // OD-11 -> model and 5 images
     },[]);
 
 
@@ -86,8 +91,8 @@ function ProductDetailPage({ history }){
                                     <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
                                         <Title level={2} style={{ margin: '120px',fontFamily: 'sans-serif'}}> 
                                             <Row  gutter={[16, 16]}>  
-                                                <Col flex={9} > Loading Product Information </Col>
-                                                <Col flex={3} > <Spin/> </Col>
+                                                <Col flex={9} ></Col>
+                                                <Col flex={0} > <Spin/> </Col>
                                                 <Col flex={9}></Col>
                                             </Row>
                                         </Title>
@@ -128,7 +133,8 @@ function ProductDetailPage({ history }){
 
                                 {/* Image Viewer */}
                                 <Col flex={9} >
-                                    <ImageViewer height={400} width={700} imageList={productInfo.imageList}/>
+                                    <p>Inside the main</p>
+                                    <ImageViewer height={500} width={600} imageList={productInfo.imageList}/>
                                 </Col>
 
                                 {/* CheckOut Box */}
@@ -156,10 +162,14 @@ function ProductDetailPage({ history }){
                                 <Col flex={1}>
                                     <Tabs defaultActiveKey="1" onChange={callback}>
                                         <TabPane tab="Description" key="1">
-                                            {productInfo.description1}
+                                            
+                                            {productInfo.description1=="" || productInfo.description1==null ? 'Coming Soon' : productInfo.description1 }
+
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
-                                        
+                                            
+                                            Coming Soon
+
                                         </TabPane>
                                         <TabPane tab="Parameter" key="3">
                                         <Row gutter={[16, 16]}>
