@@ -8,8 +8,8 @@ import Axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom';
 import ErrorMessage from './errorMessage';
 
-//Axios.defaults.baseURL = 'http://127.0.0.1:5000/';
 const {Option} = Select;
+
 class CreateForm extends React.Component{
     constructor(props) {
         super(props);
@@ -62,10 +62,7 @@ class CreateForm extends React.Component{
          })
      }
 
-
-
     _handleSubmit(e){
-        // e.preventDefault();//test need
         Axios({
                 method: 'post',           
                 url: 'api/customers',
@@ -110,8 +107,7 @@ class CreateForm extends React.Component{
 
                 }
             )
-            console.log(this.state) //test
-      
+            console.log(this.state) //test      
     }
 
 
@@ -152,8 +148,6 @@ render(){
                     <Col span={5} >
                         <Form.Item
                             style={{fontSize: '16px'}}
-                            // value={this.state.customerCode}
-                            // onChange={this._handleChangeSelect}
                         >
                             Customer Code:
                             <Select 
@@ -165,7 +159,6 @@ render(){
                             required
                             autoFocus
                             placeholder="Choose a code:"
-                            // value={this.state.customerCode}
                             onChange={(value) => {this.state.customerCode = value}}
                             >
                                 {children}
@@ -177,8 +170,6 @@ render(){
                     <Col span={5}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        // value={this.state.title}
-                        // onChange={this._handleChangeSelect}
                     >
                         Title:
                         <Select 
@@ -189,7 +180,6 @@ render(){
                             variant="outlined"
                             required
                             autoFocus
-                            // value={this.state.title}
                             onChange={(value) => {this.state.title = value}}
                         >
                                 <Option value="Mr.">Mr.</Option>
@@ -203,8 +193,6 @@ render(){
                     <Col span={5}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        //value={this.state.firstName}
-                        // onChange={this._handleChangeInput}
                         rules={[{required: true,message: 'Please input your first name!'}]}
                     >
                         First Name:
@@ -226,9 +214,6 @@ render(){
                     <Col span={5} >
                         <Form.Item
                             style={{fontSize: '16px'}}
-                            // value={this.state.lastName}
-                            //  onChange={this._handleChangeInput}
-                            rules={[{required: true,message: 'Please input your last name!'}]}
                         >
                             Last Name:
                             <Input 
@@ -248,8 +233,6 @@ render(){
                     <Col span={5}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        //value={this.state.nationalitycode}
-                        //onChange={this._handleChangeSelect}
                     >
                         Nationality Code:
                         <Select 
@@ -261,7 +244,6 @@ render(){
                             required
                             autoFocus
                             placeholder="Choose your nationality:"
-                            // value={this.state.nationalitycode}
                             onChange={(value) => {this.state.nationalitycode = value}}
                             >
                                 <Option value="AU">AU</Option>
@@ -278,8 +260,6 @@ render(){
                     <Col span={11}>
                     <Form.Item
                         style={{fontSize: '16px'}}
-                        // value={this.state.phone}
-                        // onChange={this._handleChangeInput}
                     >
                         Phone Number:
                         <Input 
@@ -299,8 +279,7 @@ render(){
 
                     <Col span={11}>
                     <Form.Item
-                        style={{fontSize: '16px'}}
-                        
+                        style={{fontSize: '16px'}} 
                     >
                         Email Address:
                         <Input 
@@ -319,13 +298,12 @@ render(){
                     </Form.Item>
                     </Col>
 
-                    <Divider orientation="left">Addresses:</Divider>
+                    <Divider orientation="left">Delivery Addresses:</Divider>
 
-
-                    <Col span={9}>
+                    <Col span={5}></Col>
+                    <Col span={11}>
                         <Form.Item     
-                            style={{fontSize: '16px'}}
-                            
+                            style={{fontSize: '16px'}} 
                         >
                             Address Line 1:
                             <Input 
@@ -342,12 +320,12 @@ render(){
                             />
                         </Form.Item>
                     </Col>
-
-
-                    <Col span={9}>
+                    <Col span={5}></Col>
+                    
+                    <Col span={5}></Col>
+                    <Col span={11}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
-                            
                         >
                             Address Line 2:
                             <Input 
@@ -364,14 +342,14 @@ render(){
                             />
                         </Form.Item>
                     </Col>
+                    <Col span={5}></Col>
 
-
-                    <Col span={9}>
+                    <Col span={5}></Col>
+                    <Col span={11}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.deliveryRegionName}
                             onChange={this._handleChangeInput}
-                            rules={[{required: true,message: ''}]}
                         >
                             State/Province/Region:
                             <Input 
@@ -385,14 +363,14 @@ render(){
                             />
                         </Form.Item>
                     </Col>
+                    <Col span={5}></Col>
 
-
-                    <Col span={9}>
+                    <Col span={5}></Col>
+                    <Col span={11}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.deliveryCountryName}
                             onChange={this._handleChangeInput}
-                            rules={[{required: true,message: ''}]}
                         >
                             Country:
                             <Input 
@@ -406,13 +384,14 @@ render(){
                             />
                         </Form.Item>
                     </Col>
+                    <Col span={5}></Col>
 
-                    <Col span={9}>
+                    <Col span={5}></Col>
+                    <Col span={11}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
                             value={this.state.deliveryPostcode}
                             onChange={this._handleChangeInput}
-                            rules={[{required: true,message: ''}]}
                         >
                             Postcode:
                             <Input 
@@ -426,7 +405,7 @@ render(){
                             />
                         </Form.Item>
                     </Col>
-
+                    <Col span={5}></Col>
 
                     <Divider orientation="left">Squizz Organization Details:</Divider>
                     <Col span={23} >
