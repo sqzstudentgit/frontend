@@ -14,8 +14,7 @@ class CreateForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            customerCodeList: ["001","002"],
-            //customerCodeList: [],
+            customerCodeList: [],
 
             customerCode:'',
             title:'',
@@ -25,35 +24,28 @@ class CreateForm extends React.Component{
             phone:'',
             email:'',
 
-            billingAddressLine1:'',
             deliveryAddressLine1:'',
-            billingAddressLine2:'',
             deliveryAddressLine2:'', 
-            billingRegionName:'', 
             deliveryRegionName:'', 
-            billingCountryName:'',
             deliveryCountryName:'',
-            billingPostcode:'',
             deliveryPostcode:'',
 
             details:'',
 
             error: false,
             errorMassage:'',
-            //isLogout:true
         }
         this._handleChangeInput =  this._handleChangeInput.bind(this)
         this._handleSubmit =  this._handleSubmit.bind(this)
     }
 
      componentDidMount() {
-        //  Axios({
-        //          method: 'get',           
-        //          url: 'http://127.0.0.1:5000/api/customer_codes',
-        //          //headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-        //      }             
-        //      )
-             Axios.get('http://127.0.0.1:5000/api/customer_codes')
+         Axios({
+                 method: 'get',           
+                 url: 'api/customer_codes',
+                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+             }             
+             )
              .then(
                  (response)=>{
                      this.setState({
@@ -79,28 +71,8 @@ class CreateForm extends React.Component{
                 url: 'api/customers',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
-                    //"title":this.state.title,
-                    //"firstName": this.state.firstName,
-                    //"lastName": this.state.lastName,
-                    //"nationalitycode":this.state.nationalitycode,
-                    //"phone": this.state.phone,
-                    //"email": this.state.email,
-
-                    //"billingAddressLine1":this.state.billingAddressLine1,
-                    //"deliveryAddressLine1":this.state.deliveryAddressLine1,
-                    //"billingAddressLine2":this.state.billingAddressLine2,
-                    //"deliveryAddressLine2":this.state.deliveryAddressLine2, 
-                    //"billingRegionName":this.state.billingRegionName, 
-                    //"deliveryRegionName":this.state.deliveryRegionName, 
-                    //"billingCountryName":this.state.billingCountryName,
-                    //"deliveryCountryName":this.state.deliveryCountryName,
-                    //"billingPostcode":this.state.billingPostcode,
-                    //"deliveryPostcode":this.state.deliveryPostcode,
-
-                    //"details": this.state.details,  
-
                       "customer":{
-                                  "customer_code": "ALLUNEED",
+                                  "customer_code": this.state.customerCode,
                                   "title": this.state.title,
                                   "organization_desc": this.state.details,
                                   "first_name": this.state.firstName,
@@ -121,26 +93,11 @@ class CreateForm extends React.Component{
             )
             .then(
                 (response)=>{
+                    console.log("Create Customer Success!");
                     console.log(response);
-                    let {status, message} = response.data;
-                    //let {session_id} = response.data.data;
-                    console.log(message);
-                    //alert(message);
-                    if(status=="success"){
-                        console.log("Create successfully!");
-                        //sessionStorage.setItem('user', this.state.username);
-                        //sessionStorage.setItem('sessionKey', session_id);
-                        this.setState({
-                            error:false,
-                            //isLogout:false
-                        })
-                    }
-                    else{
-                        this.setState({
-                            error:true,
-                            errorMassage:"Please enter in the correct format!"
-                        })
-                    } 
+                    let {address, customer} = response.data;
+                    console.log(customer.id);
+                    return <Redirect to = {{ pathname: "/" }} />
                 }
             )
             .catch(
@@ -363,42 +320,7 @@ render(){
                     </Col>
 
                     <Divider orientation="left">Addresses:</Divider>
-                    <Col span={7} offset={5}>
-                        <Form.Item             
-                            style={{marginRight:'50px',fontWeight: 'bold',  fontSize: '16px'}}
-                        >
-                               Billing Address
-                        </Form.Item>
-                    </Col>
-                   
-                    <Col span={7} offset={5}>
-                        <Form.Item             
-                            style={{marginRight:'50px', fontWeight: 'bold', fontSize: '16px'}}
-                        >
-                               Delivery Address
-                        </Form.Item>
-                    </Col>
 
-                    <Col span={9}>
-                        <Form.Item     
-                            style={{fontSize: '16px'}}
-                            
-                        >
-                            Address Line 1:
-                            <Input 
-                                size="large"
-                                variant="outlined"
-                                required
-                                id="billingAddressLine1"
-                                name="billingAddressLine1"
-                                autoComplete="billingAddressLine1"
-                                placeholder="Street address, P.O.box, company name, c/o"
-                                prefix={<EnvironmentOutlined className="site-form-item-icon" />}
-                                value={this.state.billingAddressLine1}
-                                onChange={this._handleChangeInput}
-                            />
-                        </Form.Item>
-                    </Col>
 
                     <Col span={9}>
                         <Form.Item     
@@ -421,26 +343,6 @@ render(){
                         </Form.Item>
                     </Col>
 
-                    <Col span={9}>
-                        <Form.Item     
-                            style={{fontSize: '16px'}}
-                            
-                        >
-                            Address Line 2:
-                            <Input 
-                                size="large"
-                                variant="outlined"
-                                required
-                                id="billingAddressLine2"
-                                name="billingAddressLine2"
-                                autoComplete="billingAddressLine2"
-                                placeholder="Apartment, suite, unit, building, floor, etc."
-                                prefix={<EnvironmentOutlined className="site-form-item-icon" />}
-                                value={this.state.billingAddressLine2}
-                                onChange={this._handleChangeInput}
-                            />
-                        </Form.Item>
-                    </Col>
 
                     <Col span={9}>
                         <Form.Item     
@@ -463,25 +365,6 @@ render(){
                         </Form.Item>
                     </Col>
 
-                    <Col span={9}>
-                        <Form.Item     
-                            style={{fontSize: '16px'}}
-                            value={this.state.billingRegionName}
-                            onChange={this._handleChangeInput}
-                            rules={[{required: true,message: ''}]}
-                        >
-                            State/Province/Region:
-                            <Input 
-                                size="large"
-                                variant="outlined"
-                                required
-                                id="billingRegionName"
-                                name="billingRegionName"
-                                autoComplete="billingRegionName"
-                                prefix={<EnvironmentOutlined className="site-form-item-icon" />}
-                            />
-                        </Form.Item>
-                    </Col>
 
                     <Col span={9}>
                         <Form.Item     
@@ -507,26 +390,6 @@ render(){
                     <Col span={9}>
                         <Form.Item     
                             style={{fontSize: '16px'}}
-                            value={this.state.billingCountryName}
-                            onChange={this._handleChangeInput}
-                            rules={[{required: true,message: ''}]}
-                        >
-                            Country:
-                            <Input 
-                                size="large"
-                                variant="outlined"
-                                required
-                                id="billingCountryName"
-                                name="billingCountryName"
-                                autoComplete="billingCountryName"
-                                prefix={<GlobalOutlined className="site-form-item-icon" />}
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={9}>
-                        <Form.Item     
-                            style={{fontSize: '16px'}}
                             value={this.state.deliveryCountryName}
                             onChange={this._handleChangeInput}
                             rules={[{required: true,message: ''}]}
@@ -540,26 +403,6 @@ render(){
                                 name="deliveryCountryName"
                                 autoComplete="deliveryCountryName"
                                 prefix={<GlobalOutlined className="site-form-item-icon" />}
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={9}>
-                        <Form.Item     
-                            style={{fontSize: '16px'}}
-                            value={this.state.billingPostcode}
-                            onChange={this._handleChangeInput}
-                            rules={[{required: true,message: ''}]}
-                        >
-                            Postcode:
-                            <Input 
-                                size="large"
-                                variant="outlined"
-                                required
-                                id="billingPostcode"
-                                name="billingPostcode"
-                                autoComplete="billingPostcode"
-                                prefix={<EnvironmentOutlined className="site-form-item-icon" />}
                             />
                         </Form.Item>
                     </Col>
