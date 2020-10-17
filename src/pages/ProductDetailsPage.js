@@ -15,10 +15,12 @@ import {
     Button, 
     Typography,
     Spin,
+    notification,
     Affix,
     Card,
 } from 'antd';
 import {  ShoppingCartOutlined } from '@ant-design/icons';
+import { useStoreActions } from 'easy-peasy';
 
 
 
@@ -26,19 +28,16 @@ const { Header, Content, Footer } = Layout;
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-function callback(key) {
-  console.log(key);
-}
 
-function onQuantityChange(value) {
-}
 
 
 function ProductDetailsPage({ history, match }){
     
     
     const [productInfo, setProductInfo] = useState(0);
-      
+    const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
+    
+    // Get Product Data from API
     const getProductData = async(code) => {
         try 
         {
@@ -61,9 +60,27 @@ function ProductDetailsPage({ history, match }){
         }
     }
     
+    // Event Handler for Product Quantity Change
+    const onQuantityChange = (value) => {
+        productInfo.quantity = value;
+    }
+
+    // Event Handler for Checkout Button
+    const checkOutClicked = (value) => {
+        readdProduct(productInfo);
+        notification.success({ 
+            message: 'Product was successfully readded to the cart',
+            placement: 'topLeft'
+        });
+    }
+
     useEffect(() => {
         const { params } = match;
         getProductData(params.productCode);
+         
+
+        if(productInfo!=null && productInfo!=0) 
+            productInfo.quantity = 1;
     },[]);
 
 
@@ -79,33 +96,28 @@ function ProductDetailsPage({ history, match }){
 
 
                     {/* Main Content */}
-                    <div style={{ marginTop: '50px'}}>
-                        <Content style={{ padding: '50px 50px'}}> 
-                        <Affix offsetTop={80}>
-                            <Row justify="center" gutter={[32, 32]}>
-                                <Col span={18}>
-                                    <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
-                                        <Title level={2} style={{ margin: '120px',fontFamily: 'sans-serif'}}> 
-                                            <Row  gutter={[16, 16]}>  
-                                                <Col flex={9} > Loading Product Information </Col>
-                                                <Col flex={3} > <Spin/> </Col>
-                                                <Col flex={9}></Col>
-                                            </Row>
-                                        </Title>
-                                    </Card>
-                                </Col>
+                    <Content style={{ padding: '100px 100px'}}> 
+                        <div style={{ marginTop: '150px'}}>
+                            
+                            <Row  gutter={[32, 32]}>  
+                                <Col flex={9} ></Col>
+                                <Col flex={0} > <Spin size="large"/> </Col>
+                                <Col flex={9}></Col>
                             </Row>
-                            </Affix>
-                        </Content>
-                    </div>
+                        </div>
+                    </Content>
 
                     {/* Footer */}
-                    <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+                    <Footer style={{ position: "sticky", bottom: "0", textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
                 </Layout>
             )
         else
             console.log("Loaded Product Info: ");
+            productInfo.quantity = 1;
+            const { imageList } = productInfo;
+            productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
             console.log(productInfo)
+            console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -129,7 +141,8 @@ function ProductDetailsPage({ history, match }){
 
                                 {/* Image Viewer */}
                                 <Col flex={9} >
-                                    <ImageViewer height={400} width={700} imageList={productInfo.imageList}/>
+                                    <p>Inside the main</p>
+                                    <ImageViewer height={500} width={600} imageList={productInfo.imageList}/>
                                 </Col>
 
                                 {/* CheckOut Box */}
@@ -141,10 +154,10 @@ function ProductDetailsPage({ history, match }){
                                         </div>
                                         <div style={{paddingLeft: 20}}> 
                                             <span> Quantity: </span>
-                                            <InputNumber min={1} max={10} defaultValue={1} onChange={onQuantityChange} />
+                                            <InputNumber min={1} max={100} defaultValue={1} onChange={onQuantityChange} />
                                         </div>
                                         <div style={{padding: 20}}>
-                                            <Button icon={<ShoppingCartOutlined />}>Checkout</Button>
+                                            <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Checkout</Button>
                                         </div>
                                     
                                     </div>
@@ -155,30 +168,49 @@ function ProductDetailsPage({ history, match }){
                             <div style={{ padding: '25px 16px' }}>
                                 <Row  gutter={[16, 16]} style={{minHeight:250}}>
                                 <Col flex={1}>
-                                    <Tabs defaultActiveKey="1" onChange={callback}>
+                                    <Tabs defaultActiveKey="1" >
                                         <TabPane tab="Description" key="1">
-                                            {productInfo.description1}
+                                            
+                                            {   
+                                                productInfo.description1=="" || productInfo.description1==null 
+                                                ? 
+                                                    'Coming Soon' 
+                                                : 
+                                                    <div dangerouslySetInnerHTML={{ __html: productInfo.description1 }} />
+                                            }  
+
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
-                                        
+                                            
+                                            Coming Soon
+
                                         </TabPane>
-                                        <TabPane tab="Parameter" key="3">
-                                        <Row gutter={[16, 16]}>
-                                            <Descriptions bordered size="small" layout="horizontal" column={2}>
-                                            {
-                                                Object.entries(productDataSource).map(([param, value]) => {
-                                                return (
-                                                    <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                                                    {value}
-                                                    </Descriptions.Item>
-                                                ) 
-                                                })
-                                            }
-                                            </Descriptions>
-                                        </Row>
-                                        </TabPane>
+                                        { productInfo.IsHolyOakes ? (
+                                            
+                                                <TabPane tab="Parameter" key="3">
+                                                    <Row gutter={[16, 16]}>
+                                                        <Descriptions bordered size="small" layout="horizontal" column={2}>
+                                                        {
+                                                            Object.entries(productDataSource).map(([param, value]) => {
+                                                            return (
+                                                                <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
+                                                                {value}
+                                                                </Descriptions.Item>
+                                                            ) 
+                                                            })
+                                                        }
+                                                        </Descriptions>
+                                                    </Row>
+                                                </TabPane>
+                                        ) : (
+                                            null
+                                        )
+                                            
+                                        }
                                         <TabPane tab="Downloads" key="4">
-                                        
+                                            
+                                            Coming Soon
+
                                         </TabPane>
                                     </Tabs>
                                 </Col>
@@ -195,6 +227,8 @@ function ProductDetailsPage({ history, match }){
                 </Layout>
             )
     }
+
+
     //console.log(this.props.history)
     this.props.history.push('/login')
     console.log(this.props.history)
