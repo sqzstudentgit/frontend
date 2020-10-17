@@ -15,10 +15,12 @@ import {
     Button, 
     Typography,
     Spin,
+    notification,
     Affix,
     Card,
 } from 'antd';
 import {  ShoppingCartOutlined } from '@ant-design/icons';
+import { useStoreActions } from 'easy-peasy';
 
 
 
@@ -26,19 +28,15 @@ const { Header, Content, Footer } = Layout;
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-function callback(key) {
-  console.log(key);
-}
-
-function onQuantityChange(value) {
-}
 
 
-function ProductDetailPage({ history }){
-    
+
+function ProductDetailPage({ history, productCode }){
     
     const [productInfo, setProductInfo] = useState(0);
-      
+    const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
+    
+    // Get Product Data from API
     const getProductData = async(code) => {
         try 
         {
@@ -61,13 +59,31 @@ function ProductDetailPage({ history }){
         }
     }
     
+    // Event Handler for Product Quantity Change
+    const onQuantityChange = (value) => {
+        productInfo.quantity = value;
+    }
+
+    // Event Handler for Checkout Button
+    const checkOutClicked = (value) => {
+        readdProduct(productInfo);
+        notification.success({ 
+            message: 'Product was successfully readded to the cart',
+            placement: 'topLeft'
+        });
+    }
 
     useEffect(() => {
+        console.log('ProductCode: '+productCode);
         getProductData('OD-11');
+        // getProductData(productCode);
         // 00089 -> No Image
         // 01224 -> 404 image
         // HFS -> model and 3 images
         // OD-11 -> model and 5 images
+
+        if(productInfo!=null && productInfo!=0) 
+            productInfo.quantity = 1;
     },[]);
 
 
@@ -109,6 +125,7 @@ function ProductDetailPage({ history }){
             )
         else
             console.log("Loaded Product Info: ");
+            productInfo.quantity = 1;
             console.log(productInfo)
             return (
                 <Layout style={{ minHeight: '100vh' }}>
@@ -146,10 +163,10 @@ function ProductDetailPage({ history }){
                                         </div>
                                         <div style={{paddingLeft: 20}}> 
                                             <span> Quantity: </span>
-                                            <InputNumber min={1} max={10} defaultValue={1} onChange={onQuantityChange} />
+                                            <InputNumber min={1} max={100} defaultValue={1} onChange={onQuantityChange} />
                                         </div>
                                         <div style={{padding: 20}}>
-                                            <Button icon={<ShoppingCartOutlined />}>Checkout</Button>
+                                            <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Checkout</Button>
                                         </div>
                                     
                                     </div>
@@ -160,10 +177,16 @@ function ProductDetailPage({ history }){
                             <div style={{ padding: '25px 16px' }}>
                                 <Row  gutter={[16, 16]} style={{minHeight:250}}>
                                 <Col flex={1}>
-                                    <Tabs defaultActiveKey="1" onChange={callback}>
+                                    <Tabs defaultActiveKey="1" >
                                         <TabPane tab="Description" key="1">
                                             
-                                            {productInfo.description1=="" || productInfo.description1==null ? 'Coming Soon' : productInfo.description1 }
+                                            {   
+                                                productInfo.description1=="" || productInfo.description1==null 
+                                                ? 
+                                                    'Coming Soon' 
+                                                : 
+                                                    <div dangerouslySetInnerHTML={{ __html: productInfo.description1 }} />
+                                            }  
 
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
@@ -187,7 +210,9 @@ function ProductDetailPage({ history }){
                                         </Row>
                                         </TabPane>
                                         <TabPane tab="Downloads" key="4">
-                                        
+                                            
+                                            Coming Soon
+
                                         </TabPane>
                                     </Tabs>
                                 </Col>
@@ -204,6 +229,8 @@ function ProductDetailPage({ history }){
                 </Layout>
             )
     }
+
+
     //console.log(this.props.history)
     this.props.history.push('/login')
     console.log(this.props.history)
