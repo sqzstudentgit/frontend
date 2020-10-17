@@ -96,23 +96,13 @@ function ProductDetailsPage({ history, match }){
 
 
                     {/* Main Content */}
-                    <div style={{ marginTop: '50px'}}>
-                        <Content style={{ padding: '50px 50px'}}> 
-                        <Affix offsetTop={80}>
-                            <Row justify="center" gutter={[32, 32]}>
-                                <Col span={18}>
-                                    <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
-                                        <Title level={2} style={{ margin: '120px',fontFamily: 'sans-serif'}}> 
-                                            <Row  gutter={[16, 16]}>  
-                                                <Col flex={9} ></Col>
-                                                <Col flex={0} > <Spin/> </Col>
-                                                <Col flex={9}></Col>
-                                            </Row>
-                                        </Title>
-                                    </Card>
-                                </Col>
-                            </Row>
-                            </Affix>
+                    <div style={{ marginTop: '100px'}}>
+                        <Content style={{ padding: '100px 100px'}}> 
+                        <Row  gutter={[32, 32]}>  
+                            <Col flex={9} ></Col>
+                            <Col flex={0} > <Spin size="large"/> </Col>
+                            <Col flex={9}></Col>
+                        </Row>
                         </Content>
                     </div>
 
