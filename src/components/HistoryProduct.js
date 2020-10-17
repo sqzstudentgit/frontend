@@ -13,6 +13,7 @@ import {
   Modal,
   notification,
   Row,
+  Space,
   Statistic,
   Typography
 } from 'antd';
@@ -108,28 +109,32 @@ const HistoryProduct = ({ history, product }) => {
               </Row>
 
               <Row gutter={[0, 16]}>
-                <Button
-                  type='secondary'
-                  onClick={() => history.push(`/products/${product.productCode}`)}
-                  icon={<FileTextOutlined />}
-                >
-                  Product Details
-                </Button>
-              </Row>
-
-              {!product.barcode ? (
-                <Row gutter={[0, 16]}>
-                  <Button 
-                    type="secondary" 
-                    onClick={() => setShowModal(true)}
-                    icon={<FileDoneOutlined />}
+                {/* Button to redirect to product details page */}
+                <Space size="small">
+                  <Button
+                    type='secondary'
+                    onClick={() => history.push(`/products/${product.productCode}`)}
+                    icon={<FileTextOutlined />}
                   >
-                    Product Specifications
+                    Product Details
                   </Button>
-                </Row>
-              ) : (
-                null
-              )}
+
+                  {/* Button to show modal for product specifications */}
+                  {!product.barcode ? (
+                    <Button
+                      style={{ marginLeft: 8 }}
+                      type="secondary" 
+                      onClick={() => setShowModal(true)}
+                      icon={<FileDoneOutlined />}
+                    >
+                      Product Specifications
+                    </Button>
+                  ) : (
+                    null
+                  )}
+                </Space>
+              </Row>
+              
               <Divider />
               <Row>
                 <Col span={12}>

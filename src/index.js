@@ -111,7 +111,7 @@ const App = () => {
           <Route path="/login" exact component={LoginPage}/>
           <Route path="/history" exact component={HistoryPage}/>
           <Route path="/order" exact component={OrderPage}/>
-          <Route path="/products/:productCode" exact component={ProductDetailsPage} />
+          <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
           <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
         </div>
       </Router>
