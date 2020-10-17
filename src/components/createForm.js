@@ -16,6 +16,7 @@ class CreateForm extends React.Component{
         this.state = {
             customerCodeList: [],
 
+            // Customer Information
             customerCode:'',
             title:'',
             firstName:'',
@@ -24,6 +25,7 @@ class CreateForm extends React.Component{
             phone:'',
             email:'',
 
+            // Address Information
             deliveryAddressLine1:'',
             deliveryAddressLine2:'', 
             deliveryRegionName:'', 
@@ -144,12 +146,12 @@ render(){
 
             <div style={{marginLeft:'30px', alignItems: 'center', width:'95%'}}>
                 <Row gutter={[10, 24]} justify="space-around">
-                    <Divider orientation="left">Identity:</Divider>
+                    <Divider orientation="left">Identity</Divider>
                     <Col span={5} >
                         <Form.Item
                             style={{fontSize: '16px'}}
                         >
-                            Customer Code:
+                            Customer Code
                             <Select 
                             name="customerCode"
                             id="customerCode"
@@ -171,7 +173,7 @@ render(){
                     <Form.Item
                         style={{fontSize: '16px'}}
                     >
-                        Title:
+                        Title
                         <Select 
                             name="title"
                             id="title"
@@ -195,7 +197,7 @@ render(){
                         style={{fontSize: '16px'}}
                         rules={[{required: true,message: 'Please input your first name!'}]}
                     >
-                        First Name:
+                        First Name
                         <Input 
                             name="firstName"
                             id="firstName"
@@ -215,7 +217,7 @@ render(){
                         <Form.Item
                             style={{fontSize: '16px'}}
                         >
-                            Last Name:
+                            Last Name
                             <Input 
                                 size="large"
                                 variant="outlined"
@@ -234,7 +236,7 @@ render(){
                     <Form.Item
                         style={{fontSize: '16px'}}
                     >
-                        Nationality Code:
+                        Nationality Code
                         <Select 
                             name="nationalitycode"
                             id="nationalitycode"
@@ -261,7 +263,7 @@ render(){
                     <Form.Item
                         style={{fontSize: '16px'}}
                     >
-                        Phone Number:
+                        Phone Number
                         <Input 
                             size="large"    
                             variant="outlined"
@@ -281,7 +283,7 @@ render(){
                     <Form.Item
                         style={{fontSize: '16px'}} 
                     >
-                        Email Address:
+                        Email Address
                         <Input 
                             size="large"    
                             variant="outlined"
@@ -298,14 +300,14 @@ render(){
                     </Form.Item>
                     </Col>
 
-                    <Divider orientation="left">Delivery Addresses:</Divider>
+                    <Divider orientation="left">Delivery Addresses</Divider>
 
                     <Col span={5}></Col>
                     <Col span={11}>
                         <Form.Item     
                             style={{fontSize: '16px'}} 
                         >
-                            Address Line 1:
+                            Address Line 1
                             <Input 
                                 size="large"
                                 variant="outlined"
@@ -327,7 +329,7 @@ render(){
                         <Form.Item     
                             style={{fontSize: '16px'}}
                         >
-                            Address Line 2:
+                            Address Line 2
                             <Input 
                                 size="large"
                                 variant="outlined"
@@ -351,7 +353,7 @@ render(){
                             value={this.state.deliveryRegionName}
                             onChange={this._handleChangeInput}
                         >
-                            State/Province/Region:
+                            State/Province/Region
                             <Input 
                                 size="large"
                                 variant="outlined"
@@ -372,7 +374,7 @@ render(){
                             value={this.state.deliveryCountryName}
                             onChange={this._handleChangeInput}
                         >
-                            Country:
+                            Country
                             <Input 
                                 size="large"
                                 variant="outlined"
@@ -393,7 +395,7 @@ render(){
                             value={this.state.deliveryPostcode}
                             onChange={this._handleChangeInput}
                         >
-                            Postcode:
+                            Postcode
                             <Input 
                                 size="large"
                                 variant="outlined"
@@ -414,7 +416,6 @@ render(){
                             value={this.state.details}
                             onChange={this._handleChangeInput}
                         >
-                            Details:
                             <TextArea 
                                 autoSize={{ minRows: 4, maxRows: 8 }}
                                 variant="outlined"
@@ -431,7 +432,6 @@ render(){
             <Form.Item style={{ fontSize: '16px', textAlign: 'center', alignItems: 'center'}}>
                 <Button 
                     type="primary"
-                    shape="round" 
                     icon={<CheckCircleTwoTone />} 
                     size='large' 
                     htmlType="submit" 
