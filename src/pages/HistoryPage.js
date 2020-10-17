@@ -24,13 +24,27 @@ import NavigationBar from '../components/NavigationBar';
 import OrderDetails from '../components/OrderDetails';
 
 
+/**
+ * HistoryPage is the component that contains the order history table.
+ * It is the component that is rendered when the 'Order History' button
+ * is clicked on the top navigation bar.
+ * 
+ * It is also responsible for being able to view a specific order.
+ * When a 'View Order' button is clicked in the 'Manage' column of the table,
+ * it renders an 'OrderDetails' component for that specific order. 
+ * 
+ * @param {object} history from the React router 
+ */
 const HistoryPage = ({ history }) => {
   const [orders, setOrders] = useState([]);      // List of all orders
   const [order, setOrder] = useState(null);      // The current order being viewed
   const [loading, setLoading] = useState(true);  // Whether the page is loading (i.e. orders are still being retrieved)
 
+
+  // Before the order history page is mounted, retrieve the orders from the database
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true);
       const response = await axios.get('/api/history', {
         params: {
           session_id: sessionStorage.getItem("sessionKey"),
@@ -39,13 +53,12 @@ const HistoryPage = ({ history }) => {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
       console.log(response);
+      setLoading(false);
       setOrders(response.data.orders);
     }
 
     try {
-      setLoading(true);
       fetchOrders();
-      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -61,6 +74,7 @@ const HistoryPage = ({ history }) => {
   }
 
 
+  // Order history table columns
   const columns = [
     {
       title: 'Order ID',

@@ -102,10 +102,12 @@ const OrderDetails = ({ order, onBack }) => {
         </Col>
       </Row>
       {loading ? (
-        <Row gutter={[0, 32]} justify="center" align="middle">
-          {<Spin size="large" />}
+        <Row style={{ marginTop: 16 }} justify="center" align="middle">
+          <Spin size="large" />
         </Row>
-      ) : null}
+      ) : (
+        null
+      )}
     </>
   )
 }
