@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 
 // Ant Design Components
 import {
@@ -36,9 +36,11 @@ import OrderDetails from '../components/OrderDetails';
  * @param {object} history from the React router 
  */
 const HistoryPage = ({ history }) => {
-  const [orders, setOrders] = useState([]);      // List of all orders
-  const [order, setOrder] = useState(null);      // The current order being viewed
-  const [loading, setLoading] = useState(true);  // Whether the page is loading (i.e. orders are still being retrieved)
+  const [orders, setOrders] = useState([]);        // The actual order history
+  const [orderId, setOrderId] = useState(null);    // The ID of the order to be viewed
+  const [loading, setLoading] = useState(true);    // Whether the page is loading (i.e. orders are still being retrieved)
+  const [redirect, setRedirect] = useState(false); // Whether to redirect to view a specific order
+  const [order, setOrder] = useState(null);
 
 
   // Before the order history page is mounted, retrieve the orders from the database
@@ -66,7 +68,8 @@ const HistoryPage = ({ history }) => {
 
 
   const handleViewOrder = (id) => {
-    setOrder(orders.find(order => order.id == id));
+    setOrderId(id);
+    setRedirect(true);
   }
 
   const handleBack = () => {
@@ -127,6 +130,21 @@ const HistoryPage = ({ history }) => {
     }
   ]
 
+  // If the user has chosen to view a specific order, redirect them 
+  // to the OrderDetailsPage, passing the specific order as props to the page
+  if (redirect) {
+    let pathname = `/orders/${orderId}`;
+    console.log(`Trying to redirect to ${pathname}`);
+    let orderlol = orders.find(order => order.id == orderId);
+    return (
+      <Redirect 
+        to={{
+          pathname: pathname,
+          state: { order: orderlol }
+        }} 
+      />
+    )
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
