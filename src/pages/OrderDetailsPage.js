@@ -86,10 +86,10 @@ const OrderDetailsPage = ({ location, history }) => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
+      
       {/* Top navigation bar */}
       <NavigationBar history={history} defaultSelected={null} />
       
-
       {/* Content body */}
       <Content style={{ padding: '80px 16px' }}>
         <Row justify="center">
@@ -122,6 +122,10 @@ const OrderDetailsPage = ({ location, history }) => {
           null
         )}
       </Content>
+
+      {/* Footer */}
+      <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+
     </Layout>
   )
 }

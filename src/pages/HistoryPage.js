@@ -21,7 +21,6 @@ const { Title } = Typography;
 
 // Application components
 import NavigationBar from '../components/NavigationBar';
-import OrderDetails from '../components/OrderDetails';
 
 
 /**
@@ -40,7 +39,6 @@ const HistoryPage = ({ history }) => {
   const [orderId, setOrderId] = useState(null);    // The ID of the order to be viewed
   const [loading, setLoading] = useState(true);    // Whether the page is loading (i.e. orders are still being retrieved)
   const [redirect, setRedirect] = useState(false); // Whether to redirect to view a specific order
-  const [order, setOrder] = useState(null);
 
 
   // Before the order history page is mounted, retrieve the orders from the database
@@ -67,15 +65,16 @@ const HistoryPage = ({ history }) => {
   }, []);
 
 
+  /**
+   * Handles the click of the 'View Order' button in a row
+   * of the order history table. Sets the order ID, and
+   * faciliates redirection to the corresponding order details page
+   * @param {number} id order ID
+   */
   const handleViewOrder = (id) => {
     setOrderId(id);
     setRedirect(true);
   }
-
-  const handleBack = () => {
-    setOrder(null);
-  }
-
 
   // Order history table columns
   const columns = [
@@ -135,17 +134,18 @@ const HistoryPage = ({ history }) => {
   if (redirect) {
     let pathname = `/orders/${orderId}`;
     console.log(`Trying to redirect to ${pathname}`);
-    let orderlol = orders.find(order => order.id == orderId);
+    let order = orders.find(order => order.id == orderId);
     return (
       <Redirect 
         to={{
           pathname: pathname,
-          state: { order: orderlol }
+          state: { order: order }
         }} 
       />
     )
   }
 
+  // Otherwise, just render the order history table
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
@@ -153,16 +153,12 @@ const HistoryPage = ({ history }) => {
 
       {/* Content body */}
       <Content style={{ padding: '90px 16px' }}>
-        {!order ? (
-          <Row justify="center">
-            <Col span={18}>
-              <Title level={4}>Recent Orders</Title>
-              {loading ? <Spin /> : <Table dataSource={orders} columns={columns} rowKey={(row) => row.id} />}
-            </Col>
-          </Row>
-        ) : (
-          <OrderDetails order={order} onBack={handleBack} />
-        )}
+        <Row justify="center">
+          <Col span={18}>
+            <Title level={4}>Recent Orders</Title>
+            {loading ? <Spin /> : <Table dataSource={orders} columns={columns} rowKey={(row) => row.id} />}
+          </Col>
+        </Row>
       </Content>
       
       {/* Footer */}
