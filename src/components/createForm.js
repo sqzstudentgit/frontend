@@ -1,12 +1,12 @@
 //ant design
 import 'antd/dist/antd.css';
 import { Typography,Form,Input,Button,Row, Col, Divider,Select,Image} from 'antd';
+import {message as antdMessage} from 'antd' ;
 import { CheckCircleTwoTone, GlobalOutlined, UserAddOutlined, UserOutlined, EnvironmentOutlined,PhoneOutlined,MailOutlined,MessageOutlined,EyeTwoTone,EyeInvisibleOutlined } from '@ant-design/icons';
 //React
 import React from "react";
 import Axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom';
-import ErrorMessage from './errorMessage';
 
 const {Option} = Select;
 
@@ -24,6 +24,7 @@ class CreateForm extends React.Component{
             nationalitycode:'',
             phone:'',
             email:'',
+            details:'',
 
             // Address Information
             deliveryAddressLine1:'',
@@ -32,15 +33,15 @@ class CreateForm extends React.Component{
             deliveryCountryName:'',
             deliveryPostcode:'',
 
-            details:'',
-
             error: false,
             errorMassage:'',
+            createSuccess:false,
         }
         this._handleChangeInput =  this._handleChangeInput.bind(this)
         this._handleSubmit =  this._handleSubmit.bind(this)
     }
 
+    // Read customers code list from API
      componentDidMount() {
          Axios({
                  method: 'get',           
@@ -96,8 +97,11 @@ class CreateForm extends React.Component{
                     console.log("Create Customer Success!");
                     console.log(response);
                     let {address, customer} = response.data;
-                    console.log(customer.id);
-                    return <Redirect to = {{ pathname: "/" }} />
+                    console.log("Create Customer ID:"+customer.id);
+                    this.setState({
+                        error:false,
+                        createSuccess:true
+                    })
                 }
             )
             .catch(
@@ -105,9 +109,9 @@ class CreateForm extends React.Component{
                     console.log(e)
                     this.setState({
                         error:true,
-                        errorMassage: e.response.data
+                        errorMassage: e.response.data.message
                     })
-
+                    antdMessage.info(this.state.errorMassage);
                 }
             )
             console.log(this.state) //test      
@@ -115,11 +119,15 @@ class CreateForm extends React.Component{
 
 
 render(){
-    const {error, errorMassage} = this.state;
     const { Title } = Typography;
     const { TextArea } = Input;
-    // const { Option } = Select;
+    
+    // Redirect to switch customer page if create success
+    if(this.state.createSuccess){
+        return <Redirect to = {{ pathname: "/choose" }} />
+    }
 
+    // Read avaliable customer code information into the drop down list
     const children = [];
     for (let i=0; i < this.state.customerCodeList.length; i++) {
         children.push(<Option key={this.state.customerCodeList[i]}>{this.state.customerCodeList[i]}</Option>);
@@ -131,7 +139,6 @@ render(){
         initialValues={{remember: true}}
         onFinish={this._handleSubmit}
         >
-            {error && <ErrorMessage massage={errorMassage}/>} 
             <Form.Item style={{marginTop:'20px', fontSize: '14px',textAlign: 'right', alignItems: 'center'}}>
                 Go back to
                 <Button type="link" href="\login">Choose Customer</Button>
