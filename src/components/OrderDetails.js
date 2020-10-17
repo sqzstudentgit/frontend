@@ -30,7 +30,7 @@ const OrderDetails = ({ order, onBack }) => {
   const readdOrder = useStoreActions(actions => actions.cart.readdOrder);
 
 
-  // When mounting the component, first retrieve the product data
+  // When viewing a past order, we first retrieve the product data
   // for each product in the order. This information is needed to
   // be able to readd the entire order, or invividual products, back
   // to the cart
@@ -49,17 +49,10 @@ const OrderDetails = ({ order, onBack }) => {
       setProducts(prev => [...prev, {...response.data.data, ...line}]);
     }
 
-    for (let line of lines) {
-      try {
-        fetchProduct(line);
-
-      } catch (err) {
-        console.log(err);
-        console.log(err.response);
-      }
-    }
-    setLoading(false);
-
+    (async () => {
+      await Promise.all(lines.map(line => fetchProduct(line)));
+      setLoading(false);
+    })();
     
   }, []);
 
