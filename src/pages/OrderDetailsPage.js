@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import { useStoreActions } from 'easy-peasy';
 
@@ -80,13 +80,13 @@ const OrderDetailsPage = ({ location, history }) => {
     readdOrder(products);
     notification.success({ 
       message: 'Order was successfully readded to the cart',
-      placement: 'topLeft'
+      placement: 'topRight'
     });
   }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      
+
       {/* Top navigation bar */}
       <NavigationBar history={history} defaultSelected={null} />
       

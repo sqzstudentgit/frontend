@@ -35,8 +35,6 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
   const [quantity, setQuantity] = useState(product.quantity);
   const [visible, setVisible] = useState(false);
 
-
-
   // Handles subtotal change as a result of quantity change.
   // Also notifies the wrapper OrderPage component of the quantity change
   useEffect(() => {
@@ -45,6 +43,7 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
   }, [quantity]);
 
 
+  // Logs the product JSON retrieved from the database
   useEffect(() => {
     console.log(JSON.stringify(product, null, 2));
   }, []);

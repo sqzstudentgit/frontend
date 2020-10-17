@@ -19,7 +19,8 @@ import {
 
 // Ant Design Icons
 import {
-  ProfileOutlined,
+  FileDoneOutlined,
+  FileTextOutlined,
   ShoppingCartOutlined
 } from '@ant-design/icons';
 
@@ -32,9 +33,10 @@ import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 const HistoryProduct = ({ history, product }) => {
   const [showModal, setShowModal] = useState(false);
-
+  const [redirect, setRedirect] = useState(false);
   const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
 
+  // Log the product JSON
   useEffect(() => {
     console.log(JSON.stringify(product, null, 2));
   })
@@ -56,7 +58,7 @@ const HistoryProduct = ({ history, product }) => {
     readdProduct(product);
     notification.success({ 
       message: 'Product was successfully readded to the cart',
-      placement: 'topLeft'
+      placement: 'topRight'
     });
   }
 
@@ -105,9 +107,23 @@ const HistoryProduct = ({ history, product }) => {
                 </Col>
               </Row>
 
+              <Row gutter={[0, 16]}>
+                <Button
+                  type='secondary'
+                  onClick={() => history.push(`/products/${product.productCode}`)}
+                  icon={<FileTextOutlined />}
+                >
+                  Product Details
+                </Button>
+              </Row>
+
               {!product.barcode ? (
                 <Row gutter={[0, 16]}>
-                  <Button type="secondary" onClick={() => setShowModal(true)} icon={<ProfileOutlined />}>
+                  <Button 
+                    type="secondary" 
+                    onClick={() => setShowModal(true)}
+                    icon={<FileDoneOutlined />}
+                  >
                     Product Specifications
                   </Button>
                 </Row>
