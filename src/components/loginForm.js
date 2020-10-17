@@ -2,7 +2,6 @@
 import { Form, Input, Button, Card} from 'antd';
 import {message as antdMessage} from 'antd' ;
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
 
 //React
 import React from "react";
