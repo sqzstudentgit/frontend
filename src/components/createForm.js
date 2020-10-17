@@ -1,5 +1,4 @@
 //ant design
-import 'antd/dist/antd.css';
 import { Typography,Form,Input,Button,Row, Col, Divider,Select,Image} from 'antd';
 import {message as antdMessage} from 'antd' ;
 import { CheckCircleTwoTone, GlobalOutlined, UserAddOutlined, UserOutlined, EnvironmentOutlined,PhoneOutlined,MailOutlined,MessageOutlined,EyeTwoTone,EyeInvisibleOutlined } from '@ant-design/icons';
