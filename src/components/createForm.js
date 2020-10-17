@@ -77,7 +77,8 @@ class CreateForm extends React.Component{
                                   "first_name": this.state.firstName,
                                   "last_name": this.state.lastName,
                                   "phone": this.state.phone,
-                                  "email": this.state.email
+                                  "email": this.state.email,
+                                  "nationality_code": this.state.nationalitycode
                               },
                       "address": {
                                   "contact": this.state.phone,
