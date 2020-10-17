@@ -1,6 +1,5 @@
 //ant design
 import { Row, Col } from 'antd';
-import 'antd/dist/antd.css';
 
 //react
 import React from "react";
