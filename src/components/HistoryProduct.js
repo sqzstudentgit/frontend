@@ -34,11 +34,14 @@ import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
 
 const HistoryProduct = ({ history, product }) => {
   const [showModal, setShowModal] = useState(false);
+  const [isHolyOakes, setIsHolyOakes] = useState(false);
   const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
 
-  // Log the product JSON
+  // Log the product JSON, and determine whether product is PJ SAS or HolyOakes
   useEffect(() => {
     console.log(JSON.stringify(product, null, 2));
+    const { imageList } = product;
+    setIsHolyOakes(imageList && imageList.find(image => image.is3DModelType == 'Y'));
   })
 
 
@@ -131,29 +134,27 @@ const HistoryProduct = ({ history, product }) => {
 
               <Row gutter={[0, 16]}>
                 {/* Button to redirect to product details page */}
-                <Space size="small">
-                  <Button
-                    type='secondary'
-                    onClick={() => history.push(`/products/${product.productCode}`)}
-                    icon={<FileTextOutlined />}
-                  >
-                    Product Details
-                  </Button>
+                <Button
+                  type='secondary'
+                  onClick={() => history.push(`/products/${product.productCode}`)}
+                  icon={<FileTextOutlined />}
+                >
+                  Product Details
+                </Button>
 
-                  {/* Button to show modal for product specifications */}
-                  {!product.barcode ? (
-                    <Button
-                      style={{ marginLeft: 8 }}
-                      type="secondary" 
-                      onClick={() => setShowModal(true)}
-                      icon={<FileDoneOutlined />}
-                    >
-                      Product Specifications
-                    </Button>
-                  ) : (
-                    null
-                  )}
-                </Space>
+                {/* Button to show modal for product specifications */}
+                {isHolyOakes ? (
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    type="secondary" 
+                    onClick={() => setShowModal(true)}
+                    icon={<FileDoneOutlined />}
+                  >
+                    Product Specifications
+                  </Button>
+                ) : (
+                  null
+                )}
               </Row>
               
               <Divider />
