@@ -31,7 +31,8 @@ const { Title } = Typography;
 
 
 
-function ProductDetailPage({ history, productCode }){
+function ProductDetailsPage({ history, match }){
+    
     
     const [productInfo, setProductInfo] = useState(0);
     const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
@@ -74,13 +75,9 @@ function ProductDetailPage({ history, productCode }){
     }
 
     useEffect(() => {
-        console.log('ProductCode: '+productCode);
-        getProductData('OD-11');
-        // getProductData(productCode);
-        // 00089 -> No Image
-        // 01224 -> 404 image
-        // HFS -> model and 3 images
-        // OD-11 -> model and 5 images
+        const { params } = match;
+        getProductData(params.productCode);
+         
 
         if(productInfo!=null && productInfo!=0) 
             productInfo.quantity = 1;
@@ -95,7 +92,7 @@ function ProductDetailPage({ history, productCode }){
                 <Layout style={{ minHeight: '100vh' }}>
 
                     {/* Top navigation bar */}
-                    <NavigationBar  history={history} defaultSelected='/product'/>
+                    <NavigationBar  history={history} defaultSelected={null} />
 
 
                     {/* Main Content */}
@@ -263,4 +260,4 @@ const productDataSource = {
     //"Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
 }
 
-export default withRouter(ProductDetailPage)
+export default withRouter(ProductDetailsPage)

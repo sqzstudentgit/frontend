@@ -4,11 +4,14 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { action, actionOn, createStore, StoreProvider } from 'easy-peasy';
 import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
-import ProductDetailPage from './pages/productDetailPage';
+import CreatePage from './pages/createPage';
+import ProductDetailsPage from './pages/ProductDetailsPage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
 import HistoryPage from './pages/HistoryPage';
 import OrderPage from './pages/OrderPage';
 import 'antd/dist/antd.css';
 import './index.css';
+
 
 
 const App = () => {
@@ -110,7 +113,9 @@ const App = () => {
           <Route path="/login" exact component={LoginPage}/>
           <Route path="/history" exact component={HistoryPage}/>
           <Route path="/order" exact component={OrderPage}/>
-          <Route path="/product" exact component={ProductDetailPage} />
+		      <Route path="/create" exact component={CreatePage}/>
+          <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
+          <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
         </div>
       </Router>
     </StoreProvider>
