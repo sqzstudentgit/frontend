@@ -96,18 +96,19 @@ function ProductDetailsPage({ history, match }){
 
 
                     {/* Main Content */}
-                    <div style={{ marginTop: '100px'}}>
-                        <Content style={{ padding: '100px 100px'}}> 
-                        <Row  gutter={[32, 32]}>  
-                            <Col flex={9} ></Col>
-                            <Col flex={0} > <Spin size="large"/> </Col>
-                            <Col flex={9}></Col>
-                        </Row>
-                        </Content>
-                    </div>
+                    <Content style={{ padding: '100px 100px'}}> 
+                        <div style={{ marginTop: '150px'}}>
+                            
+                            <Row  gutter={[32, 32]}>  
+                                <Col flex={9} ></Col>
+                                <Col flex={0} > <Spin size="large"/> </Col>
+                                <Col flex={9}></Col>
+                            </Row>
+                        </div>
+                    </Content>
 
                     {/* Footer */}
-                    <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+                    <Footer style={{ position: "sticky", bottom: "0", textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
                 </Layout>
             )
         else
