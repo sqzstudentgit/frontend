@@ -123,7 +123,10 @@ function ProductDetailsPage({ history, match }){
         else
             console.log("Loaded Product Info: ");
             productInfo.quantity = 1;
+            const { imageList } = productInfo;
+            productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
             console.log(productInfo)
+            console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -191,21 +194,28 @@ function ProductDetailsPage({ history, match }){
                                             Coming Soon
 
                                         </TabPane>
-                                        <TabPane tab="Parameter" key="3">
-                                        <Row gutter={[16, 16]}>
-                                            <Descriptions bordered size="small" layout="horizontal" column={2}>
-                                            {
-                                                Object.entries(productDataSource).map(([param, value]) => {
-                                                return (
-                                                    <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                                                    {value}
-                                                    </Descriptions.Item>
-                                                ) 
-                                                })
-                                            }
-                                            </Descriptions>
-                                        </Row>
-                                        </TabPane>
+                                        { productInfo.IsHolyOakes ? (
+                                            
+                                                <TabPane tab="Parameter" key="3">
+                                                    <Row gutter={[16, 16]}>
+                                                        <Descriptions bordered size="small" layout="horizontal" column={2}>
+                                                        {
+                                                            Object.entries(productDataSource).map(([param, value]) => {
+                                                            return (
+                                                                <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
+                                                                {value}
+                                                                </Descriptions.Item>
+                                                            ) 
+                                                            })
+                                                        }
+                                                        </Descriptions>
+                                                    </Row>
+                                                </TabPane>
+                                        ) : (
+                                            null
+                                        )
+                                            
+                                        }
                                         <TabPane tab="Downloads" key="4">
                                             
                                             Coming Soon
