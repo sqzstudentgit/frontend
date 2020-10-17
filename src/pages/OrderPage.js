@@ -165,7 +165,9 @@ const OrderPage = ({ history }) => {
         notification.success({
           message: 'Your order has been submitted!'
         })
+
         setTimeout(() => {
+          emptyCart()
           history.push('/');
         }, 4500);
       }
