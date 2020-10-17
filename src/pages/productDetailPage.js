@@ -62,7 +62,7 @@ function ProductDetailPage({ history }){
     }
     
     useEffect(() => {
-        getProductData(102716);
+        getProductData('CRA350');
     },[]);
 
 

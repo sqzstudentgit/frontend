@@ -46,7 +46,8 @@ const OrderDetails = ({ order, onBack }) => {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
       console.log(response);
-      setProducts(prev => [...prev, {...response.data.data, ...line}]);
+      const product = {...response.data.data, ...line};
+      setProducts(prev => [...prev, product]);
     }
 
     (async () => {
