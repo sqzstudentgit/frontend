@@ -2,21 +2,17 @@
 import { Form, Input, Button, Card} from 'antd';
 import {message as antdMessage} from 'antd' ;
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
 
 //React
 import React from "react";
 import axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom'
 
-class AddressForm extends React.Component{
+class AddressesList extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            addr1:"test1",
-            addr2:"test2",
-            state:"state1"
-            
+            addresses:[]            
         }
     }
 
@@ -26,6 +22,10 @@ class AddressForm extends React.Component{
 
     _handleSubmit(e){
 
+    }
+
+    addressList(){
+        
     }
 
     render(){
@@ -47,4 +47,4 @@ const addressDataSource = {
     "addr2":"test2"
     }
 
-export default withRouter(AddressForm)
+export default withRouter(AddressesList)
