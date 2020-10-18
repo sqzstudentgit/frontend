@@ -1,7 +1,7 @@
 //ant design
 import { Form, Input, Button, Card, Row, Col, Divider,Select,Image} from 'antd';
-import 'antd/dist/antd.css';
 import { CheckCircleTwoTone, GlobalOutlined, UserAddOutlined, UserOutlined, EnvironmentOutlined,PhoneOutlined,MailOutlined,MessageOutlined,EyeTwoTone,EyeInvisibleOutlined } from '@ant-design/icons';
+import {message as antdMessage} from 'antd' ;
 
 //React
 import React from "react";
@@ -13,12 +13,17 @@ class AddAddressForm extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            customerCode:11, //Todo: test purpose, change to dynamic customer code in future
+
             contact:'',
             addr1:'',
             addr2:'',
             postcode:'',
             region:'',
-            country:''
+            country:'',
+
+            error:false,
+            errorMessage:''
         }
         this._handleChange =  this._handleChange.bind(this)
         this._handleSubmit =  this._handleSubmit.bind(this)
@@ -32,82 +37,119 @@ class AddAddressForm extends React.Component{
     }
 
     _handleSubmit(e){
-        console.log()
         axios({
-            method:'get',
-            url:'/api/customer/1',
-            headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+            method:'post',
+            url:'/api/customer/'+this.state.customerCode+'/addresses',
+            headers: {'Content-Type': 'application/JSON; charset=UTF- 8'},
             data:{
-                
-            },
+                "contact":this.state.contact,
+                "address_line1": this.state.addr1,
+                "address_line2": this.state.addr2,
+                "postcode": this.state.postcode,
+                "region": this.state.region,
+                "country": this.state.country
+            }
         })
+        .then(
+            (response)=>{
+                console.log("Create new address success")
+                console.log(response)
+                this.setState({
+                    error:false
+                })
+            }
+        )
+        .catch(
+            (e)=>{
+                console.log(e)
+                this.setState({
+                    error:true,
+                    errorMessage:e.response.data
+                })
+                antdMessage.info(this.state.errorMessage);
+            }
+        )
     }
 
     render(){
-        console.log("Start Site")
+        console.log("Start create new address")
         return(
             <Form
+            className="address-form"
+            initialValues={{remember: true}}
             onFinish={this._handleSubmit}
             >
-                <Form.Item     
-                    name="addr1"
-                    value={this.state.addr1}
+                <Form.Item
+                    label="Contact"
+                    name="contact"
+                    value={this.state.contact}
                     onChange={this._handleChange}
-                    rules={[{required:true}]}
+                    rules={[{required: true,message: 'Please input your contact!'}]}
                 >
-                    Address Line 1:
                     <Input 
-                        placeholder="Street address, P.O.box, company name, c/o"
-                        prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                        prefix={<PhoneOutlined className="site-form-item-icon" />} 
                     />
                 </Form.Item>
 
                 <Form.Item
+                    label="Address Line 1"
+                    name="addr1"
+                    value={this.state.addr1}
+                    onChange={this._handleChange}
+                    rules={[{required: true,message: 'Please input your address!'}]}
+                >
+                    <Input 
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                        placeholder="Street address, P.O.box, company name, c/o" 
+                    />
+                </Form.Item>
+
+                <Form.Item
+                    label="Address Line 2"
                     name="addr2"
                     value={this.state.addr2}
                     onChange={this._handleChange}
-                    rules={[{required:true}]}
+                    rules={[{required: true,message: 'Please input your address!'}]}
                 >
-                    Address Line 2:
                     <Input 
-                        placeholder="Apartment, suite, unit, building, floor, etc."
-                        prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                        placeholder="" 
                     />
                 </Form.Item>
 
-                <Form.Item     
+                <Form.Item
+                    label="Region"
                     name="region"
                     value={this.state.region}
                     onChange={this._handleChange}
-                    rules={[{required:true}]}
+                    rules={[{required: true,message: 'Please input your region!'}]}
                 >
-                    State/Province/Region:
                     <Input 
-                        prefix={<EnvironmentOutlined className="site-form-item-icon" />}
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
                     />
                 </Form.Item>
 
-                <Form.Item     
+                <Form.Item
+                    label="Postcode"
                     name="postcode"
                     value={this.state.postcode}
                     onChange={this._handleChange}
-                    rules={[{required:true}]}
-                    >
-                        Postcode:
-                        <Input 
-                            prefix={<EnvironmentOutlined className="site-form-item-icon" />}
-                        />
+                    rules={[{required: true,message: 'Please input your postcode!'}]}
+                >
+                    <Input 
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                    />
                 </Form.Item>
 
-                <Form.Item     
+                <Form.Item
+                    label="Country"
                     name="country"
                     value={this.state.country}
                     onChange={this._handleChange}
-                    rules={[{required:true}]}
+                    rules={[{required: true,message: 'Please input your country!'}]}
                 >
-                    Country:
                     <Input 
-                        prefix={<GlobalOutlined className="site-form-item-icon" />}
+                        prefix={<GlobalOutlined className="site-form-item-icon" />} 
                     />
                 </Form.Item>
 
