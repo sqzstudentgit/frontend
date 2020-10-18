@@ -7,6 +7,7 @@ import { useStoreActions } from 'easy-peasy';
 import {
   Button,
   Col,
+  Layout,
   notification,
   PageHeader,
   Row,
@@ -14,17 +15,22 @@ import {
   Statistic,
 } from 'antd';
 
+// Ant Design Sub-Components
+const { Content, Footer } = Layout;
+
 // Ant Design Icons
 import { ShoppingCartOutlined } from '@ant-design/icons';
 
 // Application components
-import HistoryProduct from './HistoryProduct';
+import HistoryProduct from '../components/HistoryProduct';
+import NavigationBar from '../components/NavigationBar';
 
 
-const OrderDetails = ({ order, onBack }) => {
+const OrderDetailsPage = ({ location, history }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  const order = location.state.order;
   const { lines } = order;
   const totalPrice = lines.reduce((acc, cur) => acc + cur.totalPrice, 0);
   const readdOrder = useStoreActions(actions => actions.cart.readdOrder);
@@ -74,43 +80,54 @@ const OrderDetails = ({ order, onBack }) => {
     readdOrder(products);
     notification.success({ 
       message: 'Order was successfully readded to the cart',
-      placement: 'topLeft'
+      placement: 'topRight'
     });
   }
 
   return (
-    <>
-      <Row justify="center">
-        <Col span={18}>
-          <PageHeader
-            style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)", marginBottom: 32 }}
-            title={`Order ID: ${order.id}`}
-            ghost={false}
-            onBack={() => onBack()}
-            extra={readdButton}
-          >
-            <Statistic
-              title="Total Price (ex GST)"
-              prefix="$"
-              value={totalPrice}
-              precision={2}
-              style={{
-                margin: '0 32px',
-              }}
-            />
-          </PageHeader>
-          {!loading && products.map(product => <HistoryProduct key={product.id} product={product} />)}
-        </Col>
-      </Row>
-      {loading ? (
-        <Row style={{ marginTop: 16 }} justify="center" align="middle">
-          <Spin size="large" />
+    <Layout style={{ minHeight: '100vh' }}>
+
+      {/* Top navigation bar */}
+      <NavigationBar history={history} defaultSelected={null} />
+      
+      {/* Content body */}
+      <Content style={{ padding: '80px 16px' }}>
+        <Row justify="center">
+          <Col span={18}>
+            <PageHeader
+              style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)", marginBottom: 32 }}
+              title={`Order ID: ${order.id}`}
+              ghost={false}
+              onBack={() => history.push('/history')}
+              extra={readdButton}
+            >
+              <Statistic
+                title="Total Price (ex GST)"
+                prefix="$"
+                value={totalPrice}
+                precision={2}
+                style={{
+                  margin: '0 32px',
+                }}
+              />
+            </PageHeader>
+            {!loading && products.map(product => <HistoryProduct key={product.id} product={product} />)}
+          </Col>
         </Row>
-      ) : (
-        null
-      )}
-    </>
+        {loading ? (
+          <Row style={{ marginTop: 16 }} justify="center" align="middle">
+            <Spin size="large" />
+          </Row>
+        ) : (
+          null
+        )}
+      </Content>
+
+      {/* Footer */}
+      <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+
+    </Layout>
   )
 }
 
-export default withRouter(OrderDetails); 
+export default withRouter(OrderDetailsPage); 
