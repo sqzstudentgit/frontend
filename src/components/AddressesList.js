@@ -11,7 +11,6 @@ import {withRouter, Redirect} from 'react-router-dom';
 
 //Linked Components
 import AddAddressForm from '../components/AddAddressForm';
-import FormatAddress from '../components/FormatAddress';
 
 class AddressesList extends React.Component{
     constructor(props){
