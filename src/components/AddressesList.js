@@ -1,5 +1,5 @@
 //ant design
-import { Form, Input, Button, Card, Select} from 'antd';
+import { Form, Input, Button, Card, Select, Row, Col, Divider} from 'antd';
 import {message as antdMessage} from 'antd' ;
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Typography, Space } from 'antd';
@@ -7,37 +7,48 @@ import { Typography, Space } from 'antd';
 //React
 import React from "react";
 import axios from 'axios';
-import {withRouter, Redirect} from 'react-router-dom'
+import {withRouter, Redirect} from 'react-router-dom';
+
+//Linked Components
+import AddAddressForm from '../components/AddAddressForm';
+import FormatAddress from '../components/FormatAddress';
 
 class AddressesList extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             customerCode: 11, //Todo: test purpose, change to dynamic customer code in future
-            addresses:[],
             
-            currDeliveryAddr:'',
-            dcontact:'',
-            daddr1:'',
-            daddr2:'',
-            //Todo: Add more value later
+            //List of all addresses for the customer
+            addresses:[],       //all addresses are formatted into string, seperate by ";"
+            addressesJson:[],   //all addresses are in JSON formats
 
+            currDeliveryAddr:'',
+            currDeliveryAddrJson:'',
+            currBillAddr:'',
+            currBillAddrJson:'',
 
             error:false,
-            errorMessage:''
+            errorMessage:'',
+
+            addAddr:'none'
         }
         this._handleChange =  this._handleChange.bind(this)
-        this._handleSubmit =  this._handleSubmit.bind(this)
     }
 
     _handleChange(e){
-        this.setState({
-            currDeliveryAddr:e
-        })
-    }
-
-    _handleSubmit(e){
-
+        console.log("Action:"+e);
+        if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
+            this.setState({
+                addAddr:''
+            })
+        }else{
+            this.setState({
+                currDeliveryAddr:this.state.addresses[e],
+                currDeliveryAddrJson:this.state.addressesJson[e],
+                addAddr:'none'
+            })
+        }
     }
 
     componentDidMount(){
@@ -49,7 +60,7 @@ class AddressesList extends React.Component{
         .then(
             (response)=>{
                 console.log(response);
-                // Reformat the address information so that if fits the selection box
+                // Reformat the address information so that it fits the selection box
                 for(let i=0; i<response.data.length; i++){
                     var temp_addr=JSON.parse(response.data[i]);
                     var format_addr="";
@@ -62,6 +73,11 @@ class AddressesList extends React.Component{
                         addresses:this.state.addresses.concat(format_addr.slice(0, -2))
                     })
                 }
+                this.setState({
+                    addressesJson:response.data,
+                    currDeliveryAddr:this.state.addresses[0],
+                    currDeliveryAddrJson:response.data[0]
+                })
             }
         )
         .catch(
@@ -75,47 +91,52 @@ class AddressesList extends React.Component{
         )
     }
 
-    updateAddress(e){
-        
-    }
+
 
     render(){
-        console.log("Page Start")
-        console.log(this.state.currDeliveryAddr)
 
+        console.log("Page Start")
+        
         const addressesList = [];
         for(let i=0; i<this.state.addresses.length; i++){
-            addressesList.push(<Option key={this.state.addresses[i]}>{this.state.addresses[i]}</Option>)
+            addressesList.push(<Option key={i}>{this.state.addresses[i]}</Option>)
         }
+        addressesList.push(<Option key="-1">Add New Address</Option>)
 
         const { Text } = Typography;
 
+        const formatDeliveryAddr = this.state.currDeliveryAddr.split(";").map(addr => <p>{addr}</p>)
+
         return(
-            <Form>
-                <Form.Item>
-                    Delivery Address: 
-                    {this.state.currDeliveryAddr}
-                </Form.Item>
+            <div>
+                <div>
+                    <Divider orientation="left">Delivery Address</Divider>
+                    <Form>
+                        <Form.Item>
+                            <div style={{lineHeight: '8px'}}>
+                                {formatDeliveryAddr}
+                            </div>
+                        </Form.Item>
 
-                <Form.Item>
-                    <Select
-                        defaultValue={this.state.currDeliveryAddr}
-                        onChange={this._handleChange}
-                    >
-                        {addressesList}
-                    </Select>
-                </Form.Item>
-            </Form>
-            
+                        <Form.Item>
+                            <Select
+                                placeholder="Select/Add Delivery Address"
+                                onChange={this._handleChange}
+                            >
+                                {addressesList}
+                            </Select>
+                        </Form.Item>
+                    </Form>
+                </div>
+
+                <div style={{display:this.state.addAddr}}>
+                    <Divider orientation="left">Add New Address</Divider>
+                    <AddAddressForm customerCode={this.state.customerCode}></AddAddressForm>
+                </div>
+            </div>
         )
-    }
+    }//end render
+}//end class
 
-}
-
-// Mock parameter data for address
-const addressDataSource = {
-    "addr1":"test1",
-    "addr2":"test2"
-    }
 
 export default withRouter(AddressesList)

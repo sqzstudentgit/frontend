@@ -13,7 +13,7 @@ class AddAddressForm extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            customerCode:11, //Todo: test purpose, change to dynamic customer code in future
+            customerCode:this.props.customerCode, //Todo: test purpose, change to dynamic customer code in future
 
             contact:'',
             addr1:'',
@@ -23,7 +23,7 @@ class AddAddressForm extends React.Component{
             country:'',
 
             error:false,
-            errorMessage:''
+            errorMessage:'',
         }
         this._handleChange =  this._handleChange.bind(this)
         this._handleSubmit =  this._handleSubmit.bind(this)
@@ -72,7 +72,6 @@ class AddAddressForm extends React.Component{
     }
 
     render(){
-        console.log("Start create new address")
         return(
             <Form
             className="address-form"
@@ -118,18 +117,6 @@ class AddAddressForm extends React.Component{
                 </Form.Item>
 
                 <Form.Item
-                    label="Region"
-                    name="region"
-                    value={this.state.region}
-                    onChange={this._handleChange}
-                    rules={[{required: true,message: 'Please input your region!'}]}
-                >
-                    <Input 
-                        prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                    />
-                </Form.Item>
-
-                <Form.Item
                     label="Postcode"
                     name="postcode"
                     value={this.state.postcode}
@@ -141,6 +128,18 @@ class AddAddressForm extends React.Component{
                     />
                 </Form.Item>
 
+                <Form.Item
+                    label="Region"
+                    name="region"
+                    value={this.state.region}
+                    onChange={this._handleChange}
+                    rules={[{required: true,message: 'Please input your region!'}]}
+                >
+                    <Input 
+                        prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                    />
+                </Form.Item>
+                
                 <Form.Item
                     label="Country"
                     name="country"
