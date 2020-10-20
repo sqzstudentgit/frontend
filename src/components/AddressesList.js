@@ -22,8 +22,10 @@ class AddressesList extends React.Component{
             addresses:[],       //all addresses are formatted into string, seperate by ";"
             addressesJson:[],   //all addresses are in JSON formats
 
+            //Delivery Address
             currDeliveryAddr:'',
             currDeliveryAddrJson:'',
+
             currBillAddr:'',
             currBillAddrJson:'',
 
@@ -100,23 +102,18 @@ class AddressesList extends React.Component{
         for(let i=0; i<this.state.addresses.length; i++){
             addressesList.push(<Option key={i}>{this.state.addresses[i]}</Option>)
         }
-        addressesList.push(<Option key="-1">Add New Address</Option>)
+        addressesList.push(<Option key="-1">Add New Address</Option>);
 
         const { Text } = Typography;
 
-        const formatDeliveryAddr = this.state.currDeliveryAddr.split(";").map(addr => <p>{addr}</p>)
+        const formatDeliveryAddr = this.state.currDeliveryAddr.split(";").map(addr => <p>{addr}</p>);
 
         return(
             <div>
+                {/* Delivery Address Form */}
                 <div>
                     <Divider orientation="left">Delivery Address</Divider>
                     <Form>
-                        <Form.Item>
-                            <div style={{lineHeight: '8px'}}>
-                                {formatDeliveryAddr}
-                            </div>
-                        </Form.Item>
-
                         <Form.Item>
                             <Select
                                 placeholder="Select/Add Delivery Address"
@@ -125,6 +122,14 @@ class AddressesList extends React.Component{
                                 {addressesList}
                             </Select>
                         </Form.Item>
+
+                        {/* Display Current Delivery Address */}
+                        <Form.Item>
+                            <div style={{lineHeight: '8px'}}>
+                                {formatDeliveryAddr}
+                            </div>
+                        </Form.Item>
+
                     </Form>
                 </div>
 
@@ -132,6 +137,8 @@ class AddressesList extends React.Component{
                     <Divider orientation="left">Add New Address</Divider>
                     <AddAddressForm customerCode={this.state.customerCode}></AddAddressForm>
                 </div>
+
+                {/* Todo: Billing Address Form */}
             </div>
         )
     }//end render
