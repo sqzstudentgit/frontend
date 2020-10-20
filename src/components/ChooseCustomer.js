@@ -3,10 +3,45 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ErrorMessage from './ErrorMessage'
 import {withRouter, Redirect} from 'react-router-dom'
-import { Button, Card, Image, Form } from 'antd';
+import { Button, Card, Image, Form,List,Typography, Divider } from 'antd';
 import 'antd/dist/antd.css';
+import DataTable from './DataTable';
 
 class ChooseCustomer extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: [],
+        }
+    }
+
+    componentDidMount() {
+        axios({
+                method: 'get',           
+                url: 'api/customers',
+                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+                
+            }              
+        )
+            .then(
+                (response)=>{
+                    console.log("Get customer list");
+                    console.log(response.data);
+                    this.setState({
+                        users: response.data
+                    });
+                }
+            )
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    dataTable() {
+        return this.state.users.map((data, i) => {
+            return <DataTable obj={data} key={i} />;
+        });
+    }
 
     render() {
         return (
@@ -14,17 +49,16 @@ class ChooseCustomer extends React.Component{
                 <Form
                 className="chooseCustomer-form"
                 initialValues={{remember: true}}
-                >
-                    {this.props.customers.map((customer) => (//retrieve the customer list
-                        <Form.Item style={{textAlign: "center"}}>
-                            <Button type="primary" htmlType="submit" className="customer-button">
-                                {customer.name}
+                >   
+                    <List
+                        dataSource={this.dataTable()}
+                        renderItem={item => <List.Item>
+                            <Button type="primary" htmlType="submit" className="customer-button" block href='/'>
+                                {item}
                             </Button>
-                        </Form.Item>
-                    //pagination function will be added
-                    ))}
-
-                    <Button type="link" block>
+                        </List.Item>}
+                    />
+                    <Button type="link" block href='/create'>
                         Create a customer account
                     </Button>
 

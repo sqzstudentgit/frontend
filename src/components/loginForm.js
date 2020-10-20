@@ -1,11 +1,14 @@
+//ant design
+import { Form, Input, Button, Card} from 'antd';
+import {message as antdMessage} from 'antd' ;
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+
+//React
 import React from "react";
 import axios from 'axios';
-import ErrorMessage from './errorMessage'
-//import styled from 'styled-components';
 import {withRouter, Redirect} from 'react-router-dom'
-import { Form, Input, Button, Card, Image } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
+
+
 
 class LoginForm extends React.Component{
 
@@ -28,11 +31,11 @@ class LoginForm extends React.Component{
         this.setState({
             [id]: e.target.value
         })
-      
     }
 
+
     _handleSubmit(e){
-        //e.preventDefault();//test need
+        // e.preventDefault();//test need
         
        axios({
                 method: 'post',           
@@ -41,9 +44,8 @@ class LoginForm extends React.Component{
                 data:{
                     "username": this.state.username,
                     "password": this.state.password,
-                    
                 }
-            }             
+            }
             )
             .then(
                 (response)=>{
@@ -59,14 +61,13 @@ class LoginForm extends React.Component{
                             error:false,
                             isLogout:false
                         })
-                       
-                    
                     }
                     else{
                         this.setState({
                             error:true,
                             errorMassage:"Sorry, your username and/or password are incorrect. Please try again."
                         })
+                        antdMessage.info(this.state.errorMassage);
                     } 
                 }
             )
@@ -77,26 +78,27 @@ class LoginForm extends React.Component{
                         error:true,
                         errorMassage: e.response.data
                     })
-
+                    antdMessage.info(this.state.errorMassage);
                 }
             )
-      
-    }
+    }//end _handleSubmit
+
 
     render() {
-      if (!this.state.isLogout){
+        if (!this.state.isLogout){
             this.state.isLogout = true
-            return <Redirect to = {{ pathname: "/chooseCustomer" }} />
-        }  
-        const {error, errorMassage} = this.state
+            return <Redirect to = {{ pathname: "/choose" }} />
+        }//end if
+        
         return (
             <Card  bordered={false} style={{ width: 300 }} cover={<img alt="example" src="https://media-exp1.licdn.com/dms/image/C511BAQF1N9JzP5PU8Q/company-background_10000/0?e=2159024400&v=beta&t=SogtI3ymEudS4fqNFeyKMxH7j5-2i7R1kH9LndNbPTg" />}>
-
+                
                 <Form
                 className="login-form"
                 initialValues={{remember: true}}
                 onFinish={this._handleSubmit}
                 >
+    
                     <Form.Item
                         name="username"
                         value={this.state.username}
@@ -108,7 +110,7 @@ class LoginForm extends React.Component{
                             placeholder="Username" 
                         />
                     </Form.Item>
-
+            
                     <Form.Item
                         name="password"
                         value={this.state.password}
@@ -121,7 +123,7 @@ class LoginForm extends React.Component{
                             placeholder="Password"
                         />
                     </Form.Item>
-
+            
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button">
                         Log in
@@ -129,10 +131,9 @@ class LoginForm extends React.Component{
                     </Form.Item>
                 </Form>
             </Card>
-
+            
         )//end return
-
-    }
+    }//end render
 }
 
 export default LoginForm
