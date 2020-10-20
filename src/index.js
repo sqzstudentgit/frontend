@@ -22,6 +22,7 @@ const App = () => {
       // Cart state
       products: [],
       totalPrice: 0,
+      customerId: null,
 
       // Cart state listener
       // Note: actionOn has been used instead of computed for total price since 
@@ -39,6 +40,17 @@ const App = () => {
           state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
         }
       ),
+      
+      // -- CUSTOMER ACTIONS --
+
+      // Set the current customerId
+      setCustomerId: action((state, customerId) => {
+        state.customerId = customerId;
+      }),
+
+      removeCustomerId: action((state) =>{
+        state.customerId = null;
+      }),
 
       // -- CART ACTIONS --
 
