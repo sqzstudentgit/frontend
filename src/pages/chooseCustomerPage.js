@@ -7,35 +7,20 @@ import axios from 'axios';
 import {withRouter} from 'react-router-dom'
 
 class ChooseCustomerPage extends React.Component{
-    state = {
-        customers: [
-            {
-                id: "no1",
-                name: "customer1"
-            },
-            {
-                id: "no2",
-                name: "customer2"       
-            },
-            {
-                id: "no3",
-                name: "customer3"
-            }
-        ]
+    constructor(props) {
+        super(props);
+        this.state = {
+        }   
     }
 
     render() {
         return (
             <Row style={{ height:  "100%"}} justify="space-around" align="middle">
                 <Col>
-                <ChooseCustomer customers={this.state.customers} />
+                    <ChooseCustomer />
                 </Col>
             </Row>
         )
-        //window.history.back(-1)
-        this.props.history.push('/login')
-        //console.log(this.props.history)
-        return 'error?'
     }
 }
 
