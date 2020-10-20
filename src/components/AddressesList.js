@@ -25,9 +25,19 @@ class AddressesList extends React.Component{
             //Delivery Address
             currDeliveryAddr:'',
             currDeliveryAddrJson:'',
+            currDAddr1:'',
+            currDAddr2:'',
+            currDRegion:'',
+            currDCountry:'',
+            currDPostcode:'',
 
             currBillAddr:'',
             currBillAddrJson:'',
+            currBAddr1:'',
+            currBAddr2:'',
+            currBRegion:'',
+            currBCountry:'',
+            currBPostcode:'',
 
             error:false,
             errorMessage:'',
