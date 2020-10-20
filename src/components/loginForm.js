@@ -38,8 +38,8 @@ class LoginForm extends React.Component{
         // e.preventDefault();//test need
         
        axios({
-                method: 'post',           
-                url: 'api/login',
+                method: 'post',           
+                url: 'api/login',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
                     "username": this.state.username,
@@ -87,7 +87,7 @@ class LoginForm extends React.Component{
     render() {
         if (!this.state.isLogout){
             this.state.isLogout = true
-            return <Redirect to = {{ pathname: "/" }} />
+            return <Redirect to = {{ pathname: "/choose" }} />
         }//end if
         
         return (
