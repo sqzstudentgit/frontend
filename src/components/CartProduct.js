@@ -26,8 +26,9 @@ import {
 // Ant Design Sub-Components
 const { Title, Text } = Typography;
 
-// 3D Image Rendering Component
-import ThreeDModelPresenter from '../components/3DModel/ThreeDModelPresenter';
+// Application components
+import ModelMetadata from './ModelMetadata';
+import ThreeDModelPresenter from './3DModel/ThreeDModelPresenter';
 
 
 function CartProduct({ product, onQuantityChange, onRemove }) {
@@ -184,16 +185,7 @@ function CartProduct({ product, onQuantityChange, onRemove }) {
           width="80vw"
           maskClosable={true}
         >
-          <Descriptions bordered size="small" layout="horizontal" column={2}>
-            {Object.entries(productDataSource).map(([param, value]) => {
-                return (
-                  <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                    {value}
-                  </Descriptions.Item>
-                )
-              })
-            }
-          </Descriptions>
+          <ModelMetadata metadata={productDataSource} />
       </Modal>
     </Row>
   )
