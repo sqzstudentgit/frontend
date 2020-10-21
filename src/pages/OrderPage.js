@@ -48,6 +48,7 @@ const OrderPage = ({ history }) => {
   const [inputType, setInputType] = useState('barcode');
   const [searchLoading, setSearchLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [viewType, setViewType] = useState('short');
 
   // Alert component state
   const [showAlert, setShowAlert] = useState(false);
@@ -209,7 +210,7 @@ const OrderPage = ({ history }) => {
 
         {/* Add product form and cart information */}
         <Affix offsetTop={80}>
-          <Row justify="center" gutter={[32, 32]}>
+          <Row justify="center" gutter={[0, 16]}>
             <Col span={18}>
               <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
                 <Row>
@@ -261,21 +262,42 @@ const OrderPage = ({ history }) => {
               </Card>
             </Col>
           </Row>
+          <Row justify="center" gutter={[0, 16]}>
+            <Col span={18}>
+              <div style={{ textAlign: 'end' }}>
+                <Radio.Group
+                  value={viewType}
+                  options={[
+                    { label: 'Short View', value: 'short' }, 
+                    { label: 'Tall View', value: 'tall' }
+                  ]}
+                  onChange={(e) => setViewType(e.target.value)}
+                  optionType="button"
+                />
+              </div>
+            </Col>
+          </Row>
         </Affix>
 
-        {
-          // Map each product in the cart to a product card
-          products.map(product => {
-            return (
-              <ShortCartProduct
-                key={product.keyProductID}
-                product={product} 
-                onRemove={handleRemove} 
-                onQuantityChange={handleQuantityChange}
-              />
-            )
-          })
-        }
+        {viewType == 'tall' ? (
+          products.map(product =>
+            <TallCartProduct
+              key={product.keyProductID}
+              product={product} 
+              onRemove={handleRemove} 
+              onQuantityChange={handleQuantityChange}
+            />
+          )
+        ) : (
+          products.map(product =>
+            <ShortCartProduct
+              key={product.keyProductID}
+              product={product} 
+              onRemove={handleRemove} 
+              onQuantityChange={handleQuantityChange}
+            />
+          )
+        )}
 
       </Content>
       
