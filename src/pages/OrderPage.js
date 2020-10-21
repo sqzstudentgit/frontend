@@ -273,7 +273,6 @@ const OrderPage = ({ history }) => {
                 <Button 
                   icon={<LayoutOutlined />}
                   onClick={() => setViewType('tall')}
-                  active
                 >
                   Tall View
                 </Button>
