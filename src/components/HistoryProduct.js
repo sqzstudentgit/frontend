@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { useStoreActions } from 'easy-peasy';
 
@@ -35,15 +36,26 @@ import ThreeDModelPresenter from './3DModel/ThreeDModelPresenter';
 
 const HistoryProduct = ({ history, product }) => {
   const [showModal, setShowModal] = useState(false);
-  const [isHolyOakes, setIsHolyOakes] = useState(false);
+  const [metadata, setMetadata] = useState(null);
   const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
 
-  // Log the product JSON, and determine whether product is PJ SAS or HolyOakes
+  // Before rendering the component, fetch product 3D model metadata (if it exists)
   useEffect(() => {
-    console.log(JSON.stringify(product, null, 2));
-    const { imageList } = product;
-    setIsHolyOakes(imageList && imageList.find(image => image.is3DModelType == 'Y'));
-  })
+    const { productCode } = product;
+    (async () => {
+      // Retrieve 3D model metadata (if it exists) for the product
+      const response = await axios.get('/api/metadata/get', {
+        params: {
+          productCode: productCode
+        }
+      });
+
+      // Check if 3D model metadata exists for the product
+      if (response.data.found) {
+        setMetadata(response.data.json_data);
+      }
+    })();
+  }, []);
 
 
   // Button to readd product from order history to the cart
@@ -144,7 +156,7 @@ const HistoryProduct = ({ history, product }) => {
                 </Button>
 
                 {/* Button to show modal for product specifications */}
-                {isHolyOakes ? (
+                {metadata ? (
                   <Button
                     style={{ marginLeft: 8 }}
                     type="secondary" 
@@ -187,36 +199,10 @@ const HistoryProduct = ({ history, product }) => {
         width="80vw"
         maskClosable={true}
       >
-        <ModelMetadata metadata={productDataSource} />
+        <ModelMetadata metadata={metadata} />
       </Modal>
     </Row>
   )
 }
-
-// Mock parameter data for products
-const productDataSource = {
-  "Name": "CFP - 600/12 Swirl Diffusers  with  Low Profile Plenum 250 Spigot",
-  "URL##OTHER##": "http://www.holyoake.com",
-  "Type Comments##OTHER##": " Holyoake Swirl Diffuser CFP-600/12 c/w Low Profile Plenum.",
-  "Static Pressure Min##OTHER##": "2 Pa",
-  "Static Pressure Max##OTHER##": "28 Pa",
-  "Noise Level NC Min##OTHER##": "5 NC",
-  "Noise Level NC Max##OTHER##": "32NC",
-  "Model##OTHER##": "CFP-600/12 Low Profile complete with low profile plenum.",
-  "Min Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "25.00",
-  "Max Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "200.00",
-  "Material Body##OTHER##": "Holyoake-Aluminium",
-  "Material - Face##OTHER##": "Holyoake White",
-  "Manufacturer##OTHER##": "Holyoake",
-  "d_r##LENGTH##MILLIMETERS": "125.00",
-  "Inlet Spigot Diameter##LENGTH##MILLIMETERS": "250.00",
-  "Plenum Box Height##LENGTH##MILLIMETERS": "250.00",
-  "Holyoake Product Range##OTHER##": "Holyoake Swirl Diffusers.",
-  "Flow Nom##HVAC_AIR_FLOW##LITERS_PER_SECOND": "112.50",
-  "Diffuser Width##LENGTH##MILLIMETERS": "595.00",
-  "Plenum Box Width##LENGTH##MILLIMETERS": "570.00",
-  "Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
-}
-
 
 export default withRouter(HistoryProduct);

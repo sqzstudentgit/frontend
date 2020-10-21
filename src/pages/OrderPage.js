@@ -200,12 +200,12 @@ const OrderPage = ({ history }) => {
         <Affix offsetTop={80}>
           <Row justify="center" gutter={[32, 32]}>
             <Col span={18}>
-              <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
+              <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
                 <Row>
                   <Col span={12}>
                     {/* Add product form */}
                     <Form labelCol={{ span: 4 }} >
-                      <Form.Item label="Type">
+                      <Form.Item label="Type"> 
                         <Radio.Group
                           value={inputType}
                           options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}

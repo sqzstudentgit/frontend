@@ -9,7 +9,7 @@ import { Descriptions } from 'antd';
  */
 const ModelMetadata = ({ metadata }) => {
   return (
-    <Descriptions bordered size="small" layout="horizontal" column={2}>
+    <Descriptions bordered size="small" layout="horizontal" column={3}>
       {Object.entries(metadata).map(([param, value]) => {
           return (
             <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
