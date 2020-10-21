@@ -26,6 +26,11 @@ import {
 import {
   BarcodeOutlined,
   KeyOutlined,
+  LayoutOutlined,
+  DatabaseOutlined,
+  UnorderedListOutlined,
+  BarsOutlined,
+  VerticalAlignMiddleOutlined
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
@@ -265,15 +270,20 @@ const OrderPage = ({ history }) => {
           <Row justify="center" gutter={[0, 16]}>
             <Col span={18}>
               <div style={{ textAlign: 'end' }}>
-                <Radio.Group
-                  value={viewType}
-                  options={[
-                    { label: 'Short View', value: 'short' }, 
-                    { label: 'Tall View', value: 'tall' }
-                  ]}
-                  onChange={(e) => setViewType(e.target.value)}
-                  optionType="button"
-                />
+                <Button 
+                  icon={<LayoutOutlined />}
+                  onClick={() => setViewType('tall')}
+                  active
+                >
+                  Tall View
+                </Button>
+                <Button
+                  style={{ layout: 'inline-block' }} 
+                  icon={<VerticalAlignMiddleOutlined />}
+                  onClick={() => setViewType('short')}
+                >
+                  Short View
+                </Button>
               </div>
             </Col>
           </Row>
@@ -298,7 +308,6 @@ const OrderPage = ({ history }) => {
             />
           )
         )}
-
       </Content>
       
       {/* Footer */}
