@@ -138,7 +138,7 @@ const HistoryProduct = ({ history, product }) => {
                   <Text>{product.productCode}</Text>
                 </Col>
                 <Col offset={1}>
-                  <Title level={5}>Price (ex GST)</Title>
+                  <Title level={5}>Price (Ex GST)</Title>
                   <div style={{ textAlign: 'end' }}>
                     <Text>${Number(product.unitPrice).toFixed(2)}</Text>
                   </div>
@@ -177,7 +177,7 @@ const HistoryProduct = ({ history, product }) => {
                   <Text>{product.quantity}</Text>
                 </Col>
                 <Col>
-                  <Title level={5}>Subtotal (ex GST)</Title>
+                  <Title level={5}>Subtotal (Ex GST)</Title>
                   <div style={{ textAlign: 'end'}}>
                     <Statistic value={product.totalPrice} prefix="$" precision={2} />
                   </div>

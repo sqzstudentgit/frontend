@@ -107,7 +107,7 @@ const OrderDetailsPage = ({ location, history }) => {
               extra={readdButton}
             >
               <Statistic
-                title="Total Price (ex GST)"
+                title="Total Price (Ex GST)"
                 prefix="$"
                 value={totalPrice}
                 precision={2}

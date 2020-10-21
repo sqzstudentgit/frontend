@@ -6,7 +6,6 @@ import {
   Button,
   Card,
   Col,
-  Descriptions,
   Divider,
   Image,
   InputNumber,
@@ -32,7 +31,7 @@ import ModelMetadata from './ModelMetadata';
 import ThreeDModelPresenter from './3DModel/ThreeDModelPresenter';
 
 
-const CartProduct = ({ product, onQuantityChange, onRemove }) => {
+const TallCartProduct = ({ product, onQuantityChange, onRemove }) => {
   const [subtotal, setSubtotal] = useState(product.price);
   const [quantity, setQuantity] = useState(product.quantity);
   const [visible, setVisible] = useState(false);
@@ -153,7 +152,7 @@ const CartProduct = ({ product, onQuantityChange, onRemove }) => {
                   <Text>{product.productCode}</Text>
                 </Col>
                 <Col offset={1}>
-                  <Title level={5}>Price (ex GST)</Title>
+                  <Title level={5}>Price (Ex GST)</Title>
                   <div style={{ textAlign: 'end' }}>
                     <Text>${Number(product.price).toFixed(2)}</Text>
                   </div>
@@ -178,7 +177,7 @@ const CartProduct = ({ product, onQuantityChange, onRemove }) => {
                   <Button type="secondary" icon={<PlusOutlined />} onClick={() => handleIncrement(1)} />
                 </Col>
                 <Col>
-                  <Title level={5}>Subtotal (ex GST)</Title>
+                  <Title level={5}>Subtotal (Ex GST)</Title>
                   <div style={{ textAlign: 'end'}}>
                     <Statistic value={subtotal} prefix="$" precision={2} />
                   </div>
@@ -206,4 +205,4 @@ const CartProduct = ({ product, onQuantityChange, onRemove }) => {
   )
 }
 
-export default CartProduct;
+export default TallCartProduct;

@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
-import CartProduct from '../components/CartProduct';
-import NavigationBar from "../components/NavigationBar";
+import TallCartProduct from '../components/TallCartProduct';
+import ShortCartProduct from '../components/ShortCartProduct';
+import NavigationBar from '../components/NavigationBar';
 
 // Ant Design Components
 import {
@@ -32,6 +33,15 @@ const { Content, Footer } = Layout;
 const { Search } = Input;
 
 
+/**
+ * The OrderPage component is the page that is loaded when
+ * the 'Order' menu item is clicked on the top navigation bar.
+ * 
+ * It is responsible for:
+ *    1. Allowing users to add products via either product code or barcode
+ *    2. Displaying the products in the cart, in either list view or tall view
+ *    3. Submitting the order to the SQUIZZ platform
+ */
 const OrderPage = ({ history }) => {
   // General page state
   const [input, setInput] = useState(null);
@@ -72,6 +82,7 @@ const OrderPage = ({ history }) => {
   const handleQuantityChange = (keyProductID, quantity) => {
     changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
+
 
   // Handles addition of product to the cart
   const handleAddProduct = async () => {
@@ -251,12 +262,12 @@ const OrderPage = ({ history }) => {
             </Col>
           </Row>
         </Affix>
-        
+
         {
           // Map each product in the cart to a product card
           products.map(product => {
             return (
-              <CartProduct
+              <ShortCartProduct
                 key={product.keyProductID}
                 product={product} 
                 onRemove={handleRemove} 

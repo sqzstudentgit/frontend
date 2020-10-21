@@ -104,7 +104,7 @@ const HistoryPage = ({ history }) => {
       key: 'billingContact'
     },
     {
-      title: 'Order Total (ex GST)',
+      title: 'Order Total (Ex GST)',
       dataIndex: 'lines',
       key: 'total',
       align: 'right',
