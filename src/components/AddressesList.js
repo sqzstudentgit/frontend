@@ -110,7 +110,6 @@ class AddressesList extends React.Component{
         this.setState({
             [id]: e.target.value
         })
-        console.log(this.state.currDAddr1)
     }
 
     componentDidMount(){
@@ -312,23 +311,14 @@ class AddressesList extends React.Component{
 
       
     render(){
-
-        console.log("Page Start")
-
         const { bvisible, dvisible, loading } = this.state;
         const addressesList = [];
-
 
         for(let i=0; i<this.state.addresses.length; i++){
             addressesList.push(<Option key={i}>{this.state.addresses[i]}</Option>)
         }
         addressesList.push(<Option key="-1">Add New Address</Option>);
 
-        const { Text } = Typography;
-
-        const form = {
-            
-        }
 
         return(
             <div>
@@ -364,7 +354,7 @@ class AddressesList extends React.Component{
                                 title="Edit Address"
                                 visible={dvisible}
                                 onOk={this.handleEditOk}
-                                onCancel={this.handleCancels}
+                                onCancel={this.handleCancel}
                                 onChange={this._handleChange}
                                 footer={[
                                     <Button key="back" onClick={this.handleCancel}>
@@ -491,16 +481,18 @@ class AddressesList extends React.Component{
                             </Select>
                         </Form.Item>
 
-                        {/* Display Current Delivery Address */}
                         <Form.Item>
-                            <div style={{lineHeight: '8px'}}>
+                            <div style={{lineHeight: '8px', marginLeft:'16px'}}>
                                 {/* {formatDeliveryAddr} */}
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currBAddr1}</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currBAddr2}</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currBRegion}, {this.state.currBCountry}, {this.state.currBPostcode}</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;Contact:    {this.state.currBContact}</p>
+                                <p>{this.state.currBAddr1}</p>
+                                <p>{this.state.currBAddr2}</p>
+                                <p>{this.state.currBRegion}, {this.state.currBCountry}, {this.state.currBPostcode}</p>
+                                <p>Contact:    {this.state.currBContact}</p>
                             </div>
                         </Form.Item>
+                        <Button type="link" onClick={this.showBModal}>
+                                Edit this address
+                        </Button>
 
                         {/* Edit Address Form */}
                         <Form.Item>
@@ -508,28 +500,29 @@ class AddressesList extends React.Component{
                                 title="Edit Address"
                                 visible={bvisible}
                                 onOk={this.handleBEditOk}
-                                onCancel={this.handleBCancels}
-                                onChange={this._handleBChange}
+                                onCancel={this.handleBCancel}
+                                onChange={this._handleChange}
+
                                 footer={[
                                     <Button key="back" onClick={this.handleBCancel}>
                                     Return
                                     </Button>,
-                                    <Button key="submit" type="primary" loading={loading} onClick={this.handleEditOk}>
+                                    <Button key="submit" type="primary" loading={loading} onClick={this.handleBEditOk}>
                                     Save Changes
                                     </Button>,
                                 ]}
                             >
                                     <Form.Item
-                                        id="currDContact"
+                                        id="currBContact"
                                         label="Contact"
-                                        name="currDContact"
-                                        value={this.state.currDContact}
+                                        name="currBContact"
+                                        value={this.state.currBContact}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your contact!'}]}
                                     >
                                         <Input 
-                                            key= {this.state.currDContact}
-                                            defaultValue={this.state.currDContact}
+                                            key= {this.state.currBContact}
+                                            defaultValue={this.state.currBContact}
                                             size="large"
                                             prefix={<PhoneOutlined className="site-form-item-icon" />} 
                                         >
@@ -538,80 +531,80 @@ class AddressesList extends React.Component{
                                     </Form.Item>
                     
                                     <Form.Item
-                                        id = "currDAddr1"
+                                        id = "currBAddr1"
                                         label="Address Line 1"
-                                        name="currDAddr1"
-                                        value={this.state.currDAddr1}
+                                        name="currBAddr1"
+                                        value={this.state.currBAddr1}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your address!'}]}
                                     >
                                         <Input 
-                                            key= {this.state.currDAddr1}
-                                            defaultValue={this.state.currDAddr1}
+                                            key= {this.state.currBAddr1}
+                                            defaultValue={this.state.currBAddr1}
                                             size="large"
                                             prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
                                         />
                                     </Form.Item>
                     
                                     <Form.Item
-                                        id="currDAddr2"
+                                        id="currBAddr2"
                                         label="Address Line 2"
-                                        name="currDAddr2"
-                                        value={this.state.currDAddr2}
+                                        name="currBAddr2"
+                                        value={this.state.currBAddr2}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your address!'}]}
                                     >
                                         <Input 
-                                            key= {this.state.currDAddr2}
-                                            defaultValue={this.state.currDAddr2}
+                                            key= {this.state.currBAddr2}
+                                            defaultValue={this.state.currBAddr2}
                                             prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
                                             size="large"
                                         />
                                     </Form.Item>
                     
                                     <Form.Item
-                                        id="currDPostcode"
+                                        id="currBPostcode"
                                         label="Postcode"
-                                        name="currDPostcode"
-                                        value={this.state.currDPostcode}
+                                        name="currBPostcode"
+                                        value={this.state.currBPostcode}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your postcode!'}]}
                                     >
                                         <Input 
-                                            key= {this.state.currDPostcode}
-                                            defaultValue={this.state.currDPostcode}
+                                            key= {this.state.currBPostcode}
+                                            defaultValue={this.state.currBPostcode}
                                             prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
                                             size="large"
                                         />
                                     </Form.Item>
                     
                                     <Form.Item
-                                        id="currDRegion"
+                                        id="currBRegion"
                                         label="Region"
-                                        name="currDRegion"
-                                        value={this.state.currDRegion}
+                                        name="currBRegion"
+                                        value={this.state.currBRegion}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your region!'}]}
                                     >
                                         <Input 
-                                            key= {this.state.currDRegion}
-                                            defaultValue={this.state.currDRegion}
+                                            key= {this.state.currBRegion}
+                                            defaultValue={this.state.currBRegion}
                                             prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
                                             size="large"
                                         />
                                     </Form.Item>
                                     
                                     <Form.Item
-                                        id="currDCountry"
+                                        id="currBCountry"
                                         label="Country"
-                                        name="currDCountry"
-                                        value={this.state.currDCountry}
+                                        name="currBCountry"
+                                        value={this.state.currBCountry}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your country!'}]}
                                     >
-                                        <Input 
-                                            key= {this.state.currDCountry}
-                                            defaultValue={this.state.currDCountry}
+                                        <Input
+                                            key= {this.state.currBCountry}
+                                            defaultValue={this.state.currBCountry}
                                             prefix={<GlobalOutlined className="site-form-item-icon" />} 
                                             size="large"
                                         />
@@ -628,8 +621,7 @@ class AddressesList extends React.Component{
                     <Divider orientation="left">Add New Address</Divider>
                     <AddAddressForm customerCode={this.state.customerCode}></AddAddressForm>
                 </div>
- 
-                {/* Todo: Billing Address Form */}
+
             </div>
         )
     }//end render
