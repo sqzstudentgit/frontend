@@ -11,6 +11,7 @@ import {withRouter, Redirect} from 'react-router-dom';
 
 //Linked Components
 import AddAddressForm from '../components/AddAddressForm';
+import { IdBadge } from 'styled-icons/fa-regular';
 
 class AddressesList extends React.Component{
     constructor(props){
@@ -104,10 +105,12 @@ class AddressesList extends React.Component{
     }
 
     _handleChange(e){
+        console.log(e.target.id, e.target.value)
         let id = e.target.id
         this.setState({
             [id]: e.target.value
         })
+        console.log(this.state.currDAddr1)
     }
 
     componentDidMount(){
@@ -121,7 +124,7 @@ class AddressesList extends React.Component{
                 console.log(response);
                 // Reformat the address information so that it fits the selection box
                 for(let i=0; i<response.data.length; i++){
-                    var temp_addr=JSON.parse(response.data[i]);
+                    var temp_addr=JSON.parse(JSON.stringify(response.data[i]));
                     var format_addr="";
                     for (var x in temp_addr){
                         if (x!=='id' && x!=='customer_id' && temp_addr[x]!==null){
@@ -157,8 +160,8 @@ class AddressesList extends React.Component{
     }
 
     // Set Current Delivery Address Details
-    setCurrentDAddrDetails(){
-        console.log("Detail Set")
+    setCurrentDAddrDetails(currJson){
+        console.log("Detail Set") 
         this.setState({
             currDContact:this.state.currDeliveryAddrJson.contact,
             currDAddr1:this.state.currDeliveryAddrJson.address_line1,
@@ -193,53 +196,53 @@ class AddressesList extends React.Component{
         });
       };
     
-      handleOk = (e) => {
-        this.setState({ loading: true });
-        // Remove old address
-        // axios({
-        //         method: 'post',           
-        //         url: '/api/customer/'+this.state.customerCode+'/address/'+this.state.currBillAddrJson.id,
-        //         headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-        // })
+    handleEditOk = (e) => {
+    this.setState({ loading: true });
+    // Remove old address
+    axios({
+            method: 'delete',           
+            url: '/api/customer/'+this.state.customerCode+'/address/'+this.state.currDeliveryAddrJson.id,
+            headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+    })
 
-        // Add modified new address
-        axios({
-                method: 'post',           
-                url: '/api/customer/'+this.state.customerCode+'/addresses',
-                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-                data:{
-                "contact": this.state.contact,
-                "address_line1": this.state.addr1,
-                "address_line2": this.state.addr2,
-                "postcode": this.state.postcode,
-                "region": this.state.region,
-                "country": this.state.country
-                }
-            }             
-            )
-            .then(
-                (response)=>{
-                    console.log("Edit Address Success!");
-                    console.log(response);                  
-                    this.setState({
-                        error:false,
-                        loading: false, 
-                        visible: false 
-                    })
-                }
-            )
-            .catch(
-                (e)=>{
-                    console.log(e)
-                    this.setState({
-                        error:true,
-                        errorMassage: e.response.data.message
-                    })
-                    antdMessage.info(this.state.errorMassage);
-                }
-            )
-            console.log(this.state) //test      
-      };
+    // Add modified new address
+    axios({
+            method: 'post',           
+            url: '/api/customer/'+this.state.customerCode+'/addresses',
+            headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+            data:{
+            "contact": this.state.currDContact,
+            "address_line1": this.state.currDAddr1,
+            "address_line2": this.state.currDAddr2,
+            "postcode": this.state.currDPostcode,
+            "region": this.state.currDRegion,
+            "country": this.state.currDCountry
+            }
+        }             
+        )
+        .then(
+            (response)=>{
+                console.log("Edit Address Success!");
+                console.log(response);                  
+                this.setState({
+                    error:false,
+                    loading: false, 
+                    visible: false 
+                })
+            }
+        )
+        .catch(
+            (e)=>{
+                console.log(e)
+                this.setState({
+                    error:true,
+                    errorMassage: e.response.data.message
+                })
+                antdMessage.info(this.state.errorMassage);
+            }
+        )
+        console.log(this.state) //test      
+    };
     
       handleCancel = () => {
         this.setState({ visible: false });
@@ -293,26 +296,27 @@ class AddressesList extends React.Component{
                             <Modal
                                 title="Edit Address"
                                 visible={visible}
-                                onOk={this.handleOK}
-                                onCancel={this.handleCancel}
+                                onOk={this.handleEditOk}
+                                onCancel={this.handleCancels}
                                 onChange={this._handleChange}
                                 footer={[
                                     <Button key="back" onClick={this.handleCancel}>
                                     Return
                                     </Button>,
-                                    <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+                                    <Button key="submit" type="primary" loading={loading} onClick={this.handleEditOk}>
                                     Save Changes
                                     </Button>,
                                 ]}
                             >
                                     <Form.Item
+                                        id="currDContact"
                                         label="Contact"
-                                        name="contact"
+                                        name="currDContact"
+                                        value={this.state.currDContact}
+                                        onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your contact!'}]}
                                     >
                                         <Input 
-                                            value={this.state.contact}
-                                            onChange={this._handleChange}
                                             key= {this.state.currDContact}
                                             defaultValue={this.state.currDContact}
                                             size="large"
@@ -323,9 +327,10 @@ class AddressesList extends React.Component{
                                     </Form.Item>
                     
                                     <Form.Item
+                                        id = "currDAddr1"
                                         label="Address Line 1"
-                                        name="addr1"
-                                        value={this.state.addr1}
+                                        name="currDAddr1"
+                                        value={this.state.currDAddr1}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your address!'}]}
                                     >
@@ -338,9 +343,10 @@ class AddressesList extends React.Component{
                                     </Form.Item>
                     
                                     <Form.Item
+                                        id="currDAddr2"
                                         label="Address Line 2"
-                                        name="addr2"
-                                        value={this.state.addr2}
+                                        name="currDAddr2"
+                                        value={this.state.currDAddr2}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your address!'}]}
                                     >
@@ -353,9 +359,10 @@ class AddressesList extends React.Component{
                                     </Form.Item>
                     
                                     <Form.Item
+                                        id="currDPostcode"
                                         label="Postcode"
-                                        name="postcode"
-                                        value={this.state.postcode}
+                                        name="currDPostcode"
+                                        value={this.state.currDPostcode}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your postcode!'}]}
                                     >
@@ -368,9 +375,10 @@ class AddressesList extends React.Component{
                                     </Form.Item>
                     
                                     <Form.Item
+                                        id="currDRegion"
                                         label="Region"
-                                        name="region"
-                                        value={this.state.region}
+                                        name="currDRegion"
+                                        value={this.state.currDRegion}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your region!'}]}
                                     >
@@ -383,9 +391,10 @@ class AddressesList extends React.Component{
                                     </Form.Item>
                                     
                                     <Form.Item
+                                        id="currDCountry"
                                         label="Country"
-                                        name="country"
-                                        value={this.state.country}
+                                        name="currDCountry"
+                                        value={this.state.currDCountry}
                                         onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your country!'}]}
                                     >
