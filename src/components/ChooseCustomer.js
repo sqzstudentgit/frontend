@@ -1,11 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import ErrorMessage from './ErrorMessage'
-import {withRouter, Redirect} from 'react-router-dom'
-import { Button, Card, Image, Form,List,Typography, Divider } from 'antd';
+import { Button, Card, Form, List } from 'antd';
 import 'antd/dist/antd.css';
-import DataTable from './DataTable';
 
 class ChooseCustomer extends React.Component{
     constructor(props) {
@@ -15,6 +11,7 @@ class ChooseCustomer extends React.Component{
         }
     }
 
+    // get all customers info
     componentDidMount() {
         axios({
                 method: 'get',           
@@ -25,22 +22,21 @@ class ChooseCustomer extends React.Component{
         )
             .then(
                 (response)=>{
-                    console.log("Get customer list");
+                    console.log("Get category list");
                     console.log(response.data);
                     this.setState({
-                        users: response.data
+                        users: response.data,
                     });
                 }
             )
             .catch(function (error) {
                 console.log(error);
-            })
+            })    
     }
 
-    dataTable() {
-        return this.state.users.map((data, i) => {
-            return <DataTable obj={data} key={i} />;
-        });
+    //Click on a customer code, its infomation will be return
+    getCustomer = (name, e) => {
+        console.log(name)
     }
 
     render() {
@@ -51,12 +47,13 @@ class ChooseCustomer extends React.Component{
                 initialValues={{remember: true}}
                 >   
                     <List
-                        dataSource={this.dataTable()}
-                        renderItem={item => <List.Item>
-                            <Button type="primary" htmlType="submit" className="customer-button" block href='/'>
-                                {item}
-                            </Button>
-                        </List.Item>}
+                        dataSource={this.state.users}
+                        renderItem={item => 
+                            <List.Item>
+                                <Button type="primary" htmlType="submit" className="customer-button" block href='/' onClick={this.getCustomer.bind(this, item)}>
+                                    {item.customer_code}
+                                </Button>
+                            </List.Item>}
                     />
                     <Button type="link" block href='/create'>
                         Create a customer account
