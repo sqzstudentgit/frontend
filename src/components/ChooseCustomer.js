@@ -1,11 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import ErrorMessage from './ErrorMessage'
 import {withRouter, Redirect} from 'react-router-dom'
-import { Button, Card, Image, Form,List,Typography, Divider } from 'antd';
+import { Button, Card, Form, List } from 'antd';
 import 'antd/dist/antd.css';
-import DataTable from './DataTable';
 
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
@@ -14,25 +11,25 @@ class ChooseCustomer extends React.Component{
         super(props);
         this.state = {
             users: [],
-
-            customerId:null, //Todo: Remove for test purpose
+            redirect: false
         }
     }
 
+    // get all customers info
     componentDidMount() {
         axios({
-                method: 'get',           
+                method: 'get',
                 url: 'api/customers',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-                
-            }              
+
+            }
         )
             .then(
                 (response)=>{
-                    console.log("Get customer list");
+                    console.log("Get category list");
                     console.log(response.data);
                     this.setState({
-                        users: response.data
+                        users: response.data,
                     });
                 }
             )
@@ -41,9 +38,12 @@ class ChooseCustomer extends React.Component{
             })
     }
 
-    dataTable() {
-        return this.state.users.map((data, i) => {
-            return <DataTable obj={data} key={i} />;
+    //Click on a customer code, its infomation will be return
+    //This still will be update since each customer has different url
+    getCustomer = (name, e) => {
+        console.log(name);
+        this.setState({
+            redirect: true,
         });
     }
 
@@ -56,10 +56,8 @@ class ChooseCustomer extends React.Component{
     }
 
     render() {
-
-
-        const handleSetCustomerId = (customerId) =>{
-            setCustomerId({customerId: customerId});
+        if (this.state.redirect === true){
+            return <Redirect to = {{ pathname: "/" }} />
         }
 
         return (
@@ -67,20 +65,15 @@ class ChooseCustomer extends React.Component{
                 <Form
                 className="chooseCustomer-form"
                 initialValues={{remember: true}}
-                >   
+                >
                     <List
-                        dataSource={this.dataTable()}
-                        renderItem={item => <List.Item>
-                            <Button 
-                              type="primary" 
-                              htmlType="submit" 
-                              className="customer-button" 
-                              block 
-                              onClick={this.setCustomerId} 
-                              >
-                                {item}
-                            </Button>
-                        </List.Item>}
+                        dataSource={this.state.users}
+                        renderItem={item =>
+                            <List.Item>
+                                <Button type="primary" className="customer-button" block onClick={this.getCustomer.bind(this, item.id)}>
+                                    {item.customer_code}
+                                </Button>
+                            </List.Item>}
                     />
                     <Button type="link" block href='/create'>
                         Create a customer account
