@@ -144,7 +144,6 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
         centered={true}
         closable={false}
         width="50vw"
-        height="75vh"
         footer={<Button type="secondary" onClick={() => setShowModal(false)}>Close</Button>}
         maskClosable={true}
       >

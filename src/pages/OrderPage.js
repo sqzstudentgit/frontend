@@ -10,6 +10,7 @@ import NavigationBar from '../components/NavigationBar';
 import {
   Affix,
   Alert,
+  AutoComplete,
   Button,
   Card,
   Col,
@@ -92,7 +93,7 @@ const OrderPage = ({ history }) => {
 
   // Handles addition of product to the cart
   const handleAddProduct = async () => {
-    
+    console.log('Search onSearch called');
     try {
       setSearchLoading(true);
       const response = await axios.get(`/api/${inputType}`, {
@@ -204,6 +205,45 @@ const OrderPage = ({ history }) => {
     history.push('/login');
   }
 
+
+  const searchResult = (value) => {
+    return [
+      {
+          value: "CFP-600-12"
+      },
+      {
+          value: "CFP-600-12-LPP-150"
+      },
+      {
+          value: "CFP-600-12-LPP-200"
+      },
+      {
+          value: "CFP-600-12-LPP-250"
+      }
+    ]
+  }
+
+
+
+
+
+
+  // NEW SEARCH FORM SHIT
+  const [options, setOptions] = useState([]);
+  const [open, setOpen] = useState(false);
+
+
+  const handleSelect = (value) => {
+    console.log('Autocomplete onSelect:', value);
+    setInput(value);
+  }
+
+  const handleSearch = (value) => {
+    console.log('Autocomplete onSearch:', value);
+    setOptions(value ? searchResult(value) : []);
+  }
+
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
@@ -220,7 +260,8 @@ const OrderPage = ({ history }) => {
               <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
                 <Row>
                   <Col span={12}>
-                    {/* Add product form */}
+
+                    {/* Product search form */}
                     <Form labelCol={{ span: 4 }} >
                       <Form.Item label="Type"> 
                         <Radio.Group
@@ -231,14 +272,19 @@ const OrderPage = ({ history }) => {
                         />
                       </Form.Item>
                       <Form.Item label="Product">
-                        <Search
-                          prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
-                          placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
-                          value={input}
-                          loading={searchLoading}
-                          onChange={(e) => setInput(e.target.value)}
-                          onSearch={() => handleAddProduct()}
-                        />
+                        <AutoComplete
+                          options={options}
+                          onSelect={handleSelect}
+                          onSearch={handleSearch}
+                        >
+                          <Search
+                            prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
+                            placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
+                            value={input}
+                            loading={searchLoading}
+                            onSearch={() => handleAddProduct()}
+                          />
+                        </AutoComplete>
                       </Form.Item>
                     </Form>
 
