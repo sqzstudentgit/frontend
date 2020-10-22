@@ -307,7 +307,7 @@ render(){
                     </Form.Item>
                     </Col>
 
-                    <Divider orientation="left">Delivery Addresses</Divider>
+                    <Divider orientation="left">Billing Addresses</Divider>
 
                     <Col span={5}></Col>
                     <Col span={11}>

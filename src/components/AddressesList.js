@@ -16,7 +16,7 @@ class AddressesList extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            customerCode: '1', //Todo: test purpose, change to dynamic customer code in future
+            customerCode: '11', //Todo: test purpose, change to dynamic customer code in future
             
             //List of all addresses for the customer
             addresses:[],       //all addresses are formatted into string, seperate by ";"
@@ -32,6 +32,7 @@ class AddressesList extends React.Component{
             currDCountry:'',
             currDPostcode:'',
 
+            //Billing Address
             currBContact:'',
             currBillAddr:'',
             currBillAddrJson:'',
@@ -50,13 +51,17 @@ class AddressesList extends React.Component{
             error:false,
             errorMessage:'',
 
-            addAddr:'none'
+            DAddrSelect:'none',
+            BAddrSelect:'none',
+
+            addAddr:'none',
         }
-        this._handleChange =  this._handleChange.bind(this)
+        this.handleDAddrChange =  this.handleDAddrChange.bind(this);
+        this.handleBAddrChange =  this.handleBAddrChange.bind(this);
+        this._handleChange =  this._handleChange.bind(this);
     }
 
-    _handleChange(e){
-        console.log("Action:"+e);
+    handleDAddrChange(e){
         if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
             this.setState({
                 addAddr:''
@@ -77,6 +82,34 @@ class AddressesList extends React.Component{
         }
     }
 
+    handleBAddrChange(e){
+        if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
+            this.setState({
+                addAddr:''
+            })
+        }else{
+            this.setState({
+                currBillAddr:this.state.addresses[e],
+                currBillAddrJson:this.state.addressesJson[e],
+                addAddr:'none',
+                
+                currBContact:this.state.addressesJson[e].contact,
+                currBAddr1:this.state.addressesJson[e].address_line1,
+                currBAddr2:this.state.addressesJson[e].address_line2,
+                currBRegion:this.state.addressesJson[e].region,
+                currBCountry:this.state.addressesJson[e].country,
+                currBPostcode:this.state.addressesJson[e].postcode,
+            })
+        }
+    }
+
+    _handleChange(e){
+        let id = e.target.id
+        this.setState({
+            [id]: e.target.value
+        })
+    }
+
     componentDidMount(){
         axios({
             method:'get',
@@ -88,7 +121,7 @@ class AddressesList extends React.Component{
                 console.log(response);
                 // Reformat the address information so that it fits the selection box
                 for(let i=0; i<response.data.length; i++){
-                    var temp_addr=JSON.parse(JSON.stringify(response.data[i]));
+                    var temp_addr=JSON.parse(response.data[i]);
                     var format_addr="";
                     for (var x in temp_addr){
                         if (x!=='id' && x!=='customer_id' && temp_addr[x]!==null){
@@ -96,21 +129,20 @@ class AddressesList extends React.Component{
                         }
                     }
                     this.setState({
-                        addresses:this.state.addresses.concat(format_addr.slice(0, -2))
+                        addresses:this.state.addresses.concat(format_addr.slice(0, -2)),
+                        addressesJson: this.state.addressesJson.concat(temp_addr)
                     })
                 }
                 this.setState({
-                    addressesJson:response.data,
                     currDeliveryAddr:this.state.addresses[0],
-                    currDeliveryAddrJson:response.data[0],
+                    currDeliveryAddrJson:this.state.addressesJson[0],
 
-                    currDContact:response.data[0].contact,
-                    currDAddr1:response.data[0].address_line1,
-                    currDAddr2:response.data[0].address_line2,
-                    currDRegion:response.data[0].region,
-                    currDCountry:response.data[0].country,
-                    currDPostcode:response.data[0].postcode,
+                    currBillAddr:this.state.addresses[0],
+                    currBillAddrJson:this.state.addressesJson[0],
                 })
+                this.setCurrentDAddrDetails();
+                this.setCurrentBAddrDetails();
+                console.log(this.state.currDeliveryAddrJson.contact)
             }
         )
         .catch(
@@ -122,6 +154,32 @@ class AddressesList extends React.Component{
                 })
             }
         )
+    }
+
+    // Set Current Delivery Address Details
+    setCurrentDAddrDetails(){
+        console.log("Detail Set")
+        this.setState({
+            currDContact:this.state.currDeliveryAddrJson.contact,
+            currDAddr1:this.state.currDeliveryAddrJson.address_line1,
+            currDAddr2:this.state.currDeliveryAddrJson.address_line2,
+            currDRegion:this.state.currDeliveryAddrJson.region,
+            currDCountry:this.state.currDeliveryAddrJson.country,
+            currDPostcode:this.state.currDeliveryAddrJson.postcode,
+        })
+    }
+
+    // Set Current Billing Address Details
+    setCurrentBAddrDetails(){
+        console.log("Detail Set")
+        this.setState({
+            currBContact:this.state.currBillAddrJson.contact,
+            currBAddr1:this.state.currBillAddrJson.address_line1,
+            currBAddr2:this.state.currBillAddrJson.address_line2,
+            currBRegion:this.state.currBillAddrJson.region,
+            currBCountry:this.state.currBillAddrJson.country,
+            currBPostcode:this.state.currBillAddrJson.postcode,
+        })
     }
 
     state = {
@@ -137,19 +195,25 @@ class AddressesList extends React.Component{
     
       handleOk = (e) => {
         this.setState({ loading: true });
+        // Remove old address
+        // axios({
+        //         method: 'post',           
+        //         url: '/api/customer/'+this.state.customerCode+'/address/'+this.state.currBillAddrJson.id,
+        //         headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+        // })
+
+        // Add modified new address
         axios({
                 method: 'post',           
-                url: 'api/',
+                url: '/api/customer/'+this.state.customerCode+'/addresses',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
-                      "address": {
-                                  "contact": this.state.contact,
-                                  "address_line1": this.state.addr1,
-                                  "address_line2": this.state.addr2,
-                                  "postcode": this.state.postcode,
-                                  "region": this.state.region,
-                                  "country": this.state.country
-                              }
+                "contact": this.state.contact,
+                "address_line1": this.state.addr1,
+                "address_line2": this.state.addr2,
+                "postcode": this.state.postcode,
+                "region": this.state.region,
+                "country": this.state.country
                 }
             }             
             )
@@ -196,8 +260,6 @@ class AddressesList extends React.Component{
 
         const { Text } = Typography;
 
-        //const formatDeliveryAddr = this.state.currDeliveryAddr.split(";").map(addr => <p>{addr}</p>);
-
         return(
             <div>
                 {/* Delivery Address Form */}
@@ -207,7 +269,7 @@ class AddressesList extends React.Component{
                         <Form.Item>
                             <Select
                                 placeholder="Select/Add Delivery Address"
-                                onChange={this._handleChange}
+                                onChange={this.handleDAddrChange}
                             >
                                 {addressesList}
                             </Select>
@@ -215,20 +277,19 @@ class AddressesList extends React.Component{
 
                         {/* Display Current Delivery Address */}
                         <Form.Item>
-                            <div style={{lineHeight: '8px'}}>
-                                {/* {formatDeliveryAddr} */}
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currDAddr1}</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currDAddr2}</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currDRegion}, {this.state.currDCountry}, {this.state.currDPostcode}</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;Contact:    {this.state.currDContact}</p>
+                            <div style={{lineHeight: '8px', marginLeft:'16px'}}>
+                                <p>{this.state.currDAddr1}</p>
+                                <p>{this.state.currDAddr2}</p>
+                                <p>{this.state.currDRegion}, {this.state.currDCountry}, {this.state.currDPostcode}</p>
+                                <p>Contact:    {this.state.currDContact}</p>
                             </div>
-                        </Form.Item>
-
-                        <Form.Item>
                             <Button type="link" onClick={this.showModal}>
                                 Edit this address
                             </Button>
+                        </Form.Item>
 
+                        {/* Edit Address Form */}
+                        <Form.Item>
                             <Modal
                                 title="Edit Address"
                                 visible={visible}
@@ -247,8 +308,6 @@ class AddressesList extends React.Component{
                                     <Form.Item
                                         label="Contact"
                                         name="contact"
-                                        //value={this.state.contact}
-                                        //onChange={this._handleChange}
                                         rules={[{required: true,message: 'Please input your contact!'}]}
                                     >
                                         <Input 
@@ -342,7 +401,41 @@ class AddressesList extends React.Component{
                         </Form.Item>
                     </Form>
                 </div>
+                
 
+                <div>
+                    <Divider orientation="left">Billing Address</Divider>
+                    <Form>
+                        <Form.Item>
+                            <Select
+                                placeholder="Select/Add Delivery Address"
+                                onChange={this.handleBAddrChange}
+                            >
+                                {addressesList}
+                            </Select>
+                        </Form.Item>
+
+                        {/* Display Current Delivery Address */}
+                        <Form.Item>
+                            <div style={{lineHeight: '8px'}}>
+                                {/* {formatDeliveryAddr} */}
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currBAddr1}</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currBAddr2}</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.currBRegion}, {this.state.currBCountry}, {this.state.currBPostcode}</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;Contact:    {this.state.currBContact}</p>
+                            </div>
+                        </Form.Item>
+
+                        <Form.Item>
+                            <Button type="link" onClick={this.showModal}>
+                                Edit this address
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+                
+
+                {/* Add New Address Component, triggle by click "add new address" in selection box */}
                 <div style={{display:this.state.addAddr}}>
                     <Divider orientation="left">Add New Address</Divider>
                     <AddAddressForm customerCode={this.state.customerCode}></AddAddressForm>
