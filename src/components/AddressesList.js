@@ -187,12 +187,13 @@ class AddressesList extends React.Component{
 
     state = {
         loading: false,
-        visible: false,
+        dvisible: false,
+        bvisible:false,
       };
     
       showModal = () => {
         this.setState({
-          visible: true,
+          dvisible: true,
         });
       };
     
@@ -227,7 +228,7 @@ class AddressesList extends React.Component{
                 this.setState({
                     error:false,
                     loading: false, 
-                    visible: false 
+                    dvisible: false 
                 })
             }
         )
@@ -243,16 +244,78 @@ class AddressesList extends React.Component{
         )
         console.log(this.state) //test      
     };
+
+    handleCancel = () => {
+        this.setState({ dvisible: false });
+      };
+
+
+    // ======== Event handler for billing address ========
+    showBModal = () => {
+        this.setState({
+          bvisible: true,
+        });
+      };
+
+    handleBEditOk = (e) => {
+        this.setState({ loading: true });
+        // Remove old address
+        axios({
+                method: 'delete',           
+                url: '/api/customer/'+this.state.customerCode+'/address/'+this.state.currBillAddrJson.id,
+                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+        })
     
-      handleCancel = () => {
-        this.setState({ visible: false });
+        // Add modified new address
+        axios({
+                method: 'post',           
+                url: '/api/customer/'+this.state.customerCode+'/addresses',
+                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+                data:{
+                "contact": this.state.currBContact,
+                "address_line1": this.state.currBAddr1,
+                "address_line2": this.state.currBAddr2,
+                "postcode": this.state.currBPostcode,
+                "region": this.state.currBRegion,
+                "country": this.state.currBCountry
+                }
+            }             
+            )
+            .then(
+                (response)=>{
+                    console.log("Edit Address Success!");
+                    console.log(response);                  
+                    this.setState({
+                        error:false,
+                        loading: false, 
+                        bvisible: false 
+                    })
+                }
+            )
+            .catch(
+                (e)=>{
+                    console.log(e)
+                    this.setState({
+                        error:true,
+                        errorMassage: e.response.data.message
+                    })
+                    antdMessage.info(this.state.errorMassage);
+                }
+            )
+            console.log(this.state) //test      
+        };
+    
+      handleBCancel = () => {
+        this.setState({ bvisible: false });
       };
     
+
+      
     render(){
 
         console.log("Page Start")
 
-        const { visible, loading } = this.state;
+        const { bvisible, dvisible, loading } = this.state;
         const addressesList = [];
 
 
@@ -262,6 +325,10 @@ class AddressesList extends React.Component{
         addressesList.push(<Option key="-1">Add New Address</Option>);
 
         const { Text } = Typography;
+
+        const form = {
+            
+        }
 
         return(
             <div>
@@ -295,7 +362,7 @@ class AddressesList extends React.Component{
                         <Form.Item>
                             <Modal
                                 title="Edit Address"
-                                visible={visible}
+                                visible={dvisible}
                                 onOk={this.handleEditOk}
                                 onCancel={this.handleCancels}
                                 onChange={this._handleChange}
@@ -435,10 +502,122 @@ class AddressesList extends React.Component{
                             </div>
                         </Form.Item>
 
+                        {/* Edit Address Form */}
                         <Form.Item>
-                            <Button type="link" onClick={this.showModal}>
-                                Edit this address
-                            </Button>
+                            <Modal
+                                title="Edit Address"
+                                visible={bvisible}
+                                onOk={this.handleBEditOk}
+                                onCancel={this.handleBCancels}
+                                onChange={this._handleBChange}
+                                footer={[
+                                    <Button key="back" onClick={this.handleBCancel}>
+                                    Return
+                                    </Button>,
+                                    <Button key="submit" type="primary" loading={loading} onClick={this.handleEditOk}>
+                                    Save Changes
+                                    </Button>,
+                                ]}
+                            >
+                                    <Form.Item
+                                        id="currDContact"
+                                        label="Contact"
+                                        name="currDContact"
+                                        value={this.state.currDContact}
+                                        onChange={this._handleChange}
+                                        rules={[{required: true,message: 'Please input your contact!'}]}
+                                    >
+                                        <Input 
+                                            key= {this.state.currDContact}
+                                            defaultValue={this.state.currDContact}
+                                            size="large"
+                                            prefix={<PhoneOutlined className="site-form-item-icon" />} 
+                                        >
+
+                                        </Input>
+                                    </Form.Item>
+                    
+                                    <Form.Item
+                                        id = "currDAddr1"
+                                        label="Address Line 1"
+                                        name="currDAddr1"
+                                        value={this.state.currDAddr1}
+                                        onChange={this._handleChange}
+                                        rules={[{required: true,message: 'Please input your address!'}]}
+                                    >
+                                        <Input 
+                                            key= {this.state.currDAddr1}
+                                            defaultValue={this.state.currDAddr1}
+                                            size="large"
+                                            prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                                        />
+                                    </Form.Item>
+                    
+                                    <Form.Item
+                                        id="currDAddr2"
+                                        label="Address Line 2"
+                                        name="currDAddr2"
+                                        value={this.state.currDAddr2}
+                                        onChange={this._handleChange}
+                                        rules={[{required: true,message: 'Please input your address!'}]}
+                                    >
+                                        <Input 
+                                            key= {this.state.currDAddr2}
+                                            defaultValue={this.state.currDAddr2}
+                                            prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                                            size="large"
+                                        />
+                                    </Form.Item>
+                    
+                                    <Form.Item
+                                        id="currDPostcode"
+                                        label="Postcode"
+                                        name="currDPostcode"
+                                        value={this.state.currDPostcode}
+                                        onChange={this._handleChange}
+                                        rules={[{required: true,message: 'Please input your postcode!'}]}
+                                    >
+                                        <Input 
+                                            key= {this.state.currDPostcode}
+                                            defaultValue={this.state.currDPostcode}
+                                            prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                                            size="large"
+                                        />
+                                    </Form.Item>
+                    
+                                    <Form.Item
+                                        id="currDRegion"
+                                        label="Region"
+                                        name="currDRegion"
+                                        value={this.state.currDRegion}
+                                        onChange={this._handleChange}
+                                        rules={[{required: true,message: 'Please input your region!'}]}
+                                    >
+                                        <Input 
+                                            key= {this.state.currDRegion}
+                                            defaultValue={this.state.currDRegion}
+                                            prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
+                                            size="large"
+                                        />
+                                    </Form.Item>
+                                    
+                                    <Form.Item
+                                        id="currDCountry"
+                                        label="Country"
+                                        name="currDCountry"
+                                        value={this.state.currDCountry}
+                                        onChange={this._handleChange}
+                                        rules={[{required: true,message: 'Please input your country!'}]}
+                                    >
+                                        <Input 
+                                            key= {this.state.currDCountry}
+                                            defaultValue={this.state.currDCountry}
+                                            prefix={<GlobalOutlined className="site-form-item-icon" />} 
+                                            size="large"
+                                        />
+                                    </Form.Item>
+                
+                            </Modal>
                         </Form.Item>
                     </Form>
                 </div>
