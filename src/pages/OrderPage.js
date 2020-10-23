@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
+import { search } from '../utils/search';
 import TallCartProduct from '../components/TallCartProduct';
 import ShortCartProduct from '../components/ShortCartProduct';
 import NavigationBar from '../components/NavigationBar';
@@ -10,6 +11,7 @@ import NavigationBar from '../components/NavigationBar';
 import {
   Affix,
   Alert,
+  AutoComplete,
   Button,
   Card,
   Col,
@@ -27,9 +29,6 @@ import {
   BarcodeOutlined,
   KeyOutlined,
   LayoutOutlined,
-  DatabaseOutlined,
-  UnorderedListOutlined,
-  BarsOutlined,
   VerticalAlignMiddleOutlined
 } from '@ant-design/icons';
 
@@ -43,17 +42,19 @@ const { Search } = Input;
  * the 'Order' menu item is clicked on the top navigation bar.
  * 
  * It is responsible for:
- *    1. Allowing users to add products via either product code or barcode
- *    2. Displaying the products in the cart, in either list view or tall view
- *    3. Submitting the order to the SQUIZZ platform
+ *    1. Allowing users to search for and add products via product code or barcode
+ *    2. Displaying the products in the cart, in either tall view or short view
+ *    3. Submitting an order to the SQUIZZ platform
  */
 const OrderPage = ({ history }) => {
   // General page state
-  const [input, setInput] = useState(null);
-  const [inputType, setInputType] = useState('barcode');
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [viewType, setViewType] = useState('short');
+  const [input, setInput] = useState(null);                   // The current input field value
+  const [inputType, setInputType] = useState('barcode');      // The current input type value ('product' or 'barcode')
+  const [options, setOptions] = useState([]);                 // The autocomplete results array
+  const [open, setOpen] = useState(false);                    // Whether to show the autocomplete results array
+  const [searchLoading, setSearchLoading] = useState(false);  // Product search loading state
+  const [submitLoading, setSubmitLoading] = useState(false);  // Order submission loading state
+  const [viewType, setViewType] = useState('short');          // Cart products view type ('short' or 'tall')
 
   // Alert component state
   const [showAlert, setShowAlert] = useState(false);
@@ -74,6 +75,14 @@ const OrderPage = ({ history }) => {
     emptyCart: actions.cart.emptyCart
   }))
 
+  // Refreshes the search results when the input type is changed
+  useEffect(() => {
+    (async () => {
+      handleSearch(input);
+    })();
+  }, [inputType]);
+
+
   // Sets alert message, type, and whether to display the alert
   const setAlert = (message, type, showAlert) => {
     setMessage(message); setType(type); setShowAlert(showAlert);
@@ -89,10 +98,12 @@ const OrderPage = ({ history }) => {
     changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
 
-
-  // Handles addition of product to the cart
+  
+  /**
+   * Handles addition of a product to the cart
+   */
   const handleAddProduct = async () => {
-    
+    setOpen(false);
     try {
       setSearchLoading(true);
       const response = await axios.get(`/api/${inputType}`, {
@@ -141,14 +152,16 @@ const OrderPage = ({ history }) => {
       console.log(err);
       if (err.response && err.response.status == 500) {
         setAlert("There was an error searching for your product, please try again", "error", true);
+        setSearchLoading(false);
       }
     }
   } 
 
-
-  // Handles order submission
+  /**
+   * Handles submission of an order to the backend API endpoint
+   */
   const handleSubmit = async () => {
-    // Check if the cart is empty
+    // First, check if the cart is empty
     if (products.length == 0) {
       notification.warning({
         message: 'Your cart is empty',
@@ -178,11 +191,11 @@ const OrderPage = ({ history }) => {
       console.log(response);
       setSubmitLoading(false);
 
+      // Check the response, and redirect to home if successful
       if (response.status == 200) {
         notification.success({
           message: 'Your order has been submitted!'
         })
-
         setTimeout(() => {
           emptyCart()
           history.push('/');
@@ -199,7 +212,64 @@ const OrderPage = ({ history }) => {
     }
   }
 
-  // Check if authenticated before rendering the page
+
+  /**
+   * Handles selection of a product code or barcode from the returned search results box
+   * @param {string} value a valid product code or barcode 
+   */
+  const handleSelect = (value) => {
+    // Set input value and close the search results pane
+    setInput(value);
+    setOpen(false);
+  }
+
+
+  /**
+   * Live searches the database for product codes and barcodes
+   * that match a potential product 'identifier'
+   * @param {string} identifier a potential product code or barcode
+   */
+  const handleSearch = async (identifier) => {
+    // Do not search if the input value is the empty string or null
+    if (!identifier) {
+      return setOptions([]);
+    }
+    
+    // Query the database for product codes or barcodes that are similar to the input identifier
+    const identifierType = inputType == 'barcode' ? 'barcode' : 'productCode';
+    const result = await search(
+      `/api/products/search?identifier=${identifier}&identifierType=${identifierType}`
+    );
+    
+    // Result will be null in the case that the axios request was cancelled prematurely
+    if (!result) {
+      return setOptions([]);
+    }
+    
+    // Log the result from the backend API
+    console.log(result);
+
+    // Process the list of identifiers. Identifiers will be null if no products in the database
+    // have similar barcodes or product codes to the identifier given in the query
+    const { identifiers } = result;
+    if (!identifiers) {
+      return setOptions([]);
+    }
+
+    // Map the identifiers to objects that can be displayed in the search results box
+    const searchResults = identifiers.map((identifier) => {
+      return {
+        value: identifier.productCode || identifier.barcode
+      }
+    });
+
+    // Display the search results
+    setOptions(searchResults);
+    setOpen(true);
+  }
+  
+
+  // Check if authenticated before rendering the page, otherwise redirect to the home page
   if (!sessionStorage.getItem('user')) {
     history.push('/login');
   }
@@ -209,7 +279,6 @@ const OrderPage = ({ history }) => {
       {/* Top navigation bar */}
       <NavigationBar history={history} defaultSelected='/order'/>
       
-
       {/* Content body */}
       <Content style={{ padding: '80px 16px' }}>
 
@@ -220,7 +289,8 @@ const OrderPage = ({ history }) => {
               <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
                 <Row>
                   <Col span={12}>
-                    {/* Add product form */}
+
+                    {/* Product search form */}
                     <Form labelCol={{ span: 4 }} >
                       <Form.Item label="Type"> 
                         <Radio.Group
@@ -231,14 +301,20 @@ const OrderPage = ({ history }) => {
                         />
                       </Form.Item>
                       <Form.Item label="Product">
-                        <Search
-                          prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
-                          placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
-                          value={input}
-                          loading={searchLoading}
-                          onChange={(e) => setInput(e.target.value)}
-                          onSearch={() => handleAddProduct()}
-                        />
+                        <AutoComplete
+                          options={options}
+                          onSelect={handleSelect}
+                          onSearch={handleSearch}
+                          open={open}
+                        >
+                          <Search
+                            prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
+                            placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
+                            value={input}
+                            loading={searchLoading}
+                            onSearch={() => handleAddProduct()}
+                          />
+                        </AutoComplete>
                       </Form.Item>
                     </Form>
 
@@ -267,6 +343,8 @@ const OrderPage = ({ history }) => {
               </Card>
             </Col>
           </Row>
+
+          {/* Tall view and short view buttons */}
           <Row justify="center" gutter={[0, 16]}>
             <Col span={18}>
               <div style={{ textAlign: 'end' }}>
