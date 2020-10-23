@@ -37,6 +37,7 @@ function ProductDetailsPage({ history, match }){
     
     const [productInfo, setProductInfo] = useState(0);
     const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
+    const [metadata, setMetadata] = useState(null);
     
     // Get Product Data from API
     const getProductData = async(code) => {
@@ -54,6 +55,31 @@ function ProductDetailsPage({ history, match }){
                 headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
             })
             setProductInfo(response.data.data)
+        } 
+        catch (err) 
+        {
+            console.log(err);
+        }
+    }
+
+    // Get Product MetaData from API
+    const getProductMetaData = async(code) => {
+        try 
+        {
+            // Retrieve 3D model metadata (if it exists) for the product
+            const response = await axios.get('/api/metadata/get', 
+            {
+                params: 
+                {
+                  productCode: code
+                }
+            });
+        
+            // Check if 3D model metadata exists for the product
+            if (response.data.found) 
+            {
+                setMetadata(response.data.json_data);
+            }
         } 
         catch (err) 
         {
@@ -78,7 +104,9 @@ function ProductDetailsPage({ history, match }){
     useEffect(() => {
         const { params } = match;
         getProductData(params.productCode);
-         
+        getProductMetaData(params.productCode); 
+        
+
 
         if(productInfo!=null && productInfo!=0) 
             productInfo.quantity = 1;
@@ -113,12 +141,15 @@ function ProductDetailsPage({ history, match }){
                 </Layout>
             )
         else
-            console.log("Loaded Product Info: ");
             productInfo.quantity = 1;
             const { imageList } = productInfo;
             productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
+
+            console.log("Loaded Product Info: ");
             console.log(productInfo)
             console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
+            console.log("Loaded Metadata: ");
+            console.log(metadata);
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -186,11 +217,11 @@ function ProductDetailsPage({ history, match }){
                                             Coming Soon
 
                                         </TabPane>
-                                        { productInfo.IsHolyOakes ? (
+                                        { metadata ? (
                                             
                                                 <TabPane tab="Parameter" key="3">
                                                     <Row gutter={[16, 16]}>
-                                                        <ModelMetadata metadata={productDataSource} />
+                                                        <ModelMetadata metadata={metadata} />
                                                     </Row>
                                                 </TabPane>
                                         ) : (
