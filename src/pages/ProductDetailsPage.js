@@ -4,7 +4,6 @@ import axios from 'axios';
 import ImageViewer from "../components/ImageViewer";
 import NavigationBar from "../components/NavigationBar";
 import ModelMetadata from "../components/ModelMetadata";
-import style from  '../css/productDetailPage.module.css'
 import { 
     Layout,
     Row, 
@@ -173,7 +172,6 @@ function ProductDetailsPage({ history, match }){
 
                                 {/* Image Viewer */}
                                 <Col flex={9} >
-                                    <p>Inside the main</p>
                                     <ImageViewer height={500} width={600} imageList={productInfo.imageList}/>
                                 </Col>
 
@@ -250,37 +248,10 @@ function ProductDetailsPage({ history, match }){
             )
     }
 
-
-    //console.log(this.props.history)
     this.props.history.push('/login')
     console.log(this.props.history)
     return 'error?'
     
-}
-
-// Mock parameter data for products
-const productDataSource = {
-    "Name": "CFP - 600/12 Swirl Diffusers  with  Low Profile Plenum 250 Spigot",
-    "URL##OTHER##": "http://www.holyoake.com",
-    "Type Comments##OTHER##": " Holyoake Swirl Diffuser CFP-600/12 c/w Low Profile Plenum.",
-    "Static Pressure Min##OTHER##": "2 Pa",
-    "Static Pressure Max##OTHER##": "28 Pa",
-    "Noise Level NC Min##OTHER##": "5 NC",
-    "Noise Level NC Max##OTHER##": "32NC",
-    "Model##OTHER##": "CFP-600/12 Low Profile complete with low profile plenum.",
-    "Min Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "25.00",
-    "Max Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "200.00",
-    "Material Body##OTHER##": "Holyoake-Aluminium",
-    "Material - Face##OTHER##": "Holyoake White",
-    "Manufacturer##OTHER##": "Holyoake",
-    "d_r##LENGTH##MILLIMETERS": "125.00",
-    "Inlet Spigot Diameter##LENGTH##MILLIMETERS": "250.00",
-    "Plenum Box Height##LENGTH##MILLIMETERS": "250.00",
-    "Holyoake Product Range##OTHER##": "Holyoake Swirl Diffusers.",
-    "Flow Nom##HVAC_AIR_FLOW##LITERS_PER_SECOND": "112.50",
-    "Diffuser Width##LENGTH##MILLIMETERS": "595.00",
-    "Plenum Box Width##LENGTH##MILLIMETERS": "570.00",
-    //"Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
 }
 
 export default withRouter(ProductDetailsPage)
