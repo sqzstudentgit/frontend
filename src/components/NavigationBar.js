@@ -7,7 +7,8 @@ import {
     ShopOutlined,
     LogoutOutlined, 
     ShoppingCartOutlined,
-    ReconciliationOutlined
+    ReconciliationOutlined,
+    UserSwitchOutlined
 } from '@ant-design/icons';
 import axios from 'axios';
 import { Redirect } from 'react-router';
@@ -78,6 +79,7 @@ class NavigationBar extends React.PureComponent{
                 </SubMenu>
                 <Menu.Item icon={<HistoryOutlined />} key="/history">Order History</Menu.Item>
                 <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
+                <Menu.Item icon={<UserSwitchOutlined/>} key="/choose">Switch account</Menu.Item>
                 <Menu.Item icon={<LogoutOutlined />} key="/logout">Logout</Menu.Item>
                 </Menu>
             </Header>
