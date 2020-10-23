@@ -254,14 +254,47 @@ const OrderPage = ({ history }) => {
 
 
   const handleSelect = (value) => {
+    // Set input value, closes the search results pane
     console.log('Autocomplete onSelect:', value);
     setInput(value);
     setOpen(false);
   }
 
-  const handleSearch = (value) => {
+  const handleSearch = async (value) => {
+    // Search the database for similar values
+
+    // 1. Call endpoint to search db
+    // 2. setOptions to the processed result
+    // 3. setOpen true
     console.log('Autocomplete onSearch:', value);
-    setOptions(value ? searchResult(value) : []);
+
+    if (!value) {
+      return setOptions([]);
+    }
+
+    const identifierType = inputType == 'barcode' ? 'barcode' : 'productCode';
+    const result = await search(
+      `/api/products/search?identifier=${value}&identifierType=${identifierType}`
+    );
+
+    if (!result) {
+      return setOptions([]);
+    }
+
+    const { identifiers, message, status } = result;
+    // console.log(message);
+    // console.log(status);
+    console.log(identifiers);
+
+    if (!identifiers) {
+      return setOptions([]);
+    }
+    
+    const searchResults = identifiers.map(({ productCode }) => ({ value: productCode }));
+
+    console.log(searchResults);
+    // setOptions(value ? searchResult(value) : []);
+    setOptions(searchResults);
     setOpen(true);
   }
 
