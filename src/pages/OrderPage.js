@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
+import { search } from '../utils/search';
 import TallCartProduct from '../components/TallCartProduct';
 import ShortCartProduct from '../components/ShortCartProduct';
 import NavigationBar from '../components/NavigationBar';
@@ -28,9 +29,6 @@ import {
   BarcodeOutlined,
   KeyOutlined,
   LayoutOutlined,
-  DatabaseOutlined,
-  UnorderedListOutlined,
-  BarsOutlined,
   VerticalAlignMiddleOutlined
 } from '@ant-design/icons';
 
@@ -38,27 +36,25 @@ import {
 const { Content, Footer } = Layout;
 const { Search } = Input;
 
-// https://www.digitalocean.com/community/tutorials/react-live-search-with-axios
-
-import { search } from '../utils/search';
-
 
 /**
  * The OrderPage component is the page that is loaded when
  * the 'Order' menu item is clicked on the top navigation bar.
  * 
  * It is responsible for:
- *    1. Allowing users to add products via either product code or barcode
- *    2. Displaying the products in the cart, in either list view or tall view
- *    3. Submitting the order to the SQUIZZ platform
+ *    1. Allowing users to search for and add products via product code or barcode
+ *    2. Displaying the products in the cart, in either tall view or short view
+ *    3. Submitting an order to the SQUIZZ platform
  */
 const OrderPage = ({ history }) => {
   // General page state
-  const [input, setInput] = useState(null);
-  const [inputType, setInputType] = useState('barcode');
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [viewType, setViewType] = useState('short');
+  const [input, setInput] = useState(null);                   // The current input field value
+  const [inputType, setInputType] = useState('barcode');      // The current input type value ('product' or 'barcode')
+  const [options, setOptions] = useState([]);                 // The autocomplete results array
+  const [open, setOpen] = useState(false);                    // Whether to show the autocomplete results array
+  const [searchLoading, setSearchLoading] = useState(false);  // Product search loading state
+  const [submitLoading, setSubmitLoading] = useState(false);  // Order submission loading state
+  const [viewType, setViewType] = useState('short');          // Cart products view type ('short' or 'tall')
 
   // Alert component state
   const [showAlert, setShowAlert] = useState(false);
@@ -79,6 +75,14 @@ const OrderPage = ({ history }) => {
     emptyCart: actions.cart.emptyCart
   }))
 
+  // Refreshes the search results when the input type is changed
+  useEffect(() => {
+    (async () => {
+      handleSearch(input);
+    })();
+  }, [inputType]);
+
+
   // Sets alert message, type, and whether to display the alert
   const setAlert = (message, type, showAlert) => {
     setMessage(message); setType(type); setShowAlert(showAlert);
@@ -94,10 +98,11 @@ const OrderPage = ({ history }) => {
     changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
 
-
-  // Handles addition of product to the cart
+  
+  /**
+   * Handles addition of a product to the cart
+   */
   const handleAddProduct = async () => {
-    console.log('Search onSearch called');
     setOpen(false);
     try {
       setSearchLoading(true);
@@ -141,7 +146,6 @@ const OrderPage = ({ history }) => {
       }
 
       // Reset input field
-      console.log('Setting input null');
       setInput(null);
 
     } catch (err) {
@@ -153,10 +157,11 @@ const OrderPage = ({ history }) => {
     }
   } 
 
-
-  // Handles order submission
+  /**
+   * Handles submission of an order to the backend API endpoint
+   */
   const handleSubmit = async () => {
-    // Check if the cart is empty
+    // First, check if the cart is empty
     if (products.length == 0) {
       notification.warning({
         message: 'Your cart is empty',
@@ -186,11 +191,11 @@ const OrderPage = ({ history }) => {
       console.log(response);
       setSubmitLoading(false);
 
+      // Check the response, and redirect to home if successful
       if (response.status == 200) {
         notification.success({
           message: 'Your order has been submitted!'
         })
-
         setTimeout(() => {
           emptyCart()
           history.push('/');
@@ -207,116 +212,73 @@ const OrderPage = ({ history }) => {
     }
   }
 
-  // Check if authenticated before rendering the page
-  if (!sessionStorage.getItem('user')) {
-    history.push('/login');
-  }
 
-
-  const searchResult = (value) => {
-
-    // (async () => {
-    //   const response = await axios.get('/api/products/search', {
-    //     params: {
-    //       identifier: value,
-    //       identifierType: inputType
-    //     }
-    //   });
-
-    //   console.log(response);
-    // })();
-    
-
-    return [
-      {
-          value: "CFP-600-12"
-      },
-      {
-          value: "CFP-600-12-LPP-150"
-      },
-      {
-          value: "CFP-600-12-LPP-200"
-      },
-      {
-          value: "CFP-600-12-LPP-250"
-      }
-    ]
-  }
-
-  // Refreshes the search results when the input product type is changed
-  useEffect(() => {
-    (async () => {
-      handleSearch(input);
-    })();
-  }, [inputType]);
-
-
-
-
-
-
-  // NEW SEARCH FORM SHIT
-  const [options, setOptions] = useState([]);
-  const [open, setOpen] = useState(false);
-
-  const handleChangeInputType = (e) => {
-
-  }
-
-
-
+  /**
+   * Handles selection of a product code or barcode from the returned search results box
+   * @param {string} value a valid product code or barcode 
+   */
   const handleSelect = (value) => {
-    // Set input value, closes the search results pane
-    console.log('Autocomplete onSelect:', value);
+    // Set input value and close the search results pane
     setInput(value);
     setOpen(false);
   }
 
-  const handleSearch = async (value) => {
-    // Search the database for similar values
 
-    // 1. Call endpoint to search db
-    // 2. setOptions to the processed result
-    // 3. setOpen true
-    console.log('Autocomplete onSearch:', value);
-
-    if (!value) {
-      return setOptions([]);
-    }
-
-    const identifierType = inputType == 'barcode' ? 'barcode' : 'productCode';
-    const result = await search(
-      `/api/products/search?identifier=${value}&identifierType=${identifierType}`
-    );
-
-    if (!result) {
-      return setOptions([]);
-    }
-
-    const { identifiers, message, status } = result;
-    // console.log(message);
-    // console.log(status);
-    console.log(identifiers);
-
-    if (!identifiers) {
+  /**
+   * Live searches the database for product codes and barcodes
+   * that match a potential product 'identifier'
+   * @param {string} identifier a potential product code or barcode
+   */
+  const handleSearch = async (identifier) => {
+    // Do not search if the input value is the empty string or null
+    if (!identifier) {
       return setOptions([]);
     }
     
-    const searchResults = identifierType == 'barcode'? identifiers.map(({ barcode }) => ({ value: barcode })) : identifiers.map(({ productCode }) => ({ value: productCode }));
+    // Query the database for product codes or barcodes that are similar to the input identifier
+    const identifierType = inputType == 'barcode' ? 'barcode' : 'productCode';
+    const result = await search(
+      `/api/products/search?identifier=${identifier}&identifierType=${identifierType}`
+    );
+    
+    // Result will be null in the case that the axios request was cancelled prematurely
+    if (!result) {
+      return setOptions([]);
+    }
+    
+    // Log the result from the backend API
+    console.log(result);
 
-    console.log(searchResults);
-    // setOptions(value ? searchResult(value) : []);
+    // Process the list of identifiers. Identifiers will be null if no products in the database
+    // have similar barcodes or product codes to the identifier given in the query
+    const { identifiers } = result;
+    if (!identifiers) {
+      return setOptions([]);
+    }
+
+    // Map the identifiers to objects that can be displayed in the search results box
+    const searchResults = identifiers.map((identifier) => {
+      return {
+        value: identifier.productCode || identifier.barcode
+      }
+    });
+
+    // Display the search results
     setOptions(searchResults);
     setOpen(true);
   }
+  
 
+  // Check if authenticated before rendering the page, otherwise redirect to the home page
+  if (!sessionStorage.getItem('user')) {
+    history.push('/login');
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
       <NavigationBar history={history} defaultSelected='/order'/>
       
-
       {/* Content body */}
       <Content style={{ padding: '80px 16px' }}>
 

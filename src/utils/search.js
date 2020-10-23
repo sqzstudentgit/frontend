@@ -1,7 +1,13 @@
 import axios from 'axios';
 
-// https://www.digitalocean.com/community/tutorials/react-live-search-with-axios
-
+/**
+ * This module returns a function for performing live search queries from the database.
+ * For example, this function can be used for searching for products based on product code.
+ * On quick consecutive requests, the previous requests are cancelled to prevent unecessary
+ * requests.
+ * 
+ * The code is adjusted from: https://www.digitalocean.com/community/tutorials/react-live-search-with-axios
+ */
 const makeRequestCreator = () => {
   let token;
 
@@ -19,12 +25,11 @@ const makeRequestCreator = () => {
       return result;
     } catch (error) {
       if (axios.isCancel(error)) {
-        // Handle if request was cancelled
-        // console.log('Request canceled', error.message);
+        // Cancel the request
         return;
       } else {
         // Handle usual errors
-        console.log('Something went wrong: ', error.message)
+        console.log("There was an error performing a live search query");
       }
     }
   }
