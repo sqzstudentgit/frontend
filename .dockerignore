@@ -1,5 +1,8 @@
 node_modules
-build
-.dockerignore
+dist
 Dockerfile
 Dockerfile.prod
+.gitattributes
+.gitignore
+README.md
+*.md

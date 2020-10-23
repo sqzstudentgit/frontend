@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
-import CartProduct from '../components/CartProduct';
-import NavigationBar from "../components/NavigationBar";
+import TallCartProduct from '../components/TallCartProduct';
+import ShortCartProduct from '../components/ShortCartProduct';
+import NavigationBar from '../components/NavigationBar';
 
 // Ant Design Components
 import {
@@ -25,6 +26,11 @@ import {
 import {
   BarcodeOutlined,
   KeyOutlined,
+  LayoutOutlined,
+  DatabaseOutlined,
+  UnorderedListOutlined,
+  BarsOutlined,
+  VerticalAlignMiddleOutlined
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
@@ -32,12 +38,22 @@ const { Content, Footer } = Layout;
 const { Search } = Input;
 
 
+/**
+ * The OrderPage component is the page that is loaded when
+ * the 'Order' menu item is clicked on the top navigation bar.
+ * 
+ * It is responsible for:
+ *    1. Allowing users to add products via either product code or barcode
+ *    2. Displaying the products in the cart, in either list view or tall view
+ *    3. Submitting the order to the SQUIZZ platform
+ */
 const OrderPage = ({ history }) => {
   // General page state
   const [input, setInput] = useState(null);
   const [inputType, setInputType] = useState('barcode');
   const [searchLoading, setSearchLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [viewType, setViewType] = useState('short');
 
   // Alert component state
   const [showAlert, setShowAlert] = useState(false);
@@ -72,6 +88,7 @@ const OrderPage = ({ history }) => {
   const handleQuantityChange = (keyProductID, quantity) => {
     changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
+
 
   // Handles addition of product to the cart
   const handleAddProduct = async () => {
@@ -198,14 +215,14 @@ const OrderPage = ({ history }) => {
 
         {/* Add product form and cart information */}
         <Affix offsetTop={80}>
-          <Row justify="center" gutter={[32, 32]}>
+          <Row justify="center" gutter={[0, 16]}>
             <Col span={18}>
-              <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
+              <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
                 <Row>
                   <Col span={12}>
                     {/* Add product form */}
                     <Form labelCol={{ span: 4 }} >
-                      <Form.Item label="Type">
+                      <Form.Item label="Type"> 
                         <Radio.Group
                           value={inputType}
                           options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
@@ -250,22 +267,46 @@ const OrderPage = ({ history }) => {
               </Card>
             </Col>
           </Row>
+          <Row justify="center" gutter={[0, 16]}>
+            <Col span={18}>
+              <div style={{ textAlign: 'end' }}>
+                <Button 
+                  icon={<LayoutOutlined />}
+                  onClick={() => setViewType('tall')}
+                >
+                  Tall View
+                </Button>
+                <Button
+                  style={{ layout: 'inline-block' }} 
+                  icon={<VerticalAlignMiddleOutlined />}
+                  onClick={() => setViewType('short')}
+                >
+                  Short View
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </Affix>
-        
-        {
-          // Map each product in the cart to a product card
-          products.map(product => {
-            return (
-              <CartProduct
-                key={product.keyProductID}
-                product={product} 
-                onRemove={handleRemove} 
-                onQuantityChange={handleQuantityChange}
-              />
-            )
-          })
-        }
 
+        {viewType == 'tall' ? (
+          products.map(product =>
+            <TallCartProduct
+              key={product.keyProductID}
+              product={product} 
+              onRemove={handleRemove} 
+              onQuantityChange={handleQuantityChange}
+            />
+          )
+        ) : (
+          products.map(product =>
+            <ShortCartProduct
+              key={product.keyProductID}
+              product={product} 
+              onRemove={handleRemove} 
+              onQuantityChange={handleQuantityChange}
+            />
+          )
+        )}
       </Content>
       
       {/* Footer */}
