@@ -243,6 +243,13 @@ const OrderPage = ({ history }) => {
     ]
   }
 
+  // Refreshes the search results when the input product type is changed
+  useEffect(() => {
+    (async () => {
+      handleSearch(input);
+    })();
+  }, [inputType]);
+
 
 
 
@@ -251,6 +258,11 @@ const OrderPage = ({ history }) => {
   // NEW SEARCH FORM SHIT
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
+
+  const handleChangeInputType = (e) => {
+
+  }
+
 
 
   const handleSelect = (value) => {
@@ -290,7 +302,7 @@ const OrderPage = ({ history }) => {
       return setOptions([]);
     }
     
-    const searchResults = identifiers.map(({ productCode }) => ({ value: productCode }));
+    const searchResults = identifierType == 'barcode'? identifiers.map(({ barcode }) => ({ value: barcode })) : identifiers.map(({ productCode }) => ({ value: productCode }));
 
     console.log(searchResults);
     // setOptions(value ? searchResult(value) : []);
