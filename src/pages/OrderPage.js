@@ -38,6 +38,10 @@ import {
 const { Content, Footer } = Layout;
 const { Search } = Input;
 
+// https://www.digitalocean.com/community/tutorials/react-live-search-with-axios
+
+import { search } from '../utils/search';
+
 
 /**
  * The OrderPage component is the page that is loaded when
@@ -94,6 +98,7 @@ const OrderPage = ({ history }) => {
   // Handles addition of product to the cart
   const handleAddProduct = async () => {
     console.log('Search onSearch called');
+    setOpen(false);
     try {
       setSearchLoading(true);
       const response = await axios.get(`/api/${inputType}`, {
@@ -136,12 +141,14 @@ const OrderPage = ({ history }) => {
       }
 
       // Reset input field
+      console.log('Setting input null');
       setInput(null);
 
     } catch (err) {
       console.log(err);
       if (err.response && err.response.status == 500) {
         setAlert("There was an error searching for your product, please try again", "error", true);
+        setSearchLoading(false);
       }
     }
   } 
@@ -207,6 +214,19 @@ const OrderPage = ({ history }) => {
 
 
   const searchResult = (value) => {
+
+    // (async () => {
+    //   const response = await axios.get('/api/products/search', {
+    //     params: {
+    //       identifier: value,
+    //       identifierType: inputType
+    //     }
+    //   });
+
+    //   console.log(response);
+    // })();
+    
+
     return [
       {
           value: "CFP-600-12"
@@ -236,11 +256,13 @@ const OrderPage = ({ history }) => {
   const handleSelect = (value) => {
     console.log('Autocomplete onSelect:', value);
     setInput(value);
+    setOpen(false);
   }
 
   const handleSearch = (value) => {
     console.log('Autocomplete onSearch:', value);
     setOptions(value ? searchResult(value) : []);
+    setOpen(true);
   }
 
 
@@ -276,6 +298,7 @@ const OrderPage = ({ history }) => {
                           options={options}
                           onSelect={handleSelect}
                           onSearch={handleSearch}
+                          open={open}
                         >
                           <Search
                             prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
@@ -313,6 +336,8 @@ const OrderPage = ({ history }) => {
               </Card>
             </Col>
           </Row>
+
+          {/* Tall view and short view buttons */}
           <Row justify="center" gutter={[0, 16]}>
             <Col span={18}>
               <div style={{ textAlign: 'end' }}>
