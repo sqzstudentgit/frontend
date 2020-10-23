@@ -34,7 +34,10 @@ const App = () => {
           actions.changeQuantity,
           actions.emptyCart,
           actions.readdProduct,
-          actions.readdOrder
+          actions.readdOrder,
+
+          actions.setCustomerId,
+          actions.removeCustomerId
         ],
         (state, _) => {
           state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
