@@ -3,6 +3,9 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import { useStoreActions } from 'easy-peasy';
 
+// 
+// import ProductListPage from '../pages/productListPage';
+
 // Ant Design Components
 import {
   Button,
@@ -17,51 +20,17 @@ import {
 // Ant Design Icons
 import { ShopOutlined } from '@ant-design/icons';
 
-const ProductList = ({ product}) => {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    
-    const { lines } = product;
+class ProductList extends React.Component{
 
-    useEffect(() => {
-        const fetchProduct = async (line) => {
-          const { productCode } = line;
-          const response = await axios.get('/api/product', {
-            params: {
-              sessionKey: sessionStorage.getItem('sessionKey'),
-              productCode: productCode
-            }
-          }, {
-            headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
-          })
-          console.log(response);
-          setProducts(prev => [...prev, {...response.data.data, ...line}]);
-        }
-    
-        for (let line of lines) {
-          try {
-            fetchProduct(line);
-    
-          } catch (err) {
-            console.log(err);
-            console.log(err.response);
-          }
-        }
-        setLoading(false);
-    
-        
-      }, []);
-
-      return (
-          <Row justify="center">
-              <Col span={18}>
-                {!loading && products.map(product => <HistoryProduct key={product.id} product={product} />)}
-              </Col>
-          </Row>
-
-      )
+  render() {
+    return(
+      <div className="product" key={this.props.id}>
+        {this.props.name}
+      </div>
+    )
+  }
 
 }
 
 
-export default withRouter(ProductList);
+export default ProductList

@@ -21,10 +21,6 @@ class ChooseCustomerPage extends React.Component{
                 </Col>
             </Row>
         )
-        //window.history.back(-1)
-        this.props.history.push('/login')
-        //console.log(this.props.history)
-        return 'error?'
     }
 }
 

@@ -11,6 +11,7 @@ import ProductDetailsPage from './pages/ProductDetailsPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import HistoryPage from './pages/HistoryPage';
 import OrderPage from './pages/OrderPage';
+import CategoryPage from './pages/CategoryPage';
 import 'antd/dist/antd.css';
 import './index.css';
 
@@ -117,6 +118,7 @@ const App = () => {
           <Route path="/productList" exact component={ProductListPage}/>
           <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
           <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
+          <Route path="/products/category" exact component={CategoryPage} />
         </div>
       </Router>
     </StoreProvider>
