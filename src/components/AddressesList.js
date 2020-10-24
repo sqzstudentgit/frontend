@@ -15,16 +15,12 @@ import { IdBadge } from 'styled-icons/fa-regular';
 import { format } from 'path';
 
 const AddressesList = ({ props } ) => {
-    // const { customerId } = useStoreState(state => ({
-    //     customerId: state.customer.customerId,
-    //   }))
-
     const [loading, setLoading] = useState(false);
     const [dvisible, setDvisible] = useState(false);
     const [bvisible, setBvisible] = useState(false);
 
     const initialState = {
-        customerId: '1', //Todo: test purpose, change to dynamic customer code in future
+        customerId: '', //dynamic customer code in future
     
         addresses:[],       //all addresses are formatted into string, seperate by ";"
         addressesJson:[],   //all addresses are in JSON formats
@@ -62,17 +58,15 @@ const AddressesList = ({ props } ) => {
         BAddrSelect:'none',
 
         addAddr:'none',
-
-        // loading: false,
-        // dvisible: false,
-        // bvisible:false,
-
     }
 
     const reducer = (state, newState) => ({ ...state, ...newState })
     const [state, setState] = useReducer(reducer, initialState);
-    const {customerId, 
-        
+    const { customerId } = useStoreState(state => ({
+        customerId: state.customer.customerId,
+      }))
+
+    const { 
         //List of all addresses for the customer
         addresses,       //all addresses are formatted into string, seperate by ";"
         addressesJson,   //all addresses are in JSON formats
@@ -111,8 +105,6 @@ const AddressesList = ({ props } ) => {
         addAddr,
         } = state;
     const addressesList = [];
-    //const addresses = [];
-    //const addressesJson = [];
 
     for(let i=0; i<addresses.length; i++){
         addressesList.push(<Select.Option key={i}>{addresses[i]}</Select.Option>)
@@ -281,7 +273,6 @@ const AddressesList = ({ props } ) => {
     const handleCancel = () => {
         setDvisible(false);
       };
-
 
     // ======== Event handler for billing address ========
     const showBModal = () => {
