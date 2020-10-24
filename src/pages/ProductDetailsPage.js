@@ -212,7 +212,13 @@ function ProductDetailsPage({ history, match }){
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
                                             
-                                            Coming Soon
+                                            {   
+                                                productInfo.description2=="" || productInfo.description2==null 
+                                                ? 
+                                                    'Coming Soon' 
+                                                : 
+                                                    <div dangerouslySetInnerHTML={{ __html: productInfo.description2 }} />
+                                            }  
 
                                         </TabPane>
                                         { metadata ? (
