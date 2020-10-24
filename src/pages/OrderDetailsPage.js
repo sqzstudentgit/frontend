@@ -84,6 +84,11 @@ const OrderDetailsPage = ({ location, history }) => {
     });
   }
 
+  // Check if authenticated before rendering the page
+  if (!sessionStorage.getItem('user')) {
+    history.push('/login');
+  }
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
 
@@ -95,14 +100,14 @@ const OrderDetailsPage = ({ location, history }) => {
         <Row justify="center">
           <Col span={18}>
             <PageHeader
-              style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)", marginBottom: 32 }}
+              style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)", marginBottom: 32 }}
               title={`Order ID: ${order.id}`}
               ghost={false}
               onBack={() => history.push('/history')}
               extra={readdButton}
             >
               <Statistic
-                title="Total Price (ex GST)"
+                title="Total Price (Ex GST)"
                 prefix="$"
                 value={totalPrice}
                 precision={2}
