@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {withRouter, Link} from 'react-router-dom';
+import {withRouter, Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 import imageComing from '../assets/imageComing.png';
 import { 
@@ -14,6 +14,7 @@ import {
     Card,
     Image,
     Layout,
+    Menu,
     Breadcrumb,
     Pagination
   } from 'antd';
@@ -23,23 +24,21 @@ const { Header, Content, Footer, Sider } = Layout;
   
   // Ant Design Icons
 import NavigationBar from "../components/NavigationBar";
-  
-  // Application components
-// import ProductList from '../components/ProductList';
-// import { useStoreActions } from 'easy-peasy';
 
+// import { useStoreActions } from 'easy-peasy';
 
 class CategoryPage extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            products: [],
+            cate_product: [],
             totalPage: '',
             totalItem: '',
             pageCurrent: 1,
             pageItems: '',
             pred_page: 1,
-            image: imageComing,
+            //redirect: false,
+            category:null,
         }
     }
 
@@ -50,22 +49,26 @@ class CategoryPage extends React.Component{
                     headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
                     params: {
                         page: this.state.pageCurrent,
-                        category: '2079'
+                        cate: this.props.match.params.id
                     }
                 }              
             )
                 .then(
                     (response)=>{
                         console.log("Get products info!");
+                      
                         console.log(response.data);
                         // console.log(response.data.items)
                         this.setState({
-                            products: response.data.items,
+                            cate_product: response.data.items,
                             totalPage: response.data.total_pages,
                             totalItem: response.data.total_items,
-                            pageItems: response.data.page_items
+                            pageItems: response.data.page_items,
+                            //pageurl: response.data.page_nunm
                         });
-                        
+                        console.log("print this.props")
+                        console.log(this.props)
+                        console.log(this.state.category)
                     }
                 )
                 .catch(function (error) {
@@ -75,10 +78,13 @@ class CategoryPage extends React.Component{
         
     }
 
+  
+
     onPageNumChange(pageCurrent){
         console.log(pageCurrent)
         this.setState({
             pageCurrent: pageCurrent,
+            //redirect: true
         })
     }
 
@@ -90,7 +96,7 @@ class CategoryPage extends React.Component{
                     headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
                     params: {
                         page: this.state.pageCurrent,
-                        category: '2079'
+                        cate: this.props.match.params.id
                     }
                 }              
             )
@@ -100,14 +106,15 @@ class CategoryPage extends React.Component{
                         console.log(response.data);
                         console.log(response.data.items)
                         this.setState({
-                            products: response.data.items,
+                            cate_product: response.data.items,
                             totalPage: response.data.total_pages,
                             totalItem: response.data.total_items,
                             pageCurrent: response.data.page_num,
                             pageItems: response.data.page_items,
-                            pred_page: response.data.page_num
+                            pred_page: response.data.page_num,
+                            //pageurl: response.data.page_nunm
                         });
-                        
+                        //console.log(this.state.products)
                     }
                 )
                 .catch(function (error) {
@@ -116,10 +123,20 @@ class CategoryPage extends React.Component{
         }
     }
 
+    //if item.image cannot be gotten, show the default image
+    getImage(image){
+        if(image != null && image != undefined && image != ''){
+            return image;
+        }
+            return imageComing;
+    }
+
+
     render() {
         return (
             <Layout>
-                <NavigationBar  history={history} defaultSelected='/productList'/>
+                
+                <NavigationBar  history={history}/>
                 <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item href="/">
@@ -130,36 +147,37 @@ class CategoryPage extends React.Component{
                             <ShopOutlined />
                             <span>Products</span>
                         </Breadcrumb.Item>
-                        <Breadcrumb.Item href="/category">
-                            <ShopOutlined />
-                            <span>Categories</span>
-                        </Breadcrumb.Item>
                     </Breadcrumb>
                     <List
                         // grid={{ gutter:16, column:4 }}
                         grid={{
                             gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
                           }}
-                        dataSource={this.state.products}
+                        dataSource={this.state.cate_product}
                         renderItem={item => (
                             <List.Item>
                                 <Card
                                     key={item.name}
-                                    cover={<Image alt="example" src={this.state.image} />}>
-                                    <Link to='/productDetail'>
-                                    <Meta key={item.barcode} title={item.productCode} description={item.name} />
-                                    </Link>
+                                    cover={<Image alt="example" 
+                                           src= {this.getImage(item.image)} //if image is 404 not found, show the default image
+                                           onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>
+                                    
+                                    <Meta key={item.barcode} 
+                                        title={item.productCode} 
+                                        description={item.name} 
+                                    />
+                                
                                 </Card>
                             </List.Item>
                         )}
                     />
+                    
                     <Pagination //add active url for each productlist page
                         total={this.state.totalItem}
                         showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
                         pageSize = {20}
                         current={this.state.pageCurrent}
-                        
-                            onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
+                        onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
                         
                     />
 

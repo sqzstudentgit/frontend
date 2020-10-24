@@ -118,7 +118,7 @@ const App = () => {
           <Route path="/productList" exact component={ProductListPage}/>
           <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
           <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
-          <Route path="/products/category" exact component={CategoryPage} />
+          <Route path="/productCategories/:id" exact component={CategoryPage} />
         </div>
       </Router>
     </StoreProvider>

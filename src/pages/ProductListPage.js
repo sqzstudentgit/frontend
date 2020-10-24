@@ -51,6 +51,7 @@ class ProductListPage extends React.Component{
                     headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
                     params: {
                         page: this.state.pageCurrent,
+                        //cate: 2
                     }
                 }              
             )
@@ -95,7 +96,8 @@ class ProductListPage extends React.Component{
                     url: '/api/products',
                     headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
                     params: {
-                        page: this.state.pageCurrent
+                        page: this.state.pageCurrent,
+                        //cate: 6
                     }
                 }              
             )
@@ -157,8 +159,8 @@ class ProductListPage extends React.Component{
                                     cover={<Image alt="example" 
                                            src= {this.getImage(item.image)} //if image is 404 not found, show the default image
                                            onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>
-                                    <Link to='/productDetail'>
-                                    <Meta key={item.barcode} title={item.productCode} description={item.name} />
+                                    <Link to={"/products/" + item.productCode}>
+                                        <Meta key={item.barcode} title={item.productCode} description={item.name} />
                                     </Link>
                                 </Card>
                             </List.Item>
@@ -170,7 +172,7 @@ class ProductListPage extends React.Component{
                         pageSize = {20}
                         current={this.state.pageCurrent}
                         
-                            onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
+                        onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
                         
                     />
 

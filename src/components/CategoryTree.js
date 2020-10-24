@@ -1,17 +1,18 @@
-import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import React, { useState }from 'react';
+import { withRouter, Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 // Ant Design Components
 import { Menu } from 'antd';
-import { Redirect } from 'react-router';
 const { SubMenu } = Menu;
 // const { Sider } = Layout;
 // Ant Design Icons
 import { ShopOutlined } from '@ant-design/icons';
 
-class CategoryTree extends React.Component{
+//@withRouter
 
+class CategoryTree extends React.Component{
+  
   constructor(props) {
     super(props)
     this.state = {
@@ -31,12 +32,13 @@ class CategoryTree extends React.Component{
               (response)=>{
                   console.log("Get category info!");
                   // console.log(response);
+                  
                   console.log(response.data)
                   this.setState({
                       category: response.data,
                   });
                   console.log("print this.state.category")
-                  console.log(this.state.length)
+                  console.log(this.props)
               }
           )
           .catch(function (error) {
@@ -56,15 +58,26 @@ class CategoryTree extends React.Component{
         </SubMenu>
       )
     }
-
+ /**
     // return the menu of children categories
-    renderMenuItem = ({id, name}) => {
-      var path = {
-        pathname: '/products/category',
-      }
+    renderMenuItem = ({id, name, ordering}) => {
       return (
-        <Menu.Item key={id}>
-          <Link to={path}>
+        <Menu.Item key={id} >
+          
+          <Link to={'/products/category/' + ordering}>
+            <span>{name}</span>
+          </Link>
+          
+        </Menu.Item>
+      )
+    }
+*/
+
+    renderMenuItem = ({id, name, ordering}) => {
+      return (
+        
+        <Menu.Item key={id} >
+          <Link to={"/productCategories/" + ordering}>
             <span>{name}</span>
           </Link>
         </Menu.Item>
@@ -95,9 +108,11 @@ class CategoryTree extends React.Component{
       }
     }
 
+
     render() {
       const {openKeys} = this.state
       return( 
+
         <Menu 
         onOpenChange={this.onOpenChange.bind(this)} //click on one parent category to show its children
         mode="vertical"
