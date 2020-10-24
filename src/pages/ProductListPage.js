@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {withRouter, Link} from 'react-router-dom';
+import {withRouter, Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 import imageComing from '../assets/imageComing.png';
 import { 
@@ -40,7 +40,6 @@ class ProductListPage extends React.Component{
             pageCurrent: 1,
             pageItems: '',
             pred_page: 1,
-            image: imageComing
         }
     }
 
@@ -66,7 +65,7 @@ class ProductListPage extends React.Component{
                             totalItem: response.data.total_items,
                             pageItems: response.data.page_items
                         });
-                        
+                        console.log(this.state.products[1].image)
                     }
                 )
                 .catch(function (error) {
@@ -81,6 +80,12 @@ class ProductListPage extends React.Component{
         this.setState({
             pageCurrent: pageCurrent,
         })
+        let pathname = `/productList/${pageCurrent}`;
+        console.log(`Trying to redirect to ${pathname}`);
+        return (
+            <Redirect to= {{ pathname: pathname}} 
+            />
+          )
     }
 
     componentDidUpdate() {
@@ -107,13 +112,21 @@ class ProductListPage extends React.Component{
                             pageItems: response.data.page_items,
                             pred_page: response.data.page_num
                         });
-                        
+                        //console.log(this.state.products)
                     }
                 )
                 .catch(function (error) {
                     console.log(error);
                 })
         }
+    }
+
+    //if item.image is null, show the default image
+    getImage(image){
+        if(image != null && image != undefined && image != ''){
+            return image;
+        }
+            return imageComing;
     }
 
     render() {
@@ -141,7 +154,9 @@ class ProductListPage extends React.Component{
                             <List.Item>
                                 <Card
                                     key={item.name}
-                                    cover={<Image alt="example" src={this.state.image} />}>
+                                    cover={<Image alt="example" 
+                                           src= {this.getImage(item.image)} //if image is 404 not found, show the default image
+                                           onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>
                                     <Link to='/productDetail'>
                                     <Meta key={item.barcode} title={item.productCode} description={item.name} />
                                     </Link>
