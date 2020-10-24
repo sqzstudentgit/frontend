@@ -7,6 +7,8 @@ import React from "react";
 import Axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom';
 
+import { useStoreState, useStoreActions } from 'easy-peasy';
+
 const {Option} = Select;
 
 class CreateForm extends React.Component{
@@ -307,7 +309,7 @@ render(){
                     </Form.Item>
                     </Col>
 
-                    <Divider orientation="left">Delivery Addresses</Divider>
+                    <Divider orientation="left">Billing Addresses</Divider>
 
                     <Col span={5}></Col>
                     <Col span={11}>
