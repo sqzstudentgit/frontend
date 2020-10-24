@@ -2,7 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
 import {withRouter, Redirect} from 'react-router-dom'
 import { Button, Card, Form, List } from 'antd';
-import 'antd/dist/antd.css';
+
+
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
 
@@ -43,8 +44,23 @@ const ChooseCustomer = () => {
     }
     
     const onSelect = (item) =>{
-        console.log(item.id);
-        setCustomerId(item.id);
+        const custid = item.id
+
+        // update customerid in state
+        setCustomerId(custid);
+
+        console.log(custid);
+
+        // update product with new customerid
+        try{
+            const response = axios.post('/api/switch_customer',{
+                customer_id: custid,
+            });
+            console.log(response)
+        } catch (err){
+            console.log(err);
+        }
+
         setRedirect(true)
     }
 
