@@ -7,7 +7,7 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 
 
-const ChooseCustomer = ({ props }) => {
+const ChooseCustomer = () => {
     const [users, setUsers] = useState([])
     const [redirect, setRedirect] = useState(false);
     const { customerId } = useStoreState(state => ({
