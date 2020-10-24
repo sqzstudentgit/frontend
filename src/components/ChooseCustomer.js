@@ -11,13 +11,13 @@ const ChooseCustomer = () => {
     const [users, setUsers] = useState([])
     const [redirect, setRedirect] = useState(false);
     const { customerId } = useStoreState(state => ({
-        customerId: state.cart.customerId
+        customerId: state.customer.customerId
       }))
     
       // Global cart actions
     const { setCustomerId, removeCustomerId } = useStoreActions(actions => ({
-        setCustomerId: actions.cart.setCustomerId,
-        removeCustomerId: actions.cart.removeCustomerId,
+        setCustomerId: actions.customer.setCustomerId,
+        removeCustomerId: actions.customer.removeCustomerId,
       }))
     
     let isRendered = useRef(false);
@@ -42,6 +42,12 @@ const ChooseCustomer = () => {
         return <Redirect to = {{ pathname: "/" }} />
     }
     
+    const onSelect = (item) =>{
+        console.log(item.id);
+        setCustomerId(item.id);
+        setRedirect(true)
+    }
+
     return (
         <Card bordered={false} style={{ width: 300 }} cover={<img alt="example" src="https://media-exp1.licdn.com/dms/image/C511BAQF1N9JzP5PU8Q/company-background_10000/0?e=2159024400&v=beta&t=SogtI3ymEudS4fqNFeyKMxH7j5-2i7R1kH9LndNbPTg" />}>
             <Form
@@ -52,7 +58,7 @@ const ChooseCustomer = () => {
                     dataSource={users}
                     renderItem={item => 
                         <List.Item>
-                            <Button type="primary" className="customer-button" block onClick={() => {console.log(item.id);setCustomerId(item.id);setRedirect(true)}}>
+                            <Button type="primary" className="customer-button" block onClick={() => onSelect(item)}>
                                 {item.customer_code}
                             </Button>
                         </List.Item>}
