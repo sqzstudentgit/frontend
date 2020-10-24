@@ -15,16 +15,16 @@ import { IdBadge } from 'styled-icons/fa-regular';
 import { format } from 'path';
 
 const AddressesList = ({ props } ) => {
-    const { customerCode } = useStoreState(state => ({
-        customerCode: state.cart.customerCode,
-      }))
+    // const { customerId } = useStoreState(state => ({
+    //     customerId: state.customer.customerId,
+    //   }))
 
     const [loading, setLoading] = useState(false);
     const [dvisible, setDvisible] = useState(false);
     const [bvisible, setBvisible] = useState(false);
 
     const initialState = {
-        customerCode: '1', //Todo: test purpose, change to dynamic customer code in future
+        customerId: '1', //Todo: test purpose, change to dynamic customer code in future
     
         addresses:[],       //all addresses are formatted into string, seperate by ";"
         addressesJson:[],   //all addresses are in JSON formats
@@ -71,7 +71,7 @@ const AddressesList = ({ props } ) => {
 
     const reducer = (state, newState) => ({ ...state, ...newState })
     const [state, setState] = useReducer(reducer, initialState);
-    const {customerCode, 
+    const {customerId, 
         
         //List of all addresses for the customer
         addresses,       //all addresses are formatted into string, seperate by ";"
@@ -121,7 +121,7 @@ const AddressesList = ({ props } ) => {
     
     useEffect(() => {
         axios
-            .get("api/customer/"+customerCode+"/addresses")
+            .get("api/customer/"+customerId+"/addresses")
             .then(res => {
                     console.log(res);              
                     for(let i=0; i<res.data.length; i++){
@@ -234,14 +234,14 @@ const AddressesList = ({ props } ) => {
         // Remove old address
         axios({
                 method: 'delete',           
-                url: '/api/customer/'+customerCode+'/address/'+currDeliveryAddrJson.id,
+                url: '/api/customer/'+customerId+'/address/'+currDeliveryAddrJson.id,
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
         })
 
         // Add modified new address
         axios({
                 method: 'post',           
-                url: '/api/customer/'+customerCode+'/addresses',
+                url: '/api/customer/'+customerId+'/addresses',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
                 "contact": currDContact,
@@ -293,14 +293,14 @@ const AddressesList = ({ props } ) => {
         // Remove old address
         axios({
                 method: 'delete',           
-                url: '/api/customer/'+customerCode+'/address/'+currBillAddrJson.id,
+                url: '/api/customer/'+customerId+'/address/'+currBillAddrJson.id,
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
         })
     
         // Add modified new address
         axios({
                 method: 'post',           
-                url: '/api/customer/'+customerCode+'/addresses',
+                url: '/api/customer/'+customerId+'/addresses',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
                 "contact": currBContact,
@@ -638,7 +638,7 @@ const AddressesList = ({ props } ) => {
             {/* Add New Address Component, triggle by click "add new address" in selection box */}
             <div style={{display:addAddr}}>
                 <Divider orientation="left">Add New Address</Divider>
-                <AddAddressForm customerCode={customerCode}></AddAddressForm>
+                <AddAddressForm customerId={customerId}></AddAddressForm>
             </div>
 
         </div>
