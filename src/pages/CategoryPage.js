@@ -149,19 +149,20 @@ class CategoryPage extends React.Component{
                         dataSource={this.state.cate_product}
                         renderItem={item => (
                             <List.Item>
-                                <Card
-                                    key={item.name}
-                                    cover={<Image alt="example" 
-                                           src= {this.getImage(item.image)} 
-                                           //if image is 404 not found, show the default image
-                                           onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>
-                                    
-                                    <Meta key={item.barcode} 
-                                        title={item.productCode} 
-                                        description={item.name} 
-                                    />
-                                
-                                </Card>
+                                <Link to={"/products/" + item.productCode}>
+                                    <Card
+                                        title={item.name}
+                                        key={item.name}
+                                        cover={<Image alt="example" 
+                                            src= {this.getImage(item.image)} 
+                                            //if image is 404 not found, show the default image
+                                            onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
+                                            <Meta key={item.productCode} 
+                                                title={item.price} 
+                                                description={item.barcode}
+                                            />
+                                    </Card>
+                                </Link>
                             </List.Item>
                         )}
                     />

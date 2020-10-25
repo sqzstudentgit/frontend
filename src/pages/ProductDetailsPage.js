@@ -16,7 +16,6 @@ import {
     Typography,
     Spin,
     notification,
-    Affix,
     Card,
 } from 'antd';
 import {  ShoppingCartOutlined } from '@ant-design/icons';
@@ -33,7 +32,7 @@ const { Title } = Typography;
 
 function ProductDetailsPage({ history, match }){
     
-    
+
     const [productInfo, setProductInfo] = useState(0);
     const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
     
@@ -157,7 +156,7 @@ function ProductDetailsPage({ history, match }){
                                             <InputNumber min={1} max={100} defaultValue={1} onChange={onQuantityChange} />
                                         </div>
                                         <div style={{padding: 20}}>
-                                            <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Checkout</Button>
+                                            <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Add to cart</Button>
                                         </div>
                                     
                                     </div>
