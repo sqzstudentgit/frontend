@@ -5,7 +5,6 @@ import { action, actionOn, createStore, StoreProvider } from 'easy-peasy';
 import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import CreatePage from './pages/createPage';
-import ChooseCustomerPage from './pages/chooseCustomerPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import HistoryPage from './pages/HistoryPage';
@@ -18,23 +17,6 @@ import './index.css';
 const App = () => {
   // Create a store for global application state for cart
   const store = createStore({
-
-    customer:{
-      customerId: null,
-
-
-      // -- CUSTOMER ACTIONS --
-
-      // Set the current customerId
-      setCustomerId: action((state, customerId) => {
-        state.customerId = customerId;
-      }),
-
-      removeCustomerId: action((state) =>{
-        state.customerId = null;
-      }),
-    },
-
     cart: {
       // Cart state
       products: [],
@@ -50,14 +32,12 @@ const App = () => {
           actions.changeQuantity,
           actions.emptyCart,
           actions.readdProduct,
-          actions.readdOrder,
+          actions.readdOrder
         ],
         (state, _) => {
           state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
         }
       ),
-      
-
 
       // -- CART ACTIONS --
 
@@ -134,7 +114,6 @@ const App = () => {
 		      <Route path="/create" exact component={CreatePage}/>
           <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
           <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
-          <Route path="/choose" exact component={ChooseCustomerPage}/>
         </div>
       </Router>
     </StoreProvider>
