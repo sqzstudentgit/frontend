@@ -87,7 +87,7 @@ class LoginForm extends React.Component{
     render() {
         if (!this.state.isLogout){
             this.state.isLogout = true
-            return <Redirect to = {{ pathname: "/" }} />
+            return <Redirect to = {{ pathname: "/choose" }} />
         }//end if
         
         return (
