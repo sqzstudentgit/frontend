@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { action, actionOn, createStore, StoreProvider } from 'easy-peasy';
+
+// Pages
 import LoginPage from './pages/loginPage';
 import HomePage from './pages/homePage';
 import CreatePage from './pages/createPage';
@@ -10,6 +12,9 @@ import ProductDetailsPage from './pages/ProductDetailsPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import HistoryPage from './pages/HistoryPage';
 import OrderPage from './pages/OrderPage';
+import CheckOutPage from './pages/CheckOutPage';
+
+// CSS
 import 'antd/dist/antd.css';
 import './index.css';
 
@@ -21,7 +26,6 @@ const App = () => {
 
     customer:{
       customerId: null,
-
 
       // -- CUSTOMER ACTIONS --
 
@@ -135,6 +139,7 @@ const App = () => {
           <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
           <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
           <Route path="/choose" exact component={ChooseCustomerPage}/>
+          <Route path="/checkout" exact component={CheckOutPage}/>
         </div>
       </Router>
     </StoreProvider>

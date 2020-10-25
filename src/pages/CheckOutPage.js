@@ -1,0 +1,125 @@
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
+import { withRouter } from 'react-router-dom';
+import { search } from '../utils/search';
+import TallCartProduct from '../components/TallCartProduct';
+import ShortCartProduct from '../components/ShortCartProduct';
+import NavigationBar from '../components/NavigationBar';
+
+// Todo: This is the temp design for Checkout - Add Billing Address & Delivery Address function
+import AddAddressForm from '../components/AddAddressForm';
+import AddressesList from '../components/AddressesList'
+
+// Ant Design Components
+import {
+    Affix,
+    Alert,
+    AutoComplete,
+    Button,
+    Card,
+    Col,
+    Form,
+    Input,
+    Layout,
+    notification,
+    Radio,
+    Row,
+    Statistic,
+  } from 'antd';
+  
+  // Ant Design Sub-Components
+  const { Content, Footer } = Layout;
+  const { Search } = Input;
+
+/**
+ * This page is responsible for user:
+ *      1. select delivery & billing address
+ *      2. edit&add delivery & billing address
+ *      3. check out
+ */
+
+const CheckOutPage = ({ history }) =>{
+  const [submitLoading, setSubmitLoading] = useState(false);
+        
+    // Global customer & cart state
+    const { customerId, products, totalPrice } = useStoreState(state => ({
+        customerId: state.customer.customerId,
+        products: state.cart.products,
+        totalPrice: state.cart.totalPrice
+    }))
+
+
+    /**
+     * Handles submission of an order to the backend API endpoint
+     */
+    const handleSubmit = async () => {
+        // First, check if the cart is empty
+        if (products.length == 0) {
+        notification.warning({
+            message: 'Your cart is empty',
+            description: 'Please add a product to your cart before submitting an order'
+        })
+        return;
+        }
+
+        // Map products in the cart to 'lines' (i.e. order details)
+        let lines = products.map(product => ({
+        ...product,
+        lineType: "PRODUCT",
+        unitPrice: product.price,
+        totalPrice: product.price * product.quantity,
+        priceTotalExTax: product.price * product.quantity
+        }))
+
+        // Submit the order to the backend API endpoint
+        try {
+        setSubmitLoading(true);
+        console.log(lines)
+        const response = await axios.post('/api/purchase', {
+            lines: lines,
+            sessionKey: sessionStorage.getItem('sessionKey')
+        }, {
+            headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
+        });
+        console.log(response);
+        setSubmitLoading(false);
+
+        // Check the response, and redirect to home if successful
+        if (response.status == 200) {
+            notification.success({
+            message: 'Your order has been submitted!'
+            })
+            setTimeout(() => {
+            emptyCart()
+            history.push('/');
+            }, 4500);
+        }
+        } catch (err) {
+        console.log(err);
+        if (err.response && err.response.status == 500) {
+            notification.error({
+            message: 'Could not submit order',
+            description: 'There was an error submitting your order, please try again.'
+            })
+        }
+        }
+    }
+
+    return(
+        <Layout style={{ minHeight: '100vh' }}>
+            {/* Top navigation bar */}
+            <NavigationBar history={history} defaultSelected='/order'/>
+
+            {/* Content body */}
+            <Content style={{ padding: '80px 16px' }}>
+                <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
+                    Submit Order
+                </Button>
+            </Content>
+        </Layout>
+    )//end return
+
+}//end CheckOutPage
+
+export default withRouter(CheckOutPage);
