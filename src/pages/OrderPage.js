@@ -186,6 +186,7 @@ const OrderPage = ({ history }) => {
     // Submit the order to the backend API endpoint
     try {
       setSubmitLoading(true);
+      console.log(lines)
       const response = await axios.post('/api/purchase', {
         lines: lines,
         sessionKey: sessionStorage.getItem('sessionKey')
