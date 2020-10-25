@@ -48,8 +48,8 @@ class CreateForm extends React.Component{
                  method: 'get',           
                  url: 'api/customer_codes',
                  headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-             }             
-             )
+                 params:{'used': 0}          
+            })
              .then(
                  (response)=>{
                      this.setState({
