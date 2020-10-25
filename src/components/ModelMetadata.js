@@ -11,30 +11,11 @@ const ModelMetadata = ({ metadata }) => {
   return (
     <Descriptions bordered size="small" layout="horizontal" column={3}>
       {Object.entries(metadata).map(([param, value]) => {
-          if(param=="Description")
-          {
-            return (
-              <Descriptions.Item key={param} span = {3} label={param.replace(/##[\w]*/g, "")}>
-                {value}
-              </Descriptions.Item>
-            )
-          }
-          else if (Number(value))
-          {
-            var fv = parseFloat(value).toFixed(2); 
-            return (
-              <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                {fv}
-              </Descriptions.Item>
-            )
-          }else 
-          {
-            return (
-              <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                {value}
-              </Descriptions.Item>
-            )
-          }
+          return (
+            <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
+              {value}
+            </Descriptions.Item>
+          )
         })
       }
     </Descriptions>

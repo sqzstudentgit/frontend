@@ -4,6 +4,7 @@ import axios from 'axios';
 import ImageViewer from "../components/ImageViewer";
 import NavigationBar from "../components/NavigationBar";
 import ModelMetadata from "../components/ModelMetadata";
+import style from  '../css/productDetailPage.module.css'
 import { 
     Layout,
     Row, 
@@ -36,7 +37,6 @@ function ProductDetailsPage({ history, match }){
     
     const [productInfo, setProductInfo] = useState(0);
     const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
-    const [metadata, setMetadata] = useState(null);
     
     // Get Product Data from API
     const getProductData = async(code) => {
@@ -54,31 +54,6 @@ function ProductDetailsPage({ history, match }){
                 headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
             })
             setProductInfo(response.data.data)
-        } 
-        catch (err) 
-        {
-            console.log(err);
-        }
-    }
-
-    // Get Product MetaData from API
-    const getProductMetaData = async(code) => {
-        try 
-        {
-            // Retrieve 3D model metadata (if it exists) for the product
-            const response = await axios.get('/api/metadata/get', 
-            {
-                params: 
-                {
-                  productCode: code
-                }
-            });
-        
-            // Check if 3D model metadata exists for the product
-            if (response.data.found) 
-            {
-                setMetadata(response.data.json_data);
-            }
         } 
         catch (err) 
         {
@@ -103,9 +78,7 @@ function ProductDetailsPage({ history, match }){
     useEffect(() => {
         const { params } = match;
         getProductData(params.productCode);
-        getProductMetaData(params.productCode); 
-        
-
+         
 
         if(productInfo!=null && productInfo!=0) 
             productInfo.quantity = 1;
@@ -140,15 +113,12 @@ function ProductDetailsPage({ history, match }){
                 </Layout>
             )
         else
+            console.log("Loaded Product Info: ");
             productInfo.quantity = 1;
             const { imageList } = productInfo;
             productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
-
-            console.log("Loaded Product Info: ");
             console.log(productInfo)
             console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
-            console.log("Loaded Metadata: ");
-            console.log(metadata);
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -172,6 +142,7 @@ function ProductDetailsPage({ history, match }){
 
                                 {/* Image Viewer */}
                                 <Col flex={9} >
+                                    <p>Inside the main</p>
                                     <ImageViewer height={500} width={600} imageList={productInfo.imageList}/>
                                 </Col>
 
@@ -212,20 +183,14 @@ function ProductDetailsPage({ history, match }){
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
                                             
-                                            {   
-                                                productInfo.description2=="" || productInfo.description2==null 
-                                                ? 
-                                                    'Coming Soon' 
-                                                : 
-                                                    <div dangerouslySetInnerHTML={{ __html: productInfo.description2 }} />
-                                            }  
+                                            Coming Soon
 
                                         </TabPane>
-                                        { metadata ? (
+                                        { productInfo.IsHolyOakes ? (
                                             
                                                 <TabPane tab="Parameter" key="3">
                                                     <Row gutter={[16, 16]}>
-                                                        <ModelMetadata metadata={metadata} />
+                                                        <ModelMetadata metadata={productDataSource} />
                                                     </Row>
                                                 </TabPane>
                                         ) : (
@@ -254,10 +219,37 @@ function ProductDetailsPage({ history, match }){
             )
     }
 
+
+    //console.log(this.props.history)
     this.props.history.push('/login')
     console.log(this.props.history)
     return 'error?'
     
+}
+
+// Mock parameter data for products
+const productDataSource = {
+    "Name": "CFP - 600/12 Swirl Diffusers  with  Low Profile Plenum 250 Spigot",
+    "URL##OTHER##": "http://www.holyoake.com",
+    "Type Comments##OTHER##": " Holyoake Swirl Diffuser CFP-600/12 c/w Low Profile Plenum.",
+    "Static Pressure Min##OTHER##": "2 Pa",
+    "Static Pressure Max##OTHER##": "28 Pa",
+    "Noise Level NC Min##OTHER##": "5 NC",
+    "Noise Level NC Max##OTHER##": "32NC",
+    "Model##OTHER##": "CFP-600/12 Low Profile complete with low profile plenum.",
+    "Min Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "25.00",
+    "Max Flow##HVAC_AIR_FLOW##LITERS_PER_SECOND": "200.00",
+    "Material Body##OTHER##": "Holyoake-Aluminium",
+    "Material - Face##OTHER##": "Holyoake White",
+    "Manufacturer##OTHER##": "Holyoake",
+    "d_r##LENGTH##MILLIMETERS": "125.00",
+    "Inlet Spigot Diameter##LENGTH##MILLIMETERS": "250.00",
+    "Plenum Box Height##LENGTH##MILLIMETERS": "250.00",
+    "Holyoake Product Range##OTHER##": "Holyoake Swirl Diffusers.",
+    "Flow Nom##HVAC_AIR_FLOW##LITERS_PER_SECOND": "112.50",
+    "Diffuser Width##LENGTH##MILLIMETERS": "595.00",
+    "Plenum Box Width##LENGTH##MILLIMETERS": "570.00",
+    //"Description##OTHER##": " Radial Swirl Diffusers, Ceiling Fixed Pattern shall be Holyoake Model CFP-600/12.  Ceiling Radial Swirl Diffusers shall be designed for use in Variable Air Volume (VAV) systems with Highly Turbulent Radial  Air Flow Pattern and shall be suitable for ceiling heights of 2.4 to 4m. Ceiling Radial Swirl Diffusers shall maintain a COANDA effect at reduced air volumes and provide uniform temperature gradients throughout the occupied space. Diffusers shall be finished in powder coat and fitted with accessories and dampers where indicated as manufactured by Holyoake"
 }
 
 export default withRouter(ProductDetailsPage)
