@@ -10,7 +10,7 @@ import {withRouter, Redirect} from 'react-router-dom'
 
 const AddAddressForm = (props) => {
     
-    const [customerCode, setCustomerCode] = useState(props.customerCode) 
+    const [customerId, setCustomerId] = useState(props.customerId) 
     const [contact, setContact] = useState('')
     const [addr1, setAddr1] = useState('')
     const [addr2, setAddr2] = useState('')
@@ -27,7 +27,7 @@ const AddAddressForm = (props) => {
         onFinish={ e => {
             axios({
                 method:'post',
-                url:'/api/customer/'+customerCode+'/addresses',
+                url:'/api/customer/'+customerId+'/addresses',
                 headers: {'Content-Type': 'application/JSON; charset=UTF- 8'},
                 data:{
                     "contact":contact,
