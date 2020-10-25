@@ -375,26 +375,6 @@ const OrderPage = ({ history }) => {
           </Row>
         </Affix>
 
-        {/* <Affix offsetTop={80}>
-          <Row justify="center" gutter={[32, 32]}>
-            <Col span={18}>
-              <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
-                  <AddAddressForm></AddAddressForm>
-              </Card>
-            </Col>
-          </Row>
-        </Affix> */}
-
-        {/* <Affix offsetTop={80}> */}
-          <Row justify="center" gutter={[32, 32]}>
-            <Col span={18}>
-              <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
-                  <AddressesList></AddressesList>
-              </Card>
-            </Col>
-          </Row>
-        {/* /</Affix> */}
-
         {
           // Map each product in the cart to a product card
           products.map(product => {
