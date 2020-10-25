@@ -16,9 +16,8 @@ const ChooseCustomer = () => {
       }))
     
       // Global cart actions
-    const { setCustomerId, removeCustomerId } = useStoreActions(actions => ({
-        setCustomerId: actions.customer.setCustomerId,
-        removeCustomerId: actions.customer.removeCustomerId,
+    const { setCustomerId } = useStoreActions(actions => ({
+        setCustomerId: actions.customer.setCustomerId
       }))
     
     let isRendered = useRef(false);

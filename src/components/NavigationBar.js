@@ -71,9 +71,9 @@ class NavigationBar extends React.PureComponent{
                 <Menu onClick={this.handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={[this.props.defaultSelected]}>
                 <Menu.Item style={{ width: '150px', textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
                 <Menu.Item icon={<HomeOutlined />} key="/">Home</Menu.Item>
-                <Menu.Item icon={<UserSwitchOutlined />} key="/choose">Customers</Menu.Item>
-                <Menu.Item icon={<HistoryOutlined />} key="/history">Order History</Menu.Item>
                 <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
+                <Menu.Item icon={<HistoryOutlined />} key="/history">Order History</Menu.Item>
+                <Menu.Item icon={<UserSwitchOutlined />} key="/choose">Customers</Menu.Item>
                 <Menu.Item icon={<LogoutOutlined />} key="/logout">Logout</Menu.Item>
                 </Menu>
             </Header>
