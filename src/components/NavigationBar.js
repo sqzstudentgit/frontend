@@ -20,6 +20,7 @@ const { SubMenu } = Menu;
 
 
 
+
 class NavigationBar extends React.PureComponent{
 
     constructor(props) {

@@ -20,6 +20,23 @@ import './index.css';
 const App = () => {
   // Create a store for global application state for cart
   const store = createStore({
+
+    customer:{
+      customerId: null,
+
+
+      // -- CUSTOMER ACTIONS --
+
+      // Set the current customerId
+      setCustomerId: action((state, customerId) => {
+        state.customerId = customerId;
+      }),
+
+      removeCustomerId: action((state) =>{
+        state.customerId = null;
+      }),
+    },
+
     cart: {
       // Cart state
       products: [],
@@ -35,12 +52,14 @@ const App = () => {
           actions.changeQuantity,
           actions.emptyCart,
           actions.readdProduct,
-          actions.readdOrder
+          actions.readdOrder,
         ],
         (state, _) => {
           state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
         }
       ),
+      
+
 
       // -- CART ACTIONS --
 
