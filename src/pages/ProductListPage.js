@@ -20,14 +20,10 @@ import {
   } from 'antd';
 const { Meta } = Card;
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer } = Layout;
   
   // Ant Design Icons
 import NavigationBar from "../components/NavigationBar";
-  
-  // Application components
-// import ProductList from '../components/ProductList';
-// import { useStoreActions } from 'easy-peasy';
 
 
 class ProductListPage extends React.Component{
@@ -43,6 +39,10 @@ class ProductListPage extends React.Component{
         }
     }
 
+    // Instead of loading all products at the beginning
+    // The request is sent with page number
+    // only products on the specific page will be get
+    // This way can improve web speed and release traffic
     componentDidMount() {
 
             axios({
@@ -51,7 +51,6 @@ class ProductListPage extends React.Component{
                     headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
                     params: {
                         page: this.state.pageCurrent,
-                        //cate: 2
                     }
                 }              
             )
@@ -59,7 +58,7 @@ class ProductListPage extends React.Component{
                     (response)=>{
                         console.log("Get products info!");
                         console.log(response.data);
-                        // console.log(response.data.items)
+                    
                         this.setState({
                             products: response.data.items,
                             totalPage: response.data.total_pages,
@@ -71,24 +70,18 @@ class ProductListPage extends React.Component{
                 )
                 .catch(function (error) {
                     console.log(error);
-                })
-           // this.state.pre_page: this.state.pageCurrent;
-        
+                })       
     }
 
+    // get the page num to go
     onPageNumChange(pageCurrent){
         console.log(pageCurrent)
         this.setState({
             pageCurrent: pageCurrent,
         })
-        let pathname = `/productList/${pageCurrent}`;
-        console.log(`Trying to redirect to ${pathname}`);
-        return (
-            <Redirect to= {{ pathname: pathname}} 
-            />
-          )
     }
 
+    // when the page num changed, the api request will change to get requested data
     componentDidUpdate() {
         if(this.state.pageCurrent !== this.state.pred_page){
             axios({
@@ -97,7 +90,6 @@ class ProductListPage extends React.Component{
                     headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
                     params: {
                         page: this.state.pageCurrent,
-                        //cate: 6
                     }
                 }              
             )
@@ -114,7 +106,6 @@ class ProductListPage extends React.Component{
                             pageItems: response.data.page_items,
                             pred_page: response.data.page_num
                         });
-                        //console.log(this.state.products)
                     }
                 )
                 .catch(function (error) {
@@ -123,7 +114,7 @@ class ProductListPage extends React.Component{
         }
     }
 
-    //if item.image is null, show the default image
+    //if item.image cannot be gotten in a normal way, show the default image
     getImage(image){
         if(image != null && image != undefined && image != ''){
             return image;
@@ -157,7 +148,8 @@ class ProductListPage extends React.Component{
                                 <Card
                                     key={item.name}
                                     cover={<Image alt="example" 
-                                           src= {this.getImage(item.image)} //if image is 404 not found, show the default image
+                                           src= {this.getImage(item.image)} 
+                                           //if image is 404 not found, show the default image
                                            onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>
                                     <Link to={"/products/" + item.productCode}>
                                         <Meta key={item.barcode} title={item.productCode} description={item.name} />

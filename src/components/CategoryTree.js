@@ -58,20 +58,6 @@ class CategoryTree extends React.Component{
         </SubMenu>
       )
     }
- /**
-    // return the menu of children categories
-    renderMenuItem = ({id, name, ordering}) => {
-      return (
-        <Menu.Item key={id} >
-          
-          <Link to={'/products/category/' + ordering}>
-            <span>{name}</span>
-          </Link>
-          
-        </Menu.Item>
-      )
-    }
-*/
 
     renderMenuItem = ({id, name, ordering}) => {
       return (

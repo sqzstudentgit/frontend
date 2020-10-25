@@ -4,7 +4,8 @@ import axios from 'axios';
 import imageComing from '../assets/imageComing.png';
 import { 
     HomeOutlined,
-    ShopOutlined
+    ShopOutlined,
+    TagOutlined
 } from '@ant-design/icons';
 
 // Ant Design Sub-Components
@@ -37,8 +38,6 @@ class CategoryPage extends React.Component{
             pageCurrent: 1,
             pageItems: '',
             pred_page: 1,
-            //redirect: false,
-            category:null,
         }
     }
 
@@ -49,14 +48,13 @@ class CategoryPage extends React.Component{
                     headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
                     params: {
                         page: this.state.pageCurrent,
-                        cate: this.props.match.params.id
+                        cate: this.props.match.params.id  //catch category order by props
                     }
                 }              
             )
                 .then(
                     (response)=>{
-                        console.log("Get products info!");
-                      
+                        console.log("Get category info!");
                         console.log(response.data);
                         // console.log(response.data.items)
                         this.setState({
@@ -64,32 +62,26 @@ class CategoryPage extends React.Component{
                             totalPage: response.data.total_pages,
                             totalItem: response.data.total_items,
                             pageItems: response.data.page_items,
-                            //pageurl: response.data.page_nunm
                         });
-                        console.log("print this.props")
-                        console.log(this.props)
-                        console.log(this.state.category)
                     }
                 )
                 .catch(function (error) {
                     console.log(error);
-                })
-           // this.state.pre_page: this.state.pageCurrent;
-        
+                })       
     }
 
-  
-
+    // get the page num to go
     onPageNumChange(pageCurrent){
         console.log(pageCurrent)
         this.setState({
             pageCurrent: pageCurrent,
-            //redirect: true
         })
     }
 
-    componentDidUpdate() {
-        if(this.state.pageCurrent !== this.state.pred_page){
+    // when the page number or category type changed, the api request will change to get requested data
+    componentDidUpdate(prevProps) {
+        if(this.state.pageCurrent !== this.state.pred_page 
+            || prevProps.match.params.id !== this.props.match.params.id){
             axios({
                     method: 'get',           
                     url: '/api/products',
@@ -105,6 +97,7 @@ class CategoryPage extends React.Component{
                         console.log("Update products info!");
                         console.log(response.data);
                         console.log(response.data.items)
+
                         this.setState({
                             cate_product: response.data.items,
                             totalPage: response.data.total_pages,
@@ -112,9 +105,7 @@ class CategoryPage extends React.Component{
                             pageCurrent: response.data.page_num,
                             pageItems: response.data.page_items,
                             pred_page: response.data.page_num,
-                            //pageurl: response.data.page_nunm
                         });
-                        //console.log(this.state.products)
                     }
                 )
                 .catch(function (error) {
@@ -123,7 +114,7 @@ class CategoryPage extends React.Component{
         }
     }
 
-    //if item.image cannot be gotten, show the default image
+    //if item.image cannot be gotten in a normal way, show the default image
     getImage(image){
         if(image != null && image != undefined && image != ''){
             return image;
@@ -135,7 +126,6 @@ class CategoryPage extends React.Component{
     render() {
         return (
             <Layout>
-                
                 <NavigationBar  history={history}/>
                 <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
@@ -147,9 +137,12 @@ class CategoryPage extends React.Component{
                             <ShopOutlined />
                             <span>Products</span>
                         </Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                            <TagOutlined />
+                            <span>Category</span>
+                        </Breadcrumb.Item>
                     </Breadcrumb>
                     <List
-                        // grid={{ gutter:16, column:4 }}
                         grid={{
                             gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
                           }}
@@ -159,7 +152,8 @@ class CategoryPage extends React.Component{
                                 <Card
                                     key={item.name}
                                     cover={<Image alt="example" 
-                                           src= {this.getImage(item.image)} //if image is 404 not found, show the default image
+                                           src= {this.getImage(item.image)} 
+                                           //if image is 404 not found, show the default image
                                            onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>
                                     
                                     <Meta key={item.barcode} 
@@ -171,7 +165,6 @@ class CategoryPage extends React.Component{
                             </List.Item>
                         )}
                     />
-                    
                     <Pagination //add active url for each productlist page
                         total={this.state.totalItem}
                         showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
