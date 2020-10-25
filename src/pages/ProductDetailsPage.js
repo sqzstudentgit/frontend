@@ -3,6 +3,7 @@ import {withRouter} from 'react-router-dom'
 import axios from 'axios';
 import ImageViewer from "../components/ImageViewer";
 import NavigationBar from "../components/NavigationBar";
+import ModelMetadata from "../components/ModelMetadata";
 import style from  '../css/productDetailPage.module.css'
 import { 
     Layout,
@@ -16,6 +17,7 @@ import {
     Typography,
     Spin,
     notification,
+    Affix,
     Card,
 } from 'antd';
 import {  ShoppingCartOutlined } from '@ant-design/icons';
@@ -188,17 +190,7 @@ function ProductDetailsPage({ history, match }){
                                             
                                                 <TabPane tab="Parameter" key="3">
                                                     <Row gutter={[16, 16]}>
-                                                        <Descriptions bordered size="small" layout="horizontal" column={2}>
-                                                        {
-                                                            Object.entries(productDataSource).map(([param, value]) => {
-                                                            return (
-                                                                <Descriptions.Item key={param} label={param.replace(/##[\w]*/g, "")}>
-                                                                {value}
-                                                                </Descriptions.Item>
-                                                            ) 
-                                                            })
-                                                        }
-                                                        </Descriptions>
+                                                        <ModelMetadata metadata={productDataSource} />
                                                     </Row>
                                                 </TabPane>
                                         ) : (
