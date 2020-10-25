@@ -27,10 +27,6 @@ import {
     Row,
     Statistic,
   } from 'antd';
-  
-  // Ant Design Sub-Components
-  const { Content, Footer } = Layout;
-  const { Search } = Input;
 
 /**
  * This page is responsible for user:
@@ -40,8 +36,10 @@ import {
  */
 
 const CheckOutPage = ({ history }) =>{
-  const [submitLoading, setSubmitLoading] = useState(false);
-        
+    // General page state
+  const [submitLoading, setSubmitLoading] = useState(false);  // Order submission loading state
+
+
     // Global customer & cart state
     const { customerId, products, totalPrice } = useStoreState(state => ({
         customerId: state.customer.customerId,
@@ -49,7 +47,9 @@ const CheckOutPage = ({ history }) =>{
         totalPrice: state.cart.totalPrice
     }))
 
-
+    const returnCart = () =>{
+        history.push('/order');
+      }
     /**
      * Handles submission of an order to the backend API endpoint
      */
@@ -91,7 +91,6 @@ const CheckOutPage = ({ history }) =>{
             message: 'Your order has been submitted!'
             })
             setTimeout(() => {
-            emptyCart()
             history.push('/');
             }, 4500);
         }
@@ -106,17 +105,45 @@ const CheckOutPage = ({ history }) =>{
         }
     }
 
+    // Check if authenticated before rendering the page, otherwise redirect to the home page
+    if (!sessionStorage.getItem('user')) {
+        history.push('/login');
+    }
+
+    
     return(
         <Layout style={{ minHeight: '100vh' }}>
             {/* Top navigation bar */}
             <NavigationBar history={history} defaultSelected='/order'/>
 
-            {/* Content body */}
-            <Content style={{ padding: '80px 16px' }}>
-                <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
-                    Submit Order
-                </Button>
-            </Content>
+            {/* Add product form and cart information */}
+            <Affix offsetTop={80}>
+            <Row justify="center" gutter={[0, 16]}>
+                <Col span={18}>
+                <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
+                    <Row>
+                    {/* Total price, reset cart button, GST, and submit order button */}
+                    <Col span={8} offset={9}>
+                        <Row>
+                        <Col span={12}>
+                            <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                            <Button style={{ marginTop: 16 }} type="danger" onClick={() => returnCart()}>
+                                Return to Cart
+                            </Button>
+                        </Col>
+                        <Col span={12}>
+                            <Statistic title="GST" value={0} prefix="$" precision={2} />
+                            <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
+                                Submit Order
+                            </Button>                            
+                        </Col>
+                        </Row>
+                    </Col>
+                    </Row>
+                </Card>
+                </Col>
+            </Row>
+            </Affix>
 
             {/* <Affix offsetTop={80}> */}
             <Row justify="center" gutter={[32, 32]}>
