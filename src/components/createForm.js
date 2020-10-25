@@ -142,7 +142,7 @@ render(){
         >
             <Form.Item style={{marginTop:'20px', fontSize: '14px',textAlign: 'right', alignItems: 'center'}}>
                 Go back to
-                <Button type="link" href="\login">Choose Customer</Button>
+                <Button type="link" href="\choose">Choose Customer</Button>
             </Form.Item>
 
             <div style={{display:'flex', alignItems: 'center', flexDirection:'column'}}>
