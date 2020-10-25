@@ -375,11 +375,11 @@ const OrderPage = ({ history }) => {
           </Row>
         </Affix>
 
-        {
+        {/* {
           // Map each product in the cart to a product card
           products.map(product => {
             return (
-              <CartProduct
+              <ShortCartProduct
                 key={product.keyProductID}
                 product={product}
                 onRemove={handleRemove}
@@ -387,7 +387,7 @@ const OrderPage = ({ history }) => {
               />
             )
           })
-        }
+        } */}
 
         {viewType == 'tall' ? (
           products.map(product =>
