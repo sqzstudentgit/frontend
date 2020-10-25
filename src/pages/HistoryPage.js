@@ -104,7 +104,7 @@ const HistoryPage = ({ history }) => {
       key: 'billingContact'
     },
     {
-      title: 'Order Total (ex GST)',
+      title: 'Order Total (Ex GST)',
       dataIndex: 'lines',
       key: 'total',
       align: 'right',
@@ -143,6 +143,11 @@ const HistoryPage = ({ history }) => {
         }} 
       />
     )
+  }
+
+  // Check if authenticated before rendering the page
+  if (!sessionStorage.getItem('user')) {
+    history.push('/login');
   }
 
   // Otherwise, just render the order history table
