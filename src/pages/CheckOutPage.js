@@ -42,10 +42,12 @@ const CheckOutPage = ({ history }) =>{
 
 
     // Global customer & cart state
-    const { customerId, products, totalPrice } = useStoreState(state => ({
+    const { customerId, products, totalPrice, deliveryAddrId, billingAddrId } = useStoreState(state => ({
         customerId: state.customer.customerId,
         products: state.cart.products,
-        totalPrice: state.cart.totalPrice
+        totalPrice: state.cart.totalPrice,
+        deliveryAddrId: state.customer.deliveryAddrId,
+        billingAddrId: state.customer.billingAddrId,
     }))
 
     const returnCart = () =>{
@@ -77,12 +79,32 @@ const CheckOutPage = ({ history }) =>{
         try {
         setSubmitLoading(true);
         console.log(lines)
-        const response = await axios.post('/api/purchase', {
-            lines: lines,
-            sessionKey: sessionStorage.getItem('sessionKey')
-        }, {
-            headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
-        });
+        const response = await axios.post('/api/orders', 
+        // {
+        //     lines: lines,
+        //     sessionKey: sessionStorage.getItem('sessionKey')
+        // }, 
+        {headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }},
+        {data: {
+            // "customer_id":customerId,
+            // "delivery_addr_id":deliveryAddrId,
+            // "billing_addr_id":billingAddrId,
+            "customer_id":1,
+            "delivery_addr_id":2,
+            "billing_addr_id":3,
+            "lines": [
+                {
+                    "product_id":21,
+                    "quantity":7
+                },{
+                    "product_id":40,
+                    "quantity":5
+                }
+            ],
+            "session_key": sessionStorage.getItem('sessionKey'),
+            "instruction": null
+        }});
+        
         console.log(response);
         setSubmitLoading(false);
 
@@ -113,7 +135,7 @@ const CheckOutPage = ({ history }) =>{
 
     
     return(
-        <Page>
+        // <Page>
             <Layout style={{ minHeight: '100vh' }}>
                 {/* Top navigation bar */}
                 <Row justify="center" gutter={[0, 16]}>
@@ -121,7 +143,6 @@ const CheckOutPage = ({ history }) =>{
                 </Row>
 
                 {/* Add product form and cart information */}
-                <Affix offsetTop={5}>   
                 <Row style={{marginTop:'80px'}} justify="center" gutter={[0, 16]}>
                 
                     <Col span={18}>
@@ -148,9 +169,7 @@ const CheckOutPage = ({ history }) =>{
                     </Card>
                     </Col>        
                 </Row>
-                </Affix>
 
-                {/* <Affix offsetTop={160}> */}
                 <Row style={{marginTop:'10px'}} justify="center" gutter={[32, 32]}>
                     <Col span={18}>
                     <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
@@ -158,16 +177,15 @@ const CheckOutPage = ({ history }) =>{
                     </Card>
                     </Col>
                 </Row>
-                {/* </Affix> */}
                 
             </Layout>
-        </Page>
+        // </Page>
     )//end return
 
 }//end CheckOutPage
 
 export default withRouter(CheckOutPage);
 
-const Page = styled.div`
-    height: 100%
-`
+// const Page = styled.div`
+//     height: 100%
+// `
