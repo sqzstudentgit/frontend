@@ -449,16 +449,15 @@ const AddressesList = ({ props } ) => {
 
                     <Form.Item>
                         <div style={{lineHeight: '8px', marginLeft:'16px'}}>
-                            {/* {formatDeliveryAddr} */}
                             <p>{currBAddr1}</p>
                             <p>{currBAddr2}</p>
                             <p>{currBRegion}, {currBCountry}, {currBPostcode}</p>
                             <p>Contact:    {currBContact}</p>
                         </div>
+                        <Button type="link" onClick={showBModal}>
+                                Edit this address
+                        </Button>
                     </Form.Item>
-                    <Button type="link" onClick={showBModal}>
-                            Edit this address
-                    </Button>
 
                     {/* Edit Address Form */}
                     <Modal
@@ -485,9 +484,8 @@ const AddressesList = ({ props } ) => {
                                 rules={[{required: true,message: 'Please input your contact!'}]}
                             >
                                 <Input 
-                                    key= {currBContact}
+                                    key={currBContact}
                                     defaultValue={currBContact}
-                                    size="large"
                                     prefix={<PhoneOutlined className="site-form-item-icon" />} 
                                 >
 
@@ -505,7 +503,6 @@ const AddressesList = ({ props } ) => {
                                 <Input 
                                     key= {currBAddr1}
                                     defaultValue={currBAddr1}
-                                    size="large"
                                     prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
                                 />
                             </Form.Item>
@@ -522,7 +519,6 @@ const AddressesList = ({ props } ) => {
                                     key= {currBAddr2}
                                     defaultValue={currBAddr2}
                                     prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                    size="large"
                                 />
                             </Form.Item>
             
@@ -538,7 +534,6 @@ const AddressesList = ({ props } ) => {
                                     key= {currBPostcode}
                                     defaultValue={currBPostcode}
                                     prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                    size="large"
                                 />
                             </Form.Item>
             
@@ -554,7 +549,6 @@ const AddressesList = ({ props } ) => {
                                     key= {currBRegion}
                                     defaultValue={currBRegion}
                                     prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                    size="large"
                                 />
                             </Form.Item>
                             
@@ -570,7 +564,6 @@ const AddressesList = ({ props } ) => {
                                     key= {currBCountry}
                                     defaultValue={currBCountry}
                                     prefix={<GlobalOutlined className="site-form-item-icon" />} 
-                                    size="large"
                                 />
                             </Form.Item>
                     </Modal>
