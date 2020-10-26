@@ -34,6 +34,7 @@ const AddressesList = ({ props } ) => {
         currDRegion:'',
         currDCountry:'',
         currDPostcode:'',
+        currDId:'',
 
         //Billing Address
         currBContact:'',
@@ -44,6 +45,7 @@ const AddressesList = ({ props } ) => {
         currBRegion:'',
         currBCountry:'',
         currBPostcode:'',
+        currBId:'',
 
         contact:'',
         addr1:'',
@@ -80,6 +82,7 @@ const AddressesList = ({ props } ) => {
         currDRegion,
         currDCountry,
         currDPostcode,
+        currDId,
     
         //Billing Address
         currBContact,
@@ -90,6 +93,7 @@ const AddressesList = ({ props } ) => {
         currBRegion,
         currBCountry,
         currBPostcode,
+        currBId,
     
         contact,
         addr1,
@@ -130,20 +134,17 @@ const AddressesList = ({ props } ) => {
                     }
 
                     handleInitialChange(addresses,addressesJson);
+                    test();
             })
             .catch(err => console.log(err));
     }, []);
-
-    function  handleInitialaddrJSON (format_addr,temp_addr){
-        setState({
-            addresses: addresses.concat(format_addr.slice(0, -2)),
-            addressesJson: addressesJson.concat(temp_addr),
-        })
-        console.log(addressesJson);
+    
+    function test(){
+        console.log(currDId)//test
+        console.log(currBId)//test
     }
-
-    function  handleInitialChange(addresses,addressesJson){
-        console.log(addressesJson);
+    function handleInitialChange(addresses,addressesJson){
+        console.log(addressesJson);//test
         setState({
             currDeliveryAddr:addresses[0],
             currDeliveryAddrJson:addressesJson[0],
@@ -157,6 +158,7 @@ const AddressesList = ({ props } ) => {
             currDRegion:addressesJson[0].region,
             currDCountry:addressesJson[0].country,
             currDPostcode:addressesJson[0].postcode,
+            currDId:addressesJson[0].id,
 
             currBContact:addressesJson[0].contact,
             currBAddr1:addressesJson[0].address_line1,
@@ -164,9 +166,23 @@ const AddressesList = ({ props } ) => {
             currBRegion:addressesJson[0].region,
             currBCountry:addressesJson[0].country,
             currBPostcode:addressesJson[0].postcode,
+            currBId:addressesJson[0].id,
         })
-        console.log(currDeliveryAddrJson);
+        setDeliveryAddrId(currDId)
+        setBillingAddrId(currBId)
+        //console.log(currDId)//test
+        //console.log(currBId)//test
     }
+
+    // Global cart actions
+    const { setDeliveryAddrId } = useStoreActions(actions => ({
+        setDeliveryAddrId: actions.customer.setDeliveryAddrId
+    }))
+
+    const { setBillingAddrId } = useStoreActions(actions => ({
+        setBillingAddrId: actions.customer.setBillingAddrId
+    }))
+
     const handleDAddrChange = (e) => {
         if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
             setState({
@@ -184,7 +200,10 @@ const AddressesList = ({ props } ) => {
                 currDRegion:addressesJson[e].region,
                 currDCountry:addressesJson[e].country,
                 currDPostcode:addressesJson[e].postcode,
+                currDId:addressesJson[e].id,
             })
+            setDeliveryAddrId(currDId)
+            //console.log(currDId)//test
         }
     }
 
@@ -205,7 +224,10 @@ const AddressesList = ({ props } ) => {
                 currBRegion:addressesJson[e].region,
                 currBCountry:addressesJson[e].country,
                 currBPostcode:addressesJson[e].postcode,
+                currBId:addressesJson[e].id,
             })
+            setBillingAddrId(currBId)
+            //console.log(currBId)//test
         }
     }
 
@@ -327,9 +349,9 @@ const AddressesList = ({ props } ) => {
             console.log(state) //test      
         };
     
-      const handleBCancel = () => {
+    const handleBCancel = () => {
         setBvisible(false);
-      };
+    };
 
     return(
         <div>

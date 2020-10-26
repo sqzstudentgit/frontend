@@ -26,7 +26,8 @@ const App = () => {
 
     customer:{
       customerId: null,
-
+      deliveryAddrId:null,
+      billingAddrId:null,
       // -- CUSTOMER ACTIONS --
 
       // Set the current customerId
@@ -36,6 +37,14 @@ const App = () => {
 
       removeCustomerId: action((state) =>{
         state.customerId = null;
+      }),
+
+      setDeliveryAddrId: action((state, deliveryAddrId) => {
+        state.deliveryAddrId = deliveryAddrId;
+      }),
+
+      setBillingAddrId: action((state, billingAddrId) => {
+        state.billingAddrId = billingAddrId;
       }),
     },
 
