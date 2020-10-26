@@ -33,7 +33,7 @@ const { Title } = Typography;
 
 function ProductDetailsPage({ history, match }){
     
-    
+
     const [productInfo, setProductInfo] = useState(0);
     const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
     const [metadata, setMetadata] = useState(null);
@@ -187,7 +187,7 @@ function ProductDetailsPage({ history, match }){
                                             <InputNumber min={1} max={100} defaultValue={1} onChange={onQuantityChange} />
                                         </div>
                                         <div style={{padding: 20}}>
-                                            <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Checkout</Button>
+                                            <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Add to cart</Button>
                                         </div>
                                     
                                     </div>
