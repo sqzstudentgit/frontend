@@ -285,86 +285,88 @@ const OrderPage = ({ history }) => {
 
         {/* Add product form and cart information */}
         <Affix offsetTop={80}>
-          <Row justify="center" gutter={[0, 16]}>
-            <Col span={18}>
-              <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
-                <Row>
-                  <Col span={12}>
+          <div>
+            <Row justify="center" gutter={[0, 16]}>
+              <Col span={18}>
+                <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
+                  <Row>
+                    <Col span={12}>
 
-                    {/* Product search form */}
-                    <Form labelCol={{ span: 4 }} >
-                      <Form.Item label="Type"> 
-                        <Radio.Group
-                          value={inputType}
-                          options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
-                          onChange={(e) => setInputType(e.target.value)}
-                          optionType="button"
-                        />
-                      </Form.Item>
-                      <Form.Item label="Product">
-                        <AutoComplete
-                          options={options}
-                          onSelect={handleSelect}
-                          onSearch={handleSearch}
-                          open={open}
-                        >
-                          <Search
-                            prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
-                            placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
-                            value={input}
-                            loading={searchLoading}
-                            onSearch={() => handleAddProduct()}
+                      {/* Product search form */}
+                      <Form labelCol={{ span: 4 }} >
+                        <Form.Item label="Type"> 
+                          <Radio.Group
+                            value={inputType}
+                            options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
+                            onChange={(e) => setInputType(e.target.value)}
+                            optionType="button"
                           />
-                        </AutoComplete>
-                      </Form.Item>
-                    </Form>
+                        </Form.Item>
+                        <Form.Item label="Product">
+                          <AutoComplete
+                            options={options}
+                            onSelect={handleSelect}
+                            onSearch={handleSearch}
+                            open={open}
+                          >
+                            <Search
+                              prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
+                              placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
+                              value={input}
+                              loading={searchLoading}
+                              onSearch={() => handleAddProduct()}
+                            />
+                          </AutoComplete>
+                        </Form.Item>
+                      </Form>
 
-                    {/* Alert message */}
-                    {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
-                  </Col>
+                      {/* Alert message */}
+                      {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
+                    </Col>
 
-                  {/* Total price, reset cart button, GST, and submit order button */}
-                  <Col span={8} offset={4}>
-                    <Row>
-                      <Col span={12}>
-                        <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => emptyCart()}>
-                          Reset Cart
-                        </Button>
-                      </Col>
-                      <Col span={12}>
-                        <Statistic title="GST" value={0} prefix="$" precision={2} />
-                        <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
-                          Submit Order
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row>
+                    {/* Total price, reset cart button, GST, and submit order button */}
+                    <Col span={8} offset={4}>
+                      <Row>
+                        <Col span={12}>
+                          <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                          <Button style={{ marginTop: 16 }} type="danger" onClick={() => emptyCart()}>
+                            Reset Cart
+                          </Button>
+                        </Col>
+                        <Col span={12}>
+                          <Statistic title="GST" value={0} prefix="$" precision={2} />
+                          <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
+                            Submit Order
+                          </Button>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
 
-          {/* Tall view and short view buttons */}
-          <Row justify="center" gutter={[0, 16]}>
-            <Col span={18}>
-              <div style={{ textAlign: 'end' }}>
-                <Button 
-                  icon={<LayoutOutlined />}
-                  onClick={() => setViewType('tall')}
-                >
-                  Tall View
-                </Button>
-                <Button
-                  style={{ layout: 'inline-block' }} 
-                  icon={<VerticalAlignMiddleOutlined />}
-                  onClick={() => setViewType('short')}
-                >
-                  Short View
-                </Button>
-              </div>
-            </Col>
-          </Row>
+            {/* Tall view and short view buttons */}
+            <Row justify="center" gutter={[0, 16]}>
+              <Col span={18}>
+                <div style={{ textAlign: 'end' }}>
+                  <Button 
+                    icon={<LayoutOutlined />}
+                    onClick={() => setViewType('tall')}
+                  >
+                    Tall View
+                  </Button>
+                  <Button
+                    style={{ layout: 'inline-block' }} 
+                    icon={<VerticalAlignMiddleOutlined />}
+                    onClick={() => setViewType('short')}
+                  >
+                    Short View
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </div>
         </Affix>
 
         {viewType == 'tall' ? (
