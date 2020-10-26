@@ -75,7 +75,7 @@ const OrderPage = ({ history }) => {
     emptyCart: actions.cart.emptyCart
   }));
 
-  // Refreshes the search results when the input type is changed
+  // Refreshes the search results when the input or input type is changed
   useEffect(() => {
     (async () => {
       handleSearch(input);
@@ -104,7 +104,6 @@ const OrderPage = ({ history }) => {
    * @param {string} value a potential product code or barcode
    */
   const handleAddProduct = async (value) => {
-    console.log(`handleAddProduct value: ${value}`);
     setOpen(false);
     try {
       setSearchLoading(true);
@@ -118,8 +117,6 @@ const OrderPage = ({ history }) => {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
       setSearchLoading(false);
-
-      console.log(response);
 
       // Check if the product exists in the database
       if (response.data.status == 'error') {
@@ -236,7 +233,6 @@ const OrderPage = ({ history }) => {
    */
   const handleSearch = async (identifier) => {
     // Do not search if the input value is the empty string or null
-    console.log(`handleSearch: ${identifier}`);
     if (!identifier) {
       return setOptions([]);
     }
@@ -252,9 +248,6 @@ const OrderPage = ({ history }) => {
       return setOptions([]);
     }
     
-    // Log the result from the backend API
-    console.log(result);
-
     // Process the list of identifiers. Identifiers will be null if no products in the database
     // have similar barcodes or product codes to the identifier given in the query
     const { identifiers } = result;
@@ -312,6 +305,7 @@ const OrderPage = ({ history }) => {
                           onSelect={handleSelect}
                           onSearch={(value) => setInput(value)}
                           open={open}
+                          value={input}
                         >
                           <Search
                             prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
