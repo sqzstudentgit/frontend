@@ -50,20 +50,17 @@ const ChooseCustomer = () => {
         // update customerid in state
         setCustomerId(custid);
 
-        console.log(custid);
-
         setLoading(true);
         // update product with new customerid
         const response = axios.post('/api/switch_customer',{
             customer_id: custid,
         }).then(res=>{
             console.log(res.data.message)
+            setLoading(false);
+            setRedirect(true)
         }).catch (err=>{
             console.log(err);
         })
-        setLoading(false);
-
-        setRedirect(true)
     }
 
     return (
