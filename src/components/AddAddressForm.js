@@ -1,7 +1,7 @@
 //ant design
 import { Form, Input, Button} from 'antd';
 import { GlobalOutlined, EnvironmentOutlined,PhoneOutlined } from '@ant-design/icons';
-import {message as antdMessage} from 'antd' ;
+import { notification } from 'antd' ;
 
 //React
 import React, { useState } from "react";
@@ -47,7 +47,7 @@ const AddAddressForm = (props) => {
             })
             .then(
                 (response)=>{
-                    console.log("Create new address success");
+                    notification.success({message:"Create new address success!"});
                     console.log(response);
                     setError(false);
                     props.updateAddresses();
@@ -58,7 +58,7 @@ const AddAddressForm = (props) => {
                     console.log(e)
                     setError(true);
                     setErrorMessage(e.response.data);
-                    antdMessage.info(errorMessage);
+                    notification.error({message:errorMessage});
                 }
             ) 
         }}

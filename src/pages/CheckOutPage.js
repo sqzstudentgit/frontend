@@ -9,9 +9,6 @@ import AddressesList from '../components/AddressesList'
 
 // Ant Design Components
 import {
-    Affix,
-    Alert,
-    AutoComplete,
     Button,
     Card,
     Col,
@@ -48,9 +45,11 @@ const CheckOutPage = ({ history }) =>{
         emptyCart: actions.cart.emptyCart
     }))
 
+
     const returnCart = () =>{
         history.push('/order');
       }
+
     /**
      * Handles submission of an order to the backend API endpoint
      */
@@ -115,65 +114,59 @@ const CheckOutPage = ({ history }) =>{
 
     
     return(
-        // <Page>
-            <Layout style={{ minHeight: '100vh' }}>
-                {/* Top navigation bar */}
-                <Row justify="center" gutter={[0, 16]}>
-                    <NavigationBar history={history} defaultSelected='/order'/>
-                </Row>
+        <Layout style={{ minHeight: '100vh' }}>
+            {/* Top navigation bar */}
+            <Row justify="center" gutter={[0, 16]}>
+                <NavigationBar history={history} defaultSelected='/order'/>
+            </Row>
 
-                {/* Add product form and cart information */}
-                <Row style={{marginTop:'80px'}} justify="center" gutter={[0, 16]}>
-                
-                    <Col span={18}>
-                        <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
-                            <Row>
-                                <Col span={12}>
-                                    <Form>
-                                        <Form.Item label="Instruction">
-                                            <Input.TextArea 
-                                            onChange={(e)=>setInstruction(e.target.value)}
-                                            />
-                                        </Form.Item>
-                                    </Form>
-                                </Col>
-                                <Col span={8} offset={4}>
-                                    <Row>
-                                        <Col span={12}>
-                                            <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                                            <Button style={{ marginTop: 16 }} type="danger" onClick={() => returnCart()}>
-                                                Return to Cart
-                                            </Button>
-                                        </Col>
-                                        <Col span={12}>
-                                            <Statistic title="GST" value={0} prefix="$" precision={2} />
-                                            <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
-                                                Submit Order
-                                            </Button>                            
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </Card>
-                    </Col>        
-                </Row>
-
-                <Row style={{marginTop:'10px'}} justify="center" gutter={[32, 32]}>
-                    <Col span={18}>
-                    <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
-                        <AddressesList></AddressesList>
+            {/* Add product form and cart information */}
+            <Row style={{marginTop:'80px'}} justify="center" gutter={[0, 16]}>
+            
+                <Col span={18}>
+                    <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
+                        <Row align="middle">
+                            <Col span={12}>
+                                <Form>
+                                    <Form.Item label="Instruction">
+                                        <Input.TextArea 
+                                        onChange={(e)=>setInstruction(e.target.value)}
+                                        />
+                                    </Form.Item>
+                                </Form>
+                            </Col>
+                            <Col span={8} offset={4}>
+                                <Row>
+                                    <Col span={12}>
+                                        <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => returnCart()}>
+                                            Return to Cart
+                                        </Button>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Statistic title="GST" value={0} prefix="$" precision={2} />
+                                        <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
+                                            Submit Order
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
                     </Card>
-                    </Col>
-                </Row>
-                
-            </Layout>
-        // </Page>
+                </Col>        
+            </Row>
+
+            <Row style={{marginTop:'10px'}} justify="center" gutter={[32, 32]}>
+                <Col span={18}>
+                <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
+                    <AddressesList></AddressesList>
+                </Card>
+                </Col>
+            </Row>
+            
+        </Layout>
     )//end return
 
 }//end CheckOutPage
 
 export default withRouter(CheckOutPage);
-
-// const Page = styled.div`
-//     height: 100%
-// `
