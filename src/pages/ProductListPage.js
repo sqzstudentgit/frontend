@@ -33,10 +33,11 @@ class ProductListPage extends React.Component{
             products: [],
             totalPage: '',
             totalItem: '',
-            pageCurrent: 1,
+            pageCurrent: parseInt(window.location.hash.slice(1), 0) || 1,
             pageItems: '',
             pred_page: 1,
         }
+        this.onPageNumChange = this.onPageNumChange.bind(this);
     }
 
     // Instead of loading all products at the beginning
@@ -44,40 +45,47 @@ class ProductListPage extends React.Component{
     // only products on the specific page will be get
     // This way can improve web speed and release traffic
     componentDidMount() {
-
-            axios({
-                    method: 'get',           
-                    url: '/api/products',
-                    headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
-                    params: {
-                        page: this.state.pageCurrent,
-                    }
-                }              
-            )
-                .then(
-                    (response)=>{
-                        console.log("Get products info!");
-                        console.log(response.data);
+        this.handleAnchor()
+        axios({
+            method: 'get',           
+            url: '/api/products',
+            headers: { 'Content-Type': 'application/JSON; charset=UTF-8' },
+            params: {
+                page: this.state.pageCurrent,
+            }
+        }              
+        )
+            .then(
+                (response)=>{
+                    console.log("Get products info!");
+                    console.log(response.data);
                     
-                        this.setState({
-                            products: response.data.items,
-                            totalPage: response.data.total_pages,
-                            totalItem: response.data.total_items,
-                            pageItems: response.data.page_items
-                        });
-                        console.log(this.state.products[1].image)
-                    }
-                )
-                .catch(function (error) {
-                    console.log(error);
-                })       
+                    this.setState({
+                        products: response.data.items,
+                        totalPage: response.data.total_pages,
+                        totalItem: response.data.total_items,
+                        pageItems: response.data.page_items
+                    });
+                }
+            )
+            .catch(function (error) {
+                console.log(error);
+            })       
     }
 
-    // get the page num to go
+    // when refreshing the url, staying at the current page, not the first one
+    handleAnchor() {
+        this.onPageNumChange(this.state.pageCurrent);
+    }
+
+    // get the page num to transfer
     onPageNumChange(pageCurrent){
-        console.log(pageCurrent)
+        //console.log(pageCurrent)
         this.setState({
             pageCurrent: pageCurrent,
+        }, ()=>{
+            //set the current page number as hash value
+            window.location.hash = `#${pageCurrent}`;
         })
     }
 
@@ -149,6 +157,7 @@ class ProductListPage extends React.Component{
                                     <Card
                                         title={item.name}
                                         key={item.name}
+                                        hoverable
                                         cover={<Image alt="example" 
                                             src= {this.getImage(item.image)} 
                                             //if image is 404 not found, show the default image
@@ -167,8 +176,8 @@ class ProductListPage extends React.Component{
                         showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
                         pageSize = {20}
                         current={this.state.pageCurrent}
-                        
-                        onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
+                        onChange = {this.onPageNumChange}
+                        //onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
                         
                     />
 
