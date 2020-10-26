@@ -73,14 +73,14 @@ const OrderPage = ({ history }) => {
     removeProduct: actions.cart.removeProduct,
     changeQuantity: actions.cart.changeQuantity,
     emptyCart: actions.cart.emptyCart
-  }))
+  }));
 
   // Refreshes the search results when the input type is changed
   useEffect(() => {
     (async () => {
       handleSearch(input);
     })();
-  }, [inputType]);
+  }, [input, inputType]);
 
 
   // Sets alert message, type, and whether to display the alert
@@ -101,16 +101,18 @@ const OrderPage = ({ history }) => {
   
   /**
    * Handles addition of a product to the cart
+   * @param {string} value a potential product code or barcode
    */
-  const handleAddProduct = async () => {
+  const handleAddProduct = async (value) => {
+    console.log(`handleAddProduct value: ${value}`);
     setOpen(false);
     try {
       setSearchLoading(true);
       const response = await axios.get(`/api/${inputType}`, {
         params: {
           sessionKey: sessionStorage.getItem("sessionKey"),
-          barcode: input,
-          productCode: input
+          barcode: value,
+          productCode: value
         }
       }, {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
@@ -227,11 +229,14 @@ const OrderPage = ({ history }) => {
 
   /**
    * Live searches the database for product codes and barcodes
-   * that match a potential product 'identifier'
+   * that match a potential product 'identifier'. This method
+   * is called when the input field value or input field type is
+   * changed.
    * @param {string} identifier a potential product code or barcode
    */
   const handleSearch = async (identifier) => {
     // Do not search if the input value is the empty string or null
+    console.log(`handleSearch: ${identifier}`);
     if (!identifier) {
       return setOptions([]);
     }
@@ -305,7 +310,7 @@ const OrderPage = ({ history }) => {
                         <AutoComplete
                           options={options}
                           onSelect={handleSelect}
-                          onSearch={handleSearch}
+                          onSearch={(value) => setInput(value)}
                           open={open}
                         >
                           <Search
@@ -313,7 +318,7 @@ const OrderPage = ({ history }) => {
                             placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
                             value={input}
                             loading={searchLoading}
-                            onSearch={() => handleAddProduct()}
+                            onSearch={(value) => handleAddProduct(value)}
                           />
                         </AutoComplete>
                       </Form.Item>
