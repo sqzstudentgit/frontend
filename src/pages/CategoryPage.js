@@ -15,6 +15,7 @@ import {
     Card,
     Image,
     Layout,
+    Spin,
     Menu,
     Breadcrumb,
     Pagination
@@ -25,6 +26,7 @@ const { Header, Content, Footer, Sider } = Layout;
   
   // Ant Design Icons
 import NavigationBar from "../components/NavigationBar";
+import { Spinner2 } from 'styled-icons/evil';
 
 // import { useStoreActions } from 'easy-peasy';
 
@@ -38,6 +40,7 @@ class CategoryPage extends React.Component{
             pageCurrent: parseInt(window.location.hash.slice(1), 0) || 1,
             pageItems: '',
             pred_page: 1,
+            loading: true
         }
         this.onPageNumChange = this.onPageNumChange.bind(this);
     }
@@ -64,6 +67,7 @@ class CategoryPage extends React.Component{
                         totalPage: response.data.total_pages,
                         totalItem: response.data.total_items,
                         pageItems: response.data.page_items,
+                        loading: false
                     });
                 }
             )
@@ -115,6 +119,7 @@ class CategoryPage extends React.Component{
                             pageCurrent: response.data.page_num,
                             pageItems: response.data.page_items,
                             pred_page: response.data.page_num,
+                            loading:false
                         });
                     }
                 )
@@ -136,6 +141,7 @@ class CategoryPage extends React.Component{
     render() {
         return (
             <Layout>
+                <Spin size="large" />
                 <NavigationBar  history={history}/>
                 <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
@@ -152,39 +158,40 @@ class CategoryPage extends React.Component{
                             <span>Category</span>
                         </Breadcrumb.Item>
                     </Breadcrumb>
-                    <List
-                        grid={{
-                            gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
-                          }}
-                        dataSource={this.state.cate_product}
-                        renderItem={item => (
-                            <List.Item>
-                                <Link to={"/products/" + item.productCode}>
-                                    <Card
-                                        title={item.name}
-                                        key={item.name}
-                                        hoverable
-                                        cover={<Image alt="example" 
-                                            src= {this.getImage(item.image)} 
-                                            //if image is 404 not found, show the default image
-                                            onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
-                                            <Meta key={item.productCode} 
-                                                title={item.price} 
-                                                description={item.barcode}
-                                            />
-                                    </Card>
-                                </Link>
-                            </List.Item>
-                        )}
-                    />
-                    <Pagination //add active url for each productlist page
-                        total={this.state.totalItem}
-                        showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-                        pageSize = {20}
-                        current={this.state.pageCurrent}
-                        onChange = {this.onPageNumChange}
-                        
-                    />
+                    {this.state.loading ? <Spin size="large"/> : 
+                        <List
+                            grid={{
+                                gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
+                            }}
+                            dataSource={this.state.cate_product}
+                            renderItem={item => (
+                                <List.Item>
+                                    <Link to={"/products/" + item.productCode}>
+                                        <Card
+                                            title={item.name}
+                                            key={item.name}
+                                            hoverable
+                                            cover={<Image alt="example" 
+                                                src= {this.getImage(item.image)} 
+                                                //if image is 404 not found, show the default image
+                                                onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
+                                                <Meta key={item.productCode} 
+                                                    title={item.price} 
+                                                    description={item.barcode}
+                                                />
+                                        </Card>
+                                    </Link>
+                                </List.Item>
+                            )}
+                        />
+                    }
+                        <Pagination //add active url for each productlist page
+                            total={this.state.totalItem}
+                            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+                            pageSize = {20}
+                            current={this.state.pageCurrent}
+                            onChange = {this.onPageNumChange}
+                        />
 
                     <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
 
