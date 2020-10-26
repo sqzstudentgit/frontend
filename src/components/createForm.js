@@ -1,7 +1,17 @@
 //ant design
 import { Typography,Form,Input,Button,Row, Col, Divider,Select,Image} from 'antd';
 import {message as antdMessage} from 'antd' ;
-import { CheckCircleTwoTone, GlobalOutlined, UserAddOutlined, UserOutlined, EnvironmentOutlined,PhoneOutlined,MailOutlined,MessageOutlined,EyeTwoTone,EyeInvisibleOutlined } from '@ant-design/icons';
+import { CheckCircleTwoTone, 
+        GlobalOutlined, 
+        UserAddOutlined, 
+        UserOutlined, 
+        EnvironmentOutlined,
+        PhoneOutlined,
+        MailOutlined,
+        MessageOutlined,
+        EyeTwoTone,
+        EyeInvisibleOutlined 
+        } from '@ant-design/icons';
 //React
 import React from "react";
 import Axios from 'axios';
