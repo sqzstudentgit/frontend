@@ -155,9 +155,7 @@ class ProductListPage extends React.Component{
                             <List.Item>
                                 <Link to={"/products/" + item.productCode}>
                                     <Card
-                                        
                                         title={item.name}
-                                        headStyle
                                         key={item.name}
                                         hoverable
                                         cover={<Image alt="example" 
