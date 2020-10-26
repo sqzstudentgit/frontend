@@ -11,6 +11,8 @@ import { action, actionOn, createStore, persist } from 'easy-peasy';
 const customerModel = {
   // Customer state
   customerId: null,
+  deliveryAddrId:null,
+  billingAddrId:null,
 
   // -- CUSTOMER ACTIONS --
 
@@ -21,7 +23,15 @@ const customerModel = {
 
   removeCustomerId: action((state) =>{
     state.customerId = null;
-  })
+  }),
+
+  setDeliveryAddrId: action((state, deliveryAddrId) => {
+    state.deliveryAddrId = deliveryAddrId;
+  }),
+
+  setBillingAddrId: action((state, billingAddrId) => {
+    state.billingAddrId = billingAddrId;
+  }),
 }
 
 
