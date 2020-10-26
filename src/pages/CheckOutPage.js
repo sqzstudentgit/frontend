@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
@@ -112,52 +113,61 @@ const CheckOutPage = ({ history }) =>{
 
     
     return(
-        <Layout style={{ minHeight: '100vh' }}>
-            {/* Top navigation bar */}
-            <NavigationBar history={history} defaultSelected='/order'/>
+        <Page>
+            <Layout style={{ minHeight: '100vh' }}>
+                {/* Top navigation bar */}
+                <Row justify="center" gutter={[0, 16]}>
+                    <NavigationBar history={history} defaultSelected='/order'/>
+                </Row>
 
-            {/* Add product form and cart information */}
-            <Affix offsetTop={80}>
-            <Row justify="center" gutter={[0, 16]}>
-                <Col span={18}>
-                <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
-                    <Row>
-                    {/* Total price, reset cart button, GST, and submit order button */}
-                    <Col span={8} offset={9}>
+                {/* Add product form and cart information */}
+                <Affix offsetTop={5}>   
+                <Row style={{marginTop:'80px'}} justify="center" gutter={[0, 16]}>
+                
+                    <Col span={18}>
+                    <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
                         <Row>
-                        <Col span={12}>
-                            <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                            <Button style={{ marginTop: 16 }} type="danger" onClick={() => returnCart()}>
-                                Return to Cart
-                            </Button>
-                        </Col>
-                        <Col span={12}>
-                            <Statistic title="GST" value={0} prefix="$" precision={2} />
-                            <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
-                                Submit Order
-                            </Button>                            
+                        {/* Total price, reset cart button, GST, and submit order button */}
+                        <Col span={8} offset={9}>
+                            <Row>
+                            <Col span={12}>
+                                <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                                <Button style={{ marginTop: 16 }} type="danger" onClick={() => returnCart()}>
+                                    Return to Cart
+                                </Button>
+                            </Col>
+                            <Col span={12}>
+                                <Statistic title="GST" value={0} prefix="$" precision={2} />
+                                <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
+                                    Submit Order
+                                </Button>                            
+                            </Col>
+                            </Row>
                         </Col>
                         </Row>
-                    </Col>
-                    </Row>
-                </Card>
-                </Col>
-            </Row>
-            </Affix>
+                    </Card>
+                    </Col>        
+                </Row>
+                </Affix>
 
-            {/* <Affix offsetTop={80}> */}
-            <Row justify="center" gutter={[32, 32]}>
-                <Col span={18}>
-                <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
-                    <AddressesList></AddressesList>
-                </Card>
-                </Col>
-            </Row>
-            {/* /</Affix> */}
-            
-        </Layout>
+                {/* <Affix offsetTop={160}> */}
+                <Row style={{marginTop:'10px'}} justify="center" gutter={[32, 32]}>
+                    <Col span={18}>
+                    <Card style={{ borderRadius: '1.25rem', boxShadow: "5px 8px 24px 5px rgba(208, 216, 243, 0.6)" }}>
+                        <AddressesList></AddressesList>
+                    </Card>
+                    </Col>
+                </Row>
+                {/* </Affix> */}
+                
+            </Layout>
+        </Page>
     )//end return
 
 }//end CheckOutPage
 
 export default withRouter(CheckOutPage);
+
+const Page = styled.div`
+    height: 100%
+`
