@@ -15,11 +15,13 @@ class ChooseCustomerPage extends React.Component{
 
     render() {
         return (
-            <Row style={{ height:  "100%"}} justify="space-around" align="middle">
-                <Col>
-                    <ChooseCustomer />
-                </Col>
-            </Row>
+            <div style={{backgroundColor: '#F5F5F5'}}>
+                <Row style={{ height:  "100%"}} justify="space-around" align="middle">
+                    <Col>
+                        <ChooseCustomer />
+                    </Col>
+                </Row>
+            </div>
         )
     }
 }
