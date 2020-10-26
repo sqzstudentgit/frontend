@@ -11,8 +11,7 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 //Linked Components
 import AddAddressForm from '../components/AddAddressForm';
-import { IdBadge } from 'styled-icons/fa-regular';
-import { format } from 'path';
+
 
 const AddressesList = ({ props } ) => {
     const [loading, setLoading] = useState(false);
@@ -63,10 +62,22 @@ const AddressesList = ({ props } ) => {
     const reducer = (state, newState) => ({ ...state, ...newState })
     const [state, setState] = useReducer(reducer, initialState);
 
+    /**
+     * Global Customer & Address Information
+     */
     const { customerId } = useStoreState(state => ({
         customerId: state.customer.customerId,
       }))
+    
+    const { setDeliveryAddrId, setBillingAddrId } = useStoreActions(actions => ({
+        setDeliveryAddrId: actions.customer.setDeliveryAddrId,
+        setBillingAddrId: actions.customer.setBillingAddrId
+    }))
 
+
+    /**
+     * Initial State for AddressList
+     */
     const { 
         //List of all addresses for the customer
         addresses,       //all addresses are formatted into string, seperate by ";"
@@ -113,6 +124,10 @@ const AddressesList = ({ props } ) => {
 
                     updateDeliveryAddrDetail(0);
                     updateBillAddrDetail(0);
+
+                    //Set Global State
+                    setDeliveryAddrId(addressesJson[0].id);
+                    setBillingAddrId(addressesJson[0].id);
             })
             .catch(err => console.log(err));
     }, []);
@@ -178,7 +193,9 @@ const AddressesList = ({ props } ) => {
             setState({addAddr:''})
         }else{
             updateDeliveryAddrDetail(e);
-            setState({addAddr:'none'})
+            setState({addAddr:'none'});
+            console.log(addressesJson[e].id)
+            setDeliveryAddrId(addressesJson[e].id);
         }
     }
 
@@ -187,7 +204,8 @@ const AddressesList = ({ props } ) => {
             setState({addAddr:''})
         }else{
             updateBillAddrDetail(e);
-            setState({addAddr:'none'})
+            setState({addAddr:'none'});
+            setBillingAddrId(addressesJson[e].id);
         }
     }
 

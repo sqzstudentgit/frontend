@@ -46,6 +46,8 @@ const App = () => {
             <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
             <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
             <Route path="/productCategories/:id" exact component={CategoryPage} />
+            <Route path="/checkout" exact component={CheckOutPage} />
+            
           </div>
         </Router>
       </WaitForStateReyhydration>

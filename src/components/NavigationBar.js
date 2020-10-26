@@ -78,8 +78,8 @@ class NavigationBar extends React.PureComponent{
                     <Menu.Item key="/productList">All products</Menu.Item>
                     <CategoryTree />
                 </SubMenu>
-                <Menu.Item icon={<HistoryOutlined />} key="/history">Order History</Menu.Item>
                 <Menu.Item icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
+                <Menu.Item icon={<HistoryOutlined />} key="/history">Order History</Menu.Item>
                 <Menu.Item icon={<UserSwitchOutlined/>} key="/choose">Switch account</Menu.Item>
                 <Menu.Item icon={<LogoutOutlined />} key="/logout">Logout</Menu.Item>
                 </Menu>

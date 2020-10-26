@@ -50,6 +50,10 @@ const CheckOutPage = ({ history }) =>{
         billingAddrId: state.customer.billingAddrId,
     }))
 
+    const {emptyCart} = useStoreActions(actions=>({
+        emptyCart: actions.cart.emptyCart
+    }))
+
     const returnCart = () =>{
         history.push('/order');
       }
@@ -68,54 +72,37 @@ const CheckOutPage = ({ history }) =>{
 
         // Map products in the cart to 'lines' (i.e. order details)
         let lines = products.map(product => ({
-        ...product,
-        lineType: "PRODUCT",
-        unitPrice: product.price,
-        totalPrice: product.price * product.quantity,
-        priceTotalExTax: product.price * product.quantity
+            product_id: product.id,
+            quantity:product.quantity
         }))
 
         // Submit the order to the backend API endpoint
         try {
         setSubmitLoading(true);
-        console.log(lines)
-        const response = await axios.post('/api/orders', 
-        // {
-        //     lines: lines,
-        //     sessionKey: sessionStorage.getItem('sessionKey')
-        // }, 
+        console.log(customerId, deliveryAddrId, billingAddrId)
+        const response = await axios.post('/api/orders',
         {headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }},
         {data: {
-            // "customer_id":customerId,
-            // "delivery_addr_id":deliveryAddrId,
-            // "billing_addr_id":billingAddrId,
-            "customer_id":1,
-            "delivery_addr_id":2,
-            "billing_addr_id":3,
-            "lines": [
-                {
-                    "product_id":21,
-                    "quantity":7
-                },{
-                    "product_id":40,
-                    "quantity":5
-                }
-            ],
-            "session_key": sessionStorage.getItem('sessionKey'),
-            "instruction": null
+            customer_id:customerId,
+            delivery_addr_id:deliveryAddrId,
+            billing_addr_id:billingAddrId,
+            lines: lines,
+            session_key: sessionStorage.getItem('sessionKey'),
+            instruction: null
         }});
         
         console.log(response);
         setSubmitLoading(false);
 
         // Check the response, and redirect to home if successful
-        if (response.status == 200) {
+        if (response.status == 201) {
             notification.success({
             message: 'Your order has been submitted!'
             })
             setTimeout(() => {
             history.push('/');
             }, 4500);
+            emptyCart()
         }
         } catch (err) {
         console.log(err);
