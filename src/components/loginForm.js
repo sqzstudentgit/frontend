@@ -1,12 +1,12 @@
 //ant design
 import { Form, Input, Button, Card} from 'antd';
-import {message as antdMessage} from 'antd' ;
+import { message as antdMessage } from 'antd' ;
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 //React
 import React from "react";
 import axios from 'axios';
-import {withRouter, Redirect} from 'react-router-dom'
+import {Redirect} from 'react-router-dom'
 
 
 
@@ -17,6 +17,8 @@ class LoginForm extends React.Component{
         this.state = {
             username: '',
             password:'',
+
+            loading: false,
             error: false,
             errorMassage:'',
             isLogout:true
@@ -35,9 +37,8 @@ class LoginForm extends React.Component{
 
 
     _handleSubmit(e){
-        // e.preventDefault();//test need
-        
-       axios({
+        this.setState({loading:true});
+        axios({
                 method: 'post',           
                 url: 'api/login',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
@@ -45,8 +46,7 @@ class LoginForm extends React.Component{
                     "username": this.state.username,
                     "password": this.state.password,
                 }
-            }
-            )
+            })
             .then(
                 (response)=>{
                     console.log(response);
@@ -59,13 +59,15 @@ class LoginForm extends React.Component{
                         sessionStorage.setItem('sessionKey', session_id);
                         this.setState({
                             error:false,
-                            isLogout:false
+                            isLogout:false,
+                            loading:false
                         })
                     }
                     else{
                         this.setState({
                             error:true,
-                            errorMassage:"Sorry, your username and/or password are incorrect. Please try again."
+                            errorMassage:"Sorry, your username and/or password are incorrect. Please try again.",
+                            loading:false
                         })
                         antdMessage.info(this.state.errorMassage);
                     } 
@@ -76,7 +78,8 @@ class LoginForm extends React.Component{
                     console.log(e)
                     this.setState({
                         error:true,
-                        errorMassage: e.response.data
+                        errorMassage: e.response.data,
+                        loading:false
                     })
                     antdMessage.info(this.state.errorMassage);
                 }
@@ -125,7 +128,7 @@ class LoginForm extends React.Component{
                     </Form.Item>
             
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" block="true">
+                        <Button type="primary" htmlType="submit" block="true" loading={this.state.loading}>
                         Log in
                         </Button>
                     </Form.Item>

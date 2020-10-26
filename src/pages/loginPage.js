@@ -10,9 +10,7 @@ class LoginPage extends React.Component{
 
     constructor(props) {
         super(props);
-        this.state = {
-        }
-   
+        this.state = {}
     }
 
     render() {
@@ -24,7 +22,6 @@ class LoginPage extends React.Component{
                     </Col>
                 </Row>
             </div>
- 
         )//end return
     }
 }
