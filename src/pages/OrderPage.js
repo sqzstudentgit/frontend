@@ -161,7 +161,20 @@ const OrderPage = ({ history }) => {
   }
 
 
+  /**
+   * Handles user select "Checkout"
+   */
   const handleSubmit = () =>{
+    // if shopping cart is empty, set alert
+    if (products.length == 0) {
+      notification.warning({
+          message: 'Your cart is empty',
+          description: 'Please add a product to your cart before submitting an order'
+      })
+      return;
+    } 
+
+    // redirect to checkout page
     history.push('/checkout');
   }
 

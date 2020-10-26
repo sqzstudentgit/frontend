@@ -1,15 +1,10 @@
-import styled from 'styled-components';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { withRouter } from 'react-router-dom';
-import { search } from '../utils/search';
-import TallCartProduct from '../components/TallCartProduct';
-import ShortCartProduct from '../components/ShortCartProduct';
 import NavigationBar from '../components/NavigationBar';
 
 // Todo: This is the temp design for Checkout - Add Billing Address & Delivery Address function
-import AddAddressForm from '../components/AddAddressForm';
 import AddressesList from '../components/AddressesList'
 
 // Ant Design Components
@@ -24,7 +19,6 @@ import {
     Input,
     Layout,
     notification,
-    Radio,
     Row,
     Statistic,
   } from 'antd';
@@ -38,8 +32,8 @@ import {
 
 const CheckOutPage = ({ history }) =>{
     // General page state
-  const [submitLoading, setSubmitLoading] = useState(false);  // Order submission loading state
-
+    const [submitLoading, setSubmitLoading] = useState(false);  // Order submission loading state
+    const [instruction, setInstruction] = useState("");
 
     // Global customer & cart state
     const { customerId, products, totalPrice, deliveryAddrId, billingAddrId } = useStoreState(state => ({
@@ -79,7 +73,6 @@ const CheckOutPage = ({ history }) =>{
         // Submit the order to the backend API endpoint
         try {
         setSubmitLoading(true);
-        console.log(customerId, deliveryAddrId, billingAddrId)
         const response = await axios.post('/api/orders',
         {headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }},
         {data: {
@@ -88,7 +81,7 @@ const CheckOutPage = ({ history }) =>{
             billing_addr_id:billingAddrId,
             lines: lines,
             session_key: sessionStorage.getItem('sessionKey'),
-            instruction: null
+            instructions: instruction
         }});
         
         console.log(response);
@@ -133,27 +126,35 @@ const CheckOutPage = ({ history }) =>{
                 <Row style={{marginTop:'80px'}} justify="center" gutter={[0, 16]}>
                 
                     <Col span={18}>
-                    <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
-                        <Row>
-                        {/* Total price, reset cart button, GST, and submit order button */}
-                        <Col span={8} offset={9}>
+                        <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
                             <Row>
-                            <Col span={12}>
-                                <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                                <Button style={{ marginTop: 16 }} type="danger" onClick={() => returnCart()}>
-                                    Return to Cart
-                                </Button>
-                            </Col>
-                            <Col span={12}>
-                                <Statistic title="GST" value={0} prefix="$" precision={2} />
-                                <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
-                                    Submit Order
-                                </Button>                            
-                            </Col>
+                                <Col span={12}>
+                                    <Form>
+                                        <Form.Item label="Instruction">
+                                            <Input.TextArea 
+                                            onChange={(e)=>setInstruction(e.target.value)}
+                                            />
+                                        </Form.Item>
+                                    </Form>
+                                </Col>
+                                <Col span={8} offset={4}>
+                                    <Row>
+                                        <Col span={12}>
+                                            <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                                            <Button style={{ marginTop: 16 }} type="danger" onClick={() => returnCart()}>
+                                                Return to Cart
+                                            </Button>
+                                        </Col>
+                                        <Col span={12}>
+                                            <Statistic title="GST" value={0} prefix="$" precision={2} />
+                                            <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
+                                                Submit Order
+                                            </Button>                            
+                                        </Col>
+                                    </Row>
+                                </Col>
                             </Row>
-                        </Col>
-                        </Row>
-                    </Card>
+                        </Card>
                     </Col>        
                 </Row>
 
