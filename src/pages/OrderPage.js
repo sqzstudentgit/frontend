@@ -73,14 +73,14 @@ const OrderPage = ({ history }) => {
     removeProduct: actions.cart.removeProduct,
     changeQuantity: actions.cart.changeQuantity,
     emptyCart: actions.cart.emptyCart
-  }))
+  }));
 
-  // Refreshes the search results when the input type is changed
+  // Refreshes the search results when the input or input type is changed
   useEffect(() => {
     (async () => {
       handleSearch(input);
     })();
-  }, [inputType]);
+  }, [input, inputType]);
 
 
   // Sets alert message, type, and whether to display the alert
@@ -101,23 +101,22 @@ const OrderPage = ({ history }) => {
   
   /**
    * Handles addition of a product to the cart
+   * @param {string} value a potential product code or barcode
    */
-  const handleAddProduct = async () => {
+  const handleAddProduct = async (value) => {
     setOpen(false);
     try {
       setSearchLoading(true);
       const response = await axios.get(`/api/${inputType}`, {
         params: {
           sessionKey: sessionStorage.getItem("sessionKey"),
-          barcode: input,
-          productCode: input
+          barcode: value,
+          productCode: value
         }
       }, {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
       setSearchLoading(false);
-
-      console.log(response);
 
       // Check if the product exists in the database
       if (response.data.status == 'error') {
@@ -227,7 +226,9 @@ const OrderPage = ({ history }) => {
 
   /**
    * Live searches the database for product codes and barcodes
-   * that match a potential product 'identifier'
+   * that match a potential product 'identifier'. This method
+   * is called when the input field value or input field type is
+   * changed.
    * @param {string} identifier a potential product code or barcode
    */
   const handleSearch = async (identifier) => {
@@ -247,9 +248,6 @@ const OrderPage = ({ history }) => {
       return setOptions([]);
     }
     
-    // Log the result from the backend API
-    console.log(result);
-
     // Process the list of identifiers. Identifiers will be null if no products in the database
     // have similar barcodes or product codes to the identifier given in the query
     const { identifiers } = result;
@@ -305,15 +303,16 @@ const OrderPage = ({ history }) => {
                         <AutoComplete
                           options={options}
                           onSelect={handleSelect}
-                          onSearch={handleSearch}
+                          onSearch={(value) => setInput(value)}
                           open={open}
+                          value={input}
                         >
                           <Search
                             prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
                             placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
                             value={input}
                             loading={searchLoading}
-                            onSearch={() => handleAddProduct()}
+                            onSearch={(value) => handleAddProduct(value)}
                           />
                         </AutoComplete>
                       </Form.Item>

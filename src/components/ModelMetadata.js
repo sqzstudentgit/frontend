@@ -2,8 +2,8 @@ import React from 'react';
 import { Descriptions } from 'antd';
 
 /**
- * This component is responsible for displaying the product parameters for a 
- * given HolyOake product 3D model. It will be wrapped within an Ant Design modal.
+ * This component is responsible for displaying the product
+ * parameters for a given HolyOake product 3D model.
  * 
  * @param {object} metadata 3D model metadata retrieved from the /api/metadata/get endpoint 
  */
