@@ -63,11 +63,9 @@ const AddressesList = ({ props } ) => {
     const reducer = (state, newState) => ({ ...state, ...newState })
     const [state, setState] = useReducer(reducer, initialState);
 
-    // TODO: Change after test
-    // const { customerId } = useStoreState(state => ({
-    //     customerId: state.customer.customerId,
-    //   }))
-    const  customerId = "17"; //
+    const { customerId } = useStoreState(state => ({
+        customerId: state.customer.customerId,
+      }))
 
     const { 
         //List of all addresses for the customer
@@ -569,7 +567,7 @@ const AddressesList = ({ props } ) => {
                     </Modal>
                 </Form>
             </div>
-            
+
 
             {/* Add New Address Component, triggle by click "add new address" in selection box */}
             <div style={{display:addAddr}}>
