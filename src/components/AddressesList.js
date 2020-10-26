@@ -1,7 +1,5 @@
 //ant design
-import { Form, Input, Button, Select, Divider,Modal} from 'antd';
-import {message as antdMessage} from 'antd' ;
-import { GlobalOutlined, EnvironmentOutlined, PhoneOutlined} from '@ant-design/icons';
+import { Form, Button, Select, Divider} from 'antd';
 
 //React
 import React, {useEffect, useState, useReducer} from "react";
@@ -11,12 +9,12 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 //Linked Components
 import AddAddressForm from '../components/AddAddressForm';
+import EditAddressForm from '../components/EditAddressForm';
 
-
-const AddressesList = ({ props } ) => {
-    const [loading, setLoading] = useState(false);
+const AddressesList = ( ) => {
     const [dvisible, setDvisible] = useState(false);
     const [bvisible, setBvisible] = useState(false);
+    const [addAddr, setAddAddr] = useState("none");
 
     const initialState = {
         customerId: '', //dynamic customer code in future
@@ -27,36 +25,10 @@ const AddressesList = ({ props } ) => {
         //Delivery Address
         currDeliveryAddr:'',
         currDeliveryAddrJson:'',
-        currDContact:'',
-        currDAddr1:'',
-        currDAddr2:'',
-        currDRegion:'',
-        currDCountry:'',
-        currDPostcode:'',
 
         //Billing Address
-        currBContact:'',
         currBillAddr:'',
         currBillAddrJson:'',
-        currBAddr1:'',
-        currBAddr2:'',
-        currBRegion:'',
-        currBCountry:'',
-        currBPostcode:'',
-
-        contact:'',
-        addr1:'',
-        addr2:'',
-        region:'',
-        country:'',
-        postcode:'',
-        error:false,
-        errorMessage:'',
-
-        DAddrSelect:'none',
-        BAddrSelect:'none',
-
-        addAddr:'none',
     }
 
     const reducer = (state, newState) => ({ ...state, ...newState })
@@ -65,8 +37,9 @@ const AddressesList = ({ props } ) => {
     /**
      * Global Customer & Address Information
      */
-    const { customerId } = useStoreState(state => ({
+    const { customerId,  deliveryAddrId} = useStoreState(state => ({
         customerId: state.customer.customerId,
+        deliveryAddrId: state.customer.deliveryAddrId
       }))
     
     const { setDeliveryAddrId, setBillingAddrId } = useStoreActions(actions => ({
@@ -85,23 +58,9 @@ const AddressesList = ({ props } ) => {
     
         //Delivery Address
         currDeliveryAddrJson,
-        currDContact,
-        currDAddr1,
-        currDAddr2,
-        currDRegion,
-        currDCountry,
-        currDPostcode,
-    
         //Billing Address
         currBillAddrJson,
-        currBContact,
-        currBAddr1,
-        currBAddr2,
-        currBRegion,
-        currBCountry,
-        currBPostcode,
-
-        addAddr,
+        
         } = state;
     
 
@@ -150,31 +109,19 @@ const AddressesList = ({ props } ) => {
                     addressesJson[i] = temp_addr;
                 }
             },
-            setState({addAddr:'none'}))
+            setAddAddr('none'))
         .catch(err => console.log(err));
     }
 
     function updateDeliveryAddrDetail(idx){
         setState({
             currDeliveryAddrJson:addressesJson[idx],
-            currDContact:addressesJson[idx].contact,
-            currDAddr1:addressesJson[idx].address_line1,
-            currDAddr2:addressesJson[idx].address_line2,
-            currDRegion:addressesJson[idx].region,
-            currDCountry:addressesJson[idx].country,
-            currDPostcode:addressesJson[idx].postcode
         })
     }
 
     function updateBillAddrDetail(idx){
         setState({
             currBillAddrJson:addressesJson[idx],
-            currBContact:addressesJson[idx].contact,
-            currBAddr1:addressesJson[idx].address_line1,
-            currBAddr2:addressesJson[idx].address_line2,
-            currBRegion:addressesJson[idx].region,
-            currBCountry:addressesJson[idx].country,
-            currBPostcode:addressesJson[idx].postcode,
         })
     }
 
@@ -190,126 +137,34 @@ const AddressesList = ({ props } ) => {
 
     const handleDAddrChange = (e) => {
         if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
-            setState({addAddr:''})
+            setAddAddr('')
         }else{
             updateDeliveryAddrDetail(e);
-            setState({addAddr:'none'});
-            console.log(addressesJson[e].id)
+            setAddAddr('none');
             setDeliveryAddrId(addressesJson[e].id);
+
         }
     }
 
     const handleBAddrChange = (e) => {
         if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
-            setState({addAddr:''})
+            setAddAddr('')
         }else{
             updateBillAddrDetail(e);
-            setState({addAddr:'none'});
+            setAddAddr('none');
             setBillingAddrId(addressesJson[e].id);
         }
     }
-
-    const _handleChange = (e) => {
-        let id = e.target.id
-        setState({
-            [id]: e.target.value
-        })
-    }
     
-    const showModal = () => {
-        setDvisible(true);
-      };
-
-    const handleEditOk = (e) => {
-        setLoading(true);
-        // Edit Existing Address
-        axios({
-                method: 'put',           
-                url: '/api/customer/'+customerId+'/addresses/'+currDeliveryAddrJson.id,
-                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-                data:{
-                "contact": currDContact,
-                "address_line1": currDAddr1,
-                "address_line2": currDAddr2,
-                "postcode": currDPostcode,
-                "region": currDRegion,
-                "country": currDCountry
-                }
-            })
-            .then(
-                (response)=>{
-                    console.log(response);                  
-                    setState({error:false});
-                    updateAddresses();
-                    setLoading(false); 
-                    setDvisible(false);
-                }
-            )
-            .catch(
-                (e)=>{
-                    console.log(e)
-                    setState({
-                        error:true,
-                        errorMassage: e.response.data.message
-                    })
-                    antdMessage.info(errorMassage);
-                }
-            )
-    };
-
     const handleCancel = () => {
         setDvisible(false);
-      };
-
-    /**
-     * Billing Address Handeler
-     */
-    const showBModal = () => {
-        setBvisible(true);
-      };
-
-    const handleBEditOk = (e) => {
-        setLoading(true);
-        // Add modified new address
-        axios({
-                method: 'put',           
-                url: '/api/customer/'+customerId+'/addresses/'+currBillAddrJson.id,
-                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-                data:{
-                "contact": currBContact,
-                "address_line1": currBAddr1,
-                "address_line2": currBAddr2,
-                "postcode": currBPostcode,
-                "region": currBRegion,
-                "country": currBCountry
-                }
-            })
-            .then(
-                (response)=>{
-                    console.log("Edit Address Success!");
-                    console.log(response);                  
-                    setState({error:false});
-                    setLoading(false); 
-                    setDvisible(false);
-                }
-            )
-            .catch(
-                (e)=>{
-                    console.log(e)
-                    setState({
-                        error:true,
-                        errorMassage: e.response.data.message
-                    })
-                    antdMessage.info(errorMassage);
-                }
-            )     
-        };
+        updateAddresses();
+    };
     
-      const handleBCancel = () => {
+    const handleBCancel = () => {
         setBvisible(false);
-      };
-    
-      
+        updateAddresses();
+    };
 
     return(
         <div>
@@ -329,124 +184,18 @@ const AddressesList = ({ props } ) => {
                     {/* Display Current Delivery Address */}
                     <Form.Item>
                         <div style={{lineHeight: '8px', marginLeft:'16px'}}>
-                            <p>{currDAddr1}</p>
-                            <p>{currDAddr2}</p>
-                            <p>{currDRegion}, {currDCountry}, {currDPostcode}</p>
-                            <p>Contact:    {currDContact}</p>
+                            <p>{currDeliveryAddrJson.address_line1}</p>
+                            <p>{currDeliveryAddrJson.address_line2}</p>
+                            <p>{currDeliveryAddrJson.region}, {currDeliveryAddrJson.country}, {currDeliveryAddrJson.postcode}</p>
+                            <p>Contact:    {currDeliveryAddrJson.contact}</p>
                         </div>
-                        <Button type="link" onClick={showModal}>
+                        <Button type="link" onClick={()=>setDvisible(true)}>
                             Edit this address
                         </Button>
                     </Form.Item>
-
-                    {/* Edit Address Form */}
-                    <Modal
-                        title="Edit Address"
-                        visible={dvisible}
-                        onOk={handleEditOk}
-                        onCancel={handleCancel}
-                        onChange={_handleChange}
-                        footer={[
-                            <Button key="back" onClick={handleCancel}>
-                            Return
-                            </Button>,
-                            <Button key="submit" type="primary" loading={loading} onClick={handleEditOk}>
-                            Save Changes
-                            </Button>,
-                        ]}
-                    >
-                            <Form.Item
-                                id="currDContact"
-                                label="Contact"
-                                name="currDContact"
-                                value={currDContact}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your contact!'}]}
-                            >
-                                <Input
-                                    key= {currDContact}
-                                    defaultValue={currDContact}
-                                    prefix={<PhoneOutlined className="site-form-item-icon" />} 
-                                >
-                                </Input>
-                            </Form.Item>
-            
-                            <Form.Item
-                                id = "currDAddr1"
-                                label="Address Line 1"
-                                name="currDAddr1"
-                                value={currDAddr1}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your address!'}]}
-                            >
-                                <Input 
-                                    key= {currDAddr1}
-                                    defaultValue={currDAddr1}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-            
-                            <Form.Item
-                                id="currDAddr2"
-                                label="Address Line 2"
-                                name="currDAddr2"
-                                value={currDAddr2}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your address!'}]}
-                            >
-                                <Input 
-                                    key= {currDAddr2}
-                                    defaultValue={currDAddr2}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-            
-                            <Form.Item
-                                id="currDPostcode"
-                                label="Postcode"
-                                name="currDPostcode"
-                                value={currDPostcode}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your postcode!'}]}
-                            >
-                                <Input 
-                                    key= {currDPostcode}
-                                    defaultValue={currDPostcode}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-            
-                            <Form.Item
-                                id="currDRegion"
-                                label="Region"
-                                name="currDRegion"
-                                value={currDRegion}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your region!'}]}
-                            >
-                                <Input 
-                                    key= {currDRegion}
-                                    defaultValue={currDRegion}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-                            
-                            <Form.Item
-                                id="currDCountry"
-                                label="Country"
-                                name="currDCountry"
-                                value={currDCountry}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your country!'}]}
-                            >
-                                <Input 
-                                    key= {currDCountry}
-                                    defaultValue={currDCountry}
-                                    prefix={<GlobalOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-        
-                    </Modal>
+                    {dvisible ? (
+                        <EditAddressForm address={currDeliveryAddrJson} handleCancel={handleCancel}></EditAddressForm>
+                    ):(null)}
                 </Form>
             </div>
             
@@ -465,124 +214,20 @@ const AddressesList = ({ props } ) => {
 
                     <Form.Item>
                         <div style={{lineHeight: '8px', marginLeft:'16px'}}>
-                            <p>{currBAddr1}</p>
-                            <p>{currBAddr2}</p>
-                            <p>{currBRegion}, {currBCountry}, {currBPostcode}</p>
-                            <p>Contact:    {currBContact}</p>
+                            <p>{currBillAddrJson.address_line1}</p>
+                            <p>{currBillAddrJson.address_line2}</p>
+                            <p>{currBillAddrJson.region}, {currBillAddrJson.country}, {currBillAddrJson.postcode}</p>
+                            <p>Contact:    {currBillAddrJson.contact}</p>
                         </div>
-                        <Button type="link" onClick={showBModal}>
+                        <Button type="link" onClick={()=>setBvisible(true)}>
                                 Edit this address
                         </Button>
                     </Form.Item>
-
-                    {/* Edit Address Form */}
-                    <Modal
-                        title="Edit Address"
-                        visible={bvisible}
-                        onOk={handleBEditOk}
-                        onCancel={handleBCancel}
-                        onChange={_handleChange}
-                        footer={[
-                            <Button key="back" onClick={handleBCancel}>
-                            Return
-                            </Button>,
-                            <Button key="submit" type="primary" loading={loading} onClick={handleBEditOk}>
-                            Save Changes
-                            </Button>,
-                        ]}
-                    >
-                            <Form.Item
-                                id="currBContact"
-                                label="Contact"
-                                name="currBContact"
-                                value={currBContact}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your contact!'}]}
-                            >
-                                <Input 
-                                    key={currBContact}
-                                    defaultValue={currBContact}
-                                    prefix={<PhoneOutlined className="site-form-item-icon" />} 
-                                >
-
-                                </Input>
-                            </Form.Item>
-            
-                            <Form.Item
-                                id = "currBAddr1"
-                                label="Address Line 1"
-                                name="currBAddr1"
-                                value={currBAddr1}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your address!'}]}
-                            >
-                                <Input 
-                                    key= {currBAddr1}
-                                    defaultValue={currBAddr1}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-            
-                            <Form.Item
-                                id="currBAddr2"
-                                label="Address Line 2"
-                                name="currBAddr2"
-                                value={currBAddr2}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your address!'}]}
-                            >
-                                <Input 
-                                    key= {currBAddr2}
-                                    defaultValue={currBAddr2}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-            
-                            <Form.Item
-                                id="currBPostcode"
-                                label="Postcode"
-                                name="currBPostcode"
-                                value={currBPostcode}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your postcode!'}]}
-                            >
-                                <Input 
-                                    key= {currBPostcode}
-                                    defaultValue={currBPostcode}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-            
-                            <Form.Item
-                                id="currBRegion"
-                                label="Region"
-                                name="currBRegion"
-                                value={currBRegion}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your region!'}]}
-                            >
-                                <Input 
-                                    key= {currBRegion}
-                                    defaultValue={currBRegion}
-                                    prefix={<EnvironmentOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-                            
-                            <Form.Item
-                                id="currBCountry"
-                                label="Country"
-                                name="currBCountry"
-                                value={currBCountry}
-                                onChange={_handleChange}
-                                rules={[{required: true,message: 'Please input your country!'}]}
-                            >
-                                <Input
-                                    key= {currBCountry}
-                                    defaultValue={currBCountry}
-                                    prefix={<GlobalOutlined className="site-form-item-icon" />} 
-                                />
-                            </Form.Item>
-                    </Modal>
+                    
+                    {bvisible ? (
+                        <EditAddressForm address={currBillAddrJson} handleCancel={handleBCancel}></EditAddressForm>
+                    ):(null)}
+                    
                 </Form>
             </div>
 
