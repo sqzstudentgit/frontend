@@ -1,12 +1,18 @@
 //ant design
-import { Form, Input, Button, Card, Row, Col, Divider,Select,Image} from 'antd';
-import { CheckCircleTwoTone, GlobalOutlined, UserAddOutlined, UserOutlined, EnvironmentOutlined,PhoneOutlined,MailOutlined,MessageOutlined,EyeTwoTone,EyeInvisibleOutlined } from '@ant-design/icons';
+import { Form, Input, Button} from 'antd';
+import { GlobalOutlined, EnvironmentOutlined,PhoneOutlined } from '@ant-design/icons';
 import {message as antdMessage} from 'antd' ;
 
 //React
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from 'axios';
-import {withRouter, Redirect} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
+
+/**
+ * This Component is for user to add new address into the database
+ * It is used in CheckOutPage - AddressesList component
+ * @param {} props
+ */
 
 const AddAddressForm = (props) => {
     
@@ -17,6 +23,7 @@ const AddAddressForm = (props) => {
     const [postcode, setPostcode] = useState('')
     const [region, setRegion] = useState('')
     const [country, setCountry] = useState('')
+
     const [error, setError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     
@@ -41,8 +48,9 @@ const AddAddressForm = (props) => {
             .then(
                 (response)=>{
                     console.log("Create new address success");
-                    console.log(response);                   
+                    console.log(response);
                     setError(false);
+                    props.updateAddresses();
                 }
             )
             .catch(

@@ -34,7 +34,6 @@ const AddressesList = ({ props } ) => {
         currDRegion:'',
         currDCountry:'',
         currDPostcode:'',
-        currDId:'',
 
         //Billing Address
         currBContact:'',
@@ -45,7 +44,6 @@ const AddressesList = ({ props } ) => {
         currBRegion:'',
         currBCountry:'',
         currBPostcode:'',
-        currBId:'',
 
         contact:'',
         addr1:'',
@@ -64,9 +62,12 @@ const AddressesList = ({ props } ) => {
 
     const reducer = (state, newState) => ({ ...state, ...newState })
     const [state, setState] = useReducer(reducer, initialState);
-    const { customerId } = useStoreState(state => ({
-        customerId: state.customer.customerId,
-      }))
+
+    // TODO: Change after test
+    // const { customerId } = useStoreState(state => ({
+    //     customerId: state.customer.customerId,
+    //   }))
+    const  customerId = "17"; //
 
     const { 
         //List of all addresses for the customer
@@ -74,7 +75,6 @@ const AddressesList = ({ props } ) => {
         addressesJson,   //all addresses are in JSON formats
     
         //Delivery Address
-        currDeliveryAddr,
         currDeliveryAddrJson,
         currDContact,
         currDAddr1,
@@ -82,38 +82,18 @@ const AddressesList = ({ props } ) => {
         currDRegion,
         currDCountry,
         currDPostcode,
-        currDId,
     
         //Billing Address
-        currBContact,
-        currBillAddr,
         currBillAddrJson,
+        currBContact,
         currBAddr1,
         currBAddr2,
         currBRegion,
         currBCountry,
         currBPostcode,
-        currBId,
-    
-        contact,
-        addr1,
-        addr2,
-        region,
-        country,
-        postcode,
-        error,
-        errorMessage,
-    
-        DAddrSelect,
-        BAddrSelect,
+
         addAddr,
         } = state;
-    const addressesList = [];
-
-    for(let i=0; i<addresses.length; i++){
-        addressesList.push(<Select.Option key={i}>{addresses[i]}</Select.Option>)
-    }
-    addressesList.push(<Select.Option key="-1">Add New Address</Select.Option>);
     
     useEffect(() => {
         axios
@@ -128,23 +108,49 @@ const AddressesList = ({ props } ) => {
                                 format_addr += temp_addr[x]+"; "
                             }
                         }                       
-                        addresses[i] = format_addr;
+                        addresses[i] = format_addr.slice(0, -2);
                         addressesJson[i] = temp_addr;
-
                     }
 
-                    handleInitialChange(addresses,addressesJson);
-                    test();
+                    handleInitialChange();
             })
             .catch(err => console.log(err));
     }, []);
+
     
-    function test(){
-        console.log(currDId)//test
-        console.log(currBId)//test
+    function updateAddresses(){
+        axios
+        .get("api/customer/"+customerId+"/addresses")
+        .then(res => {
+                console.log(res);              
+                for(let i=0; i<res.data.length; i++){
+                    var temp_addr=JSON.parse(JSON.stringify(res.data[i]));
+                    var format_addr="";
+                    for (var x in temp_addr){
+                        if (x!=='id' && x!=='customer_id' && temp_addr[x]!==null){
+                            format_addr += temp_addr[x]+"; "
+                        }
+                    }                       
+                    addresses[i] = format_addr.slice(0, -2);
+                    addressesJson[i] = temp_addr;
+                }
+        })
+        .catch(err => console.log(err));
     }
-    function handleInitialChange(addresses,addressesJson){
-        console.log(addressesJson);//test
+
+
+    /**
+     * Construct address list in selection box
+     */
+    const addressesList = [];
+    for(let i=0; i<addresses.length; i++){
+        addressesList.push(<Select.Option key={i}>{addresses[i]}</Select.Option>)
+    }
+    addressesList.push(<Select.Option key="-1">Add New Address</Select.Option>);
+
+
+    function  handleInitialChange(){
+        console.log(addressesJson);
         setState({
             currDeliveryAddr:addresses[0],
             currDeliveryAddrJson:addressesJson[0],
@@ -158,7 +164,6 @@ const AddressesList = ({ props } ) => {
             currDRegion:addressesJson[0].region,
             currDCountry:addressesJson[0].country,
             currDPostcode:addressesJson[0].postcode,
-            currDId:addressesJson[0].id,
 
             currBContact:addressesJson[0].contact,
             currBAddr1:addressesJson[0].address_line1,
@@ -166,22 +171,10 @@ const AddressesList = ({ props } ) => {
             currBRegion:addressesJson[0].region,
             currBCountry:addressesJson[0].country,
             currBPostcode:addressesJson[0].postcode,
-            currBId:addressesJson[0].id,
         })
-        setDeliveryAddrId(currDId)
-        setBillingAddrId(currBId)
-        //console.log(currDId)//test
-        //console.log(currBId)//test
+        console.log(currDeliveryAddrJson);
     }
 
-    // Global cart actions
-    const { setDeliveryAddrId } = useStoreActions(actions => ({
-        setDeliveryAddrId: actions.customer.setDeliveryAddrId
-    }))
-
-    const { setBillingAddrId } = useStoreActions(actions => ({
-        setBillingAddrId: actions.customer.setBillingAddrId
-    }))
 
     const handleDAddrChange = (e) => {
         if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
@@ -200,10 +193,7 @@ const AddressesList = ({ props } ) => {
                 currDRegion:addressesJson[e].region,
                 currDCountry:addressesJson[e].country,
                 currDPostcode:addressesJson[e].postcode,
-                currDId:addressesJson[e].id,
             })
-            setDeliveryAddrId(currDId)
-            //console.log(currDId)//test
         }
     }
 
@@ -224,10 +214,7 @@ const AddressesList = ({ props } ) => {
                 currBRegion:addressesJson[e].region,
                 currBCountry:addressesJson[e].country,
                 currBPostcode:addressesJson[e].postcode,
-                currBId:addressesJson[e].id,
             })
-            setBillingAddrId(currBId)
-            //console.log(currBId)//test
         }
     }
 
@@ -245,17 +232,11 @@ const AddressesList = ({ props } ) => {
 
     const handleEditOk = (e) => {
         setLoading(true);
-        // Remove old address
-        axios({
-                method: 'delete',           
-                url: '/api/customer/'+customerId+'/address/'+currDeliveryAddrJson.id,
-                headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
-        })
 
-        // Add modified new address
+        // Edit Existing Address
         axios({
-                method: 'post',           
-                url: '/api/customer/'+customerId+'/addresses',
+                method: 'put',           
+                url: '/api/customer/'+customerId+'/addresses/'+currDeliveryAddrJson.id,
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
                 "contact": currDContact,
@@ -265,16 +246,14 @@ const AddressesList = ({ props } ) => {
                 "region": currDRegion,
                 "country": currDCountry
                 }
-            }             
-            )
+            })
             .then(
                 (response)=>{
-                    console.log("Edit Address Success!");
                     console.log(response);                  
                     setState({
                         error:false,
-                        
                     });
+                    updateAddresses();
                     setLoading(false); 
                     setDvisible(false); 
                 }
@@ -289,7 +268,7 @@ const AddressesList = ({ props } ) => {
                     antdMessage.info(errorMassage);
                 }
             )
-            console.log(state) //test      
+            console.log(state) //test
     };
 
     const handleCancel = () => {
@@ -349,9 +328,9 @@ const AddressesList = ({ props } ) => {
             console.log(state) //test      
         };
     
-    const handleBCancel = () => {
+      const handleBCancel = () => {
         setBvisible(false);
-    };
+      };
 
     return(
         <div>
@@ -651,7 +630,7 @@ const AddressesList = ({ props } ) => {
             {/* Add New Address Component, triggle by click "add new address" in selection box */}
             <div style={{display:addAddr}}>
                 <Divider orientation="left">Add New Address</Divider>
-                <AddAddressForm customerId={customerId}></AddAddressForm>
+                <AddAddressForm customerId={customerId} updateAddresses={updateAddresses}></AddAddressForm>
             </div>
 
         </div>
