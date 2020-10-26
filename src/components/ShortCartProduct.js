@@ -71,7 +71,7 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
   // Handles quantity change as a result of changing input field value
   const handleChange = (newQuantity) => {
     setQuantity(Math.trunc(newQuantity))
-  }
+  } 
 
   // Handles quantity change as a result of clicking buttons
   const handleIncrement = (delta) => {
@@ -135,7 +135,7 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
               <Col>
                 <Title level={5}>Subtotal (Ex GST)</Title>
                 <div style={{ textAlign: 'end'}}>
-                  <Text>AUD ${subtotal}</Text> 
+                  <Text>AUD ${subtotal.toFixed(2)}</Text> 
                 </div>
               </Col>
               <Col>
