@@ -73,14 +73,14 @@ const OrderPage = ({ history }) => {
     removeProduct: actions.cart.removeProduct,
     changeQuantity: actions.cart.changeQuantity,
     emptyCart: actions.cart.emptyCart
-  }))
+  }));
 
-  // Refreshes the search results when the input type is changed
+  // Refreshes the search results when the input or input type is changed
   useEffect(() => {
     (async () => {
       handleSearch(input);
     })();
-  }, [inputType]);
+  }, [input, inputType]);
 
 
   // Sets alert message, type, and whether to display the alert
@@ -101,23 +101,22 @@ const OrderPage = ({ history }) => {
   
   /**
    * Handles addition of a product to the cart
+   * @param {string} value a potential product code or barcode
    */
-  const handleAddProduct = async () => {
+  const handleAddProduct = async (value) => {
     setOpen(false);
     try {
       setSearchLoading(true);
       const response = await axios.get(`/api/${inputType}`, {
         params: {
           sessionKey: sessionStorage.getItem("sessionKey"),
-          barcode: input,
-          productCode: input
+          barcode: value,
+          productCode: value
         }
       }, {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
       setSearchLoading(false);
-
-      console.log(response);
 
       // Check if the product exists in the database
       if (response.data.status == 'error') {
@@ -227,7 +226,9 @@ const OrderPage = ({ history }) => {
 
   /**
    * Live searches the database for product codes and barcodes
-   * that match a potential product 'identifier'
+   * that match a potential product 'identifier'. This method
+   * is called when the input field value or input field type is
+   * changed.
    * @param {string} identifier a potential product code or barcode
    */
   const handleSearch = async (identifier) => {
@@ -247,9 +248,6 @@ const OrderPage = ({ history }) => {
       return setOptions([]);
     }
     
-    // Log the result from the backend API
-    console.log(result);
-
     // Process the list of identifiers. Identifiers will be null if no products in the database
     // have similar barcodes or product codes to the identifier given in the query
     const { identifiers } = result;
@@ -285,88 +283,87 @@ const OrderPage = ({ history }) => {
 
         {/* Add product form and cart information */}
         <Affix offsetTop={80}>
-          <div>
-            <Row justify="center" gutter={[0, 16]}>
-              <Col span={18}>
-                <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
-                  <Row>
-                    <Col span={12}>
+          <Row justify="center" gutter={[0, 16]}>
+            <Col span={18}>
+              <Card style={{ borderRadius: '1.25rem', boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)" }}>
+                <Row>
+                  <Col span={12}>
 
-                      {/* Product search form */}
-                      <Form labelCol={{ span: 4 }} >
-                        <Form.Item label="Type"> 
-                          <Radio.Group
-                            value={inputType}
-                            options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
-                            onChange={(e) => setInputType(e.target.value)}
-                            optionType="button"
+                    {/* Product search form */}
+                    <Form labelCol={{ span: 4 }} >
+                      <Form.Item label="Type"> 
+                        <Radio.Group
+                          value={inputType}
+                          options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
+                          onChange={(e) => setInputType(e.target.value)}
+                          optionType="button"
+                        />
+                      </Form.Item>
+                      <Form.Item label="Product">
+                        <AutoComplete
+                          options={options}
+                          onSelect={handleSelect}
+                          onSearch={(value) => setInput(value)}
+                          open={open}
+                          value={input}
+                        >
+                          <Search
+                            prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
+                            placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
+                            value={input}
+                            loading={searchLoading}
+                            onSearch={(value) => handleAddProduct(value)}
                           />
-                        </Form.Item>
-                        <Form.Item label="Product">
-                          <AutoComplete
-                            options={options}
-                            onSelect={handleSelect}
-                            onSearch={handleSearch}
-                            open={open}
-                          >
-                            <Search
-                              prefix={inputType == 'barcode' ? <BarcodeOutlined /> : <KeyOutlined />}
-                              placeholder={inputType == 'barcode' ? "Enter barcode" : "Enter product code"}
-                              value={input}
-                              loading={searchLoading}
-                              onSearch={() => handleAddProduct()}
-                            />
-                          </AutoComplete>
-                        </Form.Item>
-                      </Form>
+                        </AutoComplete>
+                      </Form.Item>
+                    </Form>
 
-                      {/* Alert message */}
-                      {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
-                    </Col>
+                    {/* Alert message */}
+                    {showAlert && <Alert style={{ marginTop: 8 }} message={message} type={type} onClose={() => setShowAlert(false)} showIcon closable />}
+                  </Col>
 
-                    {/* Total price, reset cart button, GST, and submit order button */}
-                    <Col span={8} offset={4}>
-                      <Row>
-                        <Col span={12}>
-                          <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
-                          <Button style={{ marginTop: 16 }} type="danger" onClick={() => emptyCart()}>
-                            Reset Cart
-                          </Button>
-                        </Col>
-                        <Col span={12}>
-                          <Statistic title="GST" value={0} prefix="$" precision={2} />
-                          <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
-                            Submit Order
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            </Row>
+                  {/* Total price, reset cart button, GST, and submit order button */}
+                  <Col span={8} offset={4}>
+                    <Row>
+                      <Col span={12}>
+                        <Statistic title="Total Price (AUD)" value={totalPrice} prefix="$" precision={2} />
+                        <Button style={{ marginTop: 16 }} type="danger" onClick={() => emptyCart()}>
+                          Reset Cart
+                        </Button>
+                      </Col>
+                      <Col span={12}>
+                        <Statistic title="GST" value={0} prefix="$" precision={2} />
+                        <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
+                          Submit Order
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          </Row>
 
-            {/* Tall view and short view buttons */}
-            <Row justify="center" gutter={[0, 16]}>
-              <Col span={18}>
-                <div style={{ textAlign: 'end' }}>
-                  <Button 
-                    icon={<LayoutOutlined />}
-                    onClick={() => setViewType('tall')}
-                  >
-                    Tall View
-                  </Button>
-                  <Button
-                    style={{ layout: 'inline-block' }} 
-                    icon={<VerticalAlignMiddleOutlined />}
-                    onClick={() => setViewType('short')}
-                  >
-                    Short View
-                  </Button>
-                </div>
-              </Col>
-            </Row>
-          </div>
+          {/* Tall view and short view buttons */}
+          <Row justify="center" gutter={[0, 16]}>
+            <Col span={18}>
+              <div style={{ textAlign: 'end' }}>
+                <Button 
+                  icon={<LayoutOutlined />}
+                  onClick={() => setViewType('tall')}
+                >
+                  Tall View
+                </Button>
+                <Button
+                  style={{ layout: 'inline-block' }} 
+                  icon={<VerticalAlignMiddleOutlined />}
+                  onClick={() => setViewType('short')}
+                >
+                  Short View
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </Affix>
 
         {viewType == 'tall' ? (
