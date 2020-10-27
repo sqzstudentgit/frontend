@@ -29,9 +29,10 @@ const customerModel = {
 const cartModel = {
    // Cart state
    products: [],
-   totalPrice: 0,
+   totalPrice: 0,  // Total Price (Excluding GST)
+   totalGST: 0,
 
-   // Cart state listener. It's responsibility is to recalculate the total price
+   // Cart state listener. It's responsibility is to recalculate the total price and GST
    // of the cart when the state of the cart changes around the application.
    // Note: `easy-peasy` actionOn has been used instead of `computed` for total price since 
    // there is a bug with computed where the computed value is updated one action behind.
@@ -49,6 +50,11 @@ const cartModel = {
      ],
      (state, _) => {
        state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
+       state.totalGST = state.products.reduce((acc, cur) => 
+        cur.keyTaxcodeID == '34333235303332303734313136' 
+          ? acc + cur.price * 0.1 * cur.quantity
+          : acc + 0,
+       0);
      }
    ),
    
