@@ -6,7 +6,7 @@ import {
     HomeOutlined,
     ShopOutlined
 } from '@ant-design/icons';
-
+import CategoryTree from '../components/CategoryTree';
 // Ant Design Sub-Components
 // Ant Design Components
 import {
@@ -21,7 +21,7 @@ import {
   } from 'antd';
 const { Meta } = Card;
 
-const { Content, Footer } = Layout;
+const { Content, Sider, Footer } = Layout;
   
   // Ant Design Icons
 import NavigationBar from "../components/NavigationBar";
@@ -138,58 +138,67 @@ class ProductListPage extends React.Component{
         return (
             <Layout>
                 <NavigationBar  history={history} defaultSelected='/productList'/>
-                <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item href="/">
-                            <HomeOutlined />
-                            <span>Home</span>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item href="/productList">
-                            <ShopOutlined />
-                            <span>Products</span>
-                        </Breadcrumb.Item>
-                    </Breadcrumb>
-                    {this.state.loading ? <Spin size="large"/> : 
-                        <List
-                            // grid={{ gutter:16, column:4 }}
-                            grid={{
-                                gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
-                            }}
-                            dataSource={this.state.products}
-                            renderItem={item => (
-                                <List.Item>
-                                    <Link to={"/products/" + item.productCode}>
-                                        <Card
-                                            title={item.name}
-                                            key={item.name}
-                                            hoverable
-                                            cover={<Image alt="example" 
-                                                src= {this.getImage(item.image)} 
-                                                //if image is 404 not found, show the default image
-                                                onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
-                                                <Meta key={item.productCode} 
-                                                    title={item.price} 
-                                                    description={item.barcode}
-                                                />
-                                        </Card>
-                                    </Link>
-                                </List.Item>
-                            )}
+                <Layout>
+                    <Sider width={256} className="site-layout-background">
+                        <CategoryTree />
+
+                    </Sider>
+          
+                    <Layout style={{ padding: '0 24px 24px'}}>
+                    <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
+                        <Breadcrumb style={{ margin: '16px 0' }}>
+                            <Breadcrumb.Item href="/">
+                                <HomeOutlined />
+                                <span>Home</span>
+                            </Breadcrumb.Item>
+                            <Breadcrumb.Item href="/productList">
+                                <ShopOutlined />
+                                <span>Products</span>
+                            </Breadcrumb.Item>
+                        </Breadcrumb>
+                        {this.state.loading ? <Spin size="large"/> : 
+                            <List
+                                // grid={{ gutter:16, column:4 }}
+                                grid={{
+                                    gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
+                                }}
+                                dataSource={this.state.products}
+                                renderItem={item => (
+                                    <List.Item>
+                                        <Link to={"/products/" + item.productCode}>
+                                            <Card
+                                                title={item.name}
+                                                key={item.name}
+                                                hoverable
+                                                cover={<Image alt="example" 
+                                                    src= {this.getImage(item.image)} 
+                                                    //if image is 404 not found, show the default image
+                                                    onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
+                                                    <Meta key={item.productCode} 
+                                                        title={item.price} 
+                                                        description={item.barcode}
+                                                    />
+                                            </Card>
+                                        </Link>
+                                    </List.Item>
+                                )}
+                            />
+                        }
+                        <Pagination //add active url for each productlist page
+                            total={this.state.totalItem}
+                            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+                            pageSize = {20}
+                            current={this.state.pageCurrent}
+                            onChange = {this.onPageNumChange}
+                            //onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
+                            
                         />
-                    }
-                    <Pagination //add active url for each productlist page
-                        total={this.state.totalItem}
-                        showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-                        pageSize = {20}
-                        current={this.state.pageCurrent}
-                        onChange = {this.onPageNumChange}
-                        //onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
-                        
-                    />
 
-                    <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+                        <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
 
-                </Content>
+                    </Content>
+                    </Layout>
+                </Layout>
             </Layout>
         )
     }

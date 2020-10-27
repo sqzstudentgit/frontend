@@ -12,7 +12,7 @@ import {
 
 import axios from 'axios';
 import { Redirect } from 'react-router';
-import CategoryTree from './CategoryTree'
+import Logout from './Logout'
 
 const { Header } = Layout;
 const { SubMenu } = Menu;
@@ -73,10 +73,7 @@ class NavigationBar extends React.PureComponent{
         <Menu onClick={this.handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={[this.props.defaultSelected]}>
           <Menu.Item style={{ float: 'left', width: 150, textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HolySAS</Menu.Item>
           <Menu.Item style={{ float: 'left' }} icon={<HomeOutlined />} key="/">Home</Menu.Item>
-          <SubMenu style={{ float: 'left' }} icon={<ShopOutlined/>} key="/productList" title="Products">
-            <Menu.Item key="/productList">All products</Menu.Item>
-            <CategoryTree />
-          </SubMenu>
+          <Menu.Item style={{ float: 'left' }} icon={<ShopOutlined/>} key="/productList">Products</Menu.Item>
           <Menu.Item style={{ float: 'left' }} icon={<HistoryOutlined />} key="/history">Order History</Menu.Item>
           <Menu.Item style={{ float: 'left' }} icon={<ShoppingCartOutlined />} key="/order">Order</Menu.Item>
           <Menu.Item style={{ float: 'right' }} icon={<LogoutOutlined />} key="/logout">Logout</Menu.Item>
