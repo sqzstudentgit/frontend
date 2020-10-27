@@ -26,7 +26,7 @@ const { Header, Content, Footer, Sider } = Layout;
   
   // Ant Design Icons
 import NavigationBar from "../components/NavigationBar";
-import { Spinner2 } from 'styled-icons/evil';
+import CategoryTree from '../components/CategoryTree';
 
 // import { useStoreActions } from 'easy-peasy';
 
@@ -142,7 +142,13 @@ class CategoryPage extends React.Component{
         return (
             <Layout>
                 <Spin size="large" />
-                <NavigationBar  history={history}/>
+                <NavigationBar  history={history} defaultSeletced='/productList'/>
+                <Layout>
+                    <Sider width={200} className="site-layout-background">
+                        <CategoryTree />
+
+                    </Sider>
+                <Layout style={{ padding: '0 24px 24px'}}>
                 <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item href="/">
@@ -196,6 +202,8 @@ class CategoryPage extends React.Component{
                     <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
 
                 </Content>
+                </Layout>
+                </Layout>
             </Layout>
         )
     }
