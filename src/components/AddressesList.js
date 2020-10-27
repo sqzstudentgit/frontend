@@ -16,30 +16,36 @@ const AddressesList = ( ) => {
     const [bvisible, setBvisible] = useState(false);
     const [addAddr, setAddAddr] = useState("none");
 
+    /**
+     * Initial State for AddressList
+     */
     const initialState = {
-        customerId: '', //dynamic customer code in future
-    
+        customerId: '', //dynamic customer code
+
         addresses:[],       //all addresses are formatted into string, seperate by ";"
         addressesJson:[],   //all addresses are in JSON formats
 
-        //Delivery Address
-        currDeliveryAddr:'',
         currDeliveryAddrJson:'',
-
-        //Billing Address
-        currBillAddr:'',
         currBillAddrJson:'',
     }
 
     const reducer = (state, newState) => ({ ...state, ...newState })
     const [state, setState] = useReducer(reducer, initialState);
 
+    const { 
+        addresses,       //all addresses are formatted into string, seperate by ";"
+        addressesJson,   //all addresses are in JSON formats
+        
+        currDeliveryAddrJson,
+        currBillAddrJson,
+        } = state;
+
+
     /**
      * Global Customer & Address Information
      */
-    const { customerId,  deliveryAddrId} = useStoreState(state => ({
-        customerId: state.customer.customerId,
-        deliveryAddrId: state.customer.deliveryAddrId
+    const { customerId } = useStoreState(state => ({
+        customerId: state.customer.customerId
       }))
     
     const { setDeliveryAddrId, setBillingAddrId } = useStoreActions(actions => ({
@@ -47,22 +53,6 @@ const AddressesList = ( ) => {
         setBillingAddrId: actions.customer.setBillingAddrId
     }))
 
-
-    /**
-     * Initial State for AddressList
-     */
-    const { 
-        //List of all addresses for the customer
-        addresses,       //all addresses are formatted into string, seperate by ";"
-        addressesJson,   //all addresses are in JSON formats
-    
-        //Delivery Address
-        currDeliveryAddrJson,
-        //Billing Address
-        currBillAddrJson,
-        
-        } = state;
-    
 
     useEffect(() => {
         axios
@@ -81,8 +71,10 @@ const AddressesList = ( ) => {
                         addressesJson[i] = temp_addr;
                     }
 
-                    updateDeliveryAddrDetail(0);
-                    updateBillAddrDetail(0);
+                    setState({
+                        currDeliveryAddrJson:addressesJson[0],
+                        currBillAddrJson:addressesJson[0]
+                    })
 
                     //Set Global State
                     setDeliveryAddrId(addressesJson[0].id);
@@ -92,6 +84,9 @@ const AddressesList = ( ) => {
     }, []);
 
     
+    /**
+     * Grab new address informations and update addresses & addressesJson
+     */
     function updateAddresses(){
         axios
         .get("api/customer/"+customerId+"/addresses")
@@ -109,21 +104,54 @@ const AddressesList = ( ) => {
                     addressesJson[i] = temp_addr;
                 }
             },
-            setAddAddr('none'))
+            setAddAddr('none')
+            )
         .catch(err => console.log(err));
     }
 
-    function updateDeliveryAddrDetail(idx){
-        setState({
-            currDeliveryAddrJson:addressesJson[idx],
-        })
+    /**
+     * Handeler for Delivery Address selection box
+     * @param {*} e 
+     */
+    const handleDAddrChange = (e) => {
+        if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
+            setAddAddr('')
+        }else{
+            setState({currDeliveryAddrJson:addressesJson[e]})
+            setAddAddr('none');
+            setDeliveryAddrId(addressesJson[e].id);
+        }
     }
 
-    function updateBillAddrDetail(idx){
-        setState({
-            currBillAddrJson:addressesJson[idx],
-        })
+    /**
+     * Handeler for Billing Address selection box
+     * @param {*} e 
+     */
+    const handleBAddrChange = (e) => {
+        if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
+            setAddAddr('')
+        }else{
+            setState({currBillAddrJson:addressesJson[e]})
+            setAddAddr('none');
+            setBillingAddrId(addressesJson[e].id);
+        }
     }
+    
+    /**
+     * Handeler for Delivery Address edit form
+     */
+    const handleCancel = () => {
+        setDvisible(false);
+        updateAddresses();
+    };
+    
+    /**
+     * Handeler for Billing Address edit form
+     */
+    const handleBCancel = () => {
+        setBvisible(false);
+        updateAddresses();
+    };
 
     /**
      * Construct address list in selection box
@@ -133,38 +161,6 @@ const AddressesList = ( ) => {
         addressesList.push(<Select.Option key={i}>{addresses[i]}</Select.Option>)
     }
     addressesList.push(<Select.Option key="-1">Add New Address</Select.Option>);
-
-
-    const handleDAddrChange = (e) => {
-        if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
-            setAddAddr('')
-        }else{
-            updateDeliveryAddrDetail(e);
-            setAddAddr('none');
-            setDeliveryAddrId(addressesJson[e].id);
-
-        }
-    }
-
-    const handleBAddrChange = (e) => {
-        if(e==="-1"){ //if user want to add new address, pop up the AddAddressForm
-            setAddAddr('')
-        }else{
-            updateBillAddrDetail(e);
-            setAddAddr('none');
-            setBillingAddrId(addressesJson[e].id);
-        }
-    }
-    
-    const handleCancel = () => {
-        setDvisible(false);
-        updateAddresses();
-    };
-    
-    const handleBCancel = () => {
-        setBvisible(false);
-        updateAddresses();
-    };
 
     return(
         <div>
@@ -193,6 +189,8 @@ const AddressesList = ( ) => {
                             Edit this address
                         </Button>
                     </Form.Item>
+
+                    {/* Edit Address Form */}
                     {dvisible ? (
                         <EditAddressForm address={currDeliveryAddrJson} handleCancel={handleCancel}></EditAddressForm>
                     ):(null)}
@@ -200,6 +198,7 @@ const AddressesList = ( ) => {
             </div>
             
 
+            {/* Billing Address Form */}
             <div>
                 <Divider orientation="left">Billing Address</Divider>
                 <Form>
@@ -211,7 +210,8 @@ const AddressesList = ( ) => {
                             {addressesList}
                         </Select>
                     </Form.Item>
-
+                    
+                    {/* Display Current Billing Address */}
                     <Form.Item>
                         <div style={{lineHeight: '8px', marginLeft:'16px'}}>
                             <p>{currBillAddrJson.address_line1}</p>
@@ -224,6 +224,7 @@ const AddressesList = ( ) => {
                         </Button>
                     </Form.Item>
                     
+                    {/* Edit Address Form */}
                     {bvisible ? (
                         <EditAddressForm address={currBillAddrJson} handleCancel={handleBCancel}></EditAddressForm>
                     ):(null)}
@@ -237,7 +238,6 @@ const AddressesList = ( ) => {
                 <Divider orientation="left">Add New Address</Divider>
                 <AddAddressForm customerId={customerId} updateAddresses={updateAddresses}></AddAddressForm>
             </div>
-
         </div>
     )
 }

@@ -95,8 +95,8 @@ function ProductDetailsPage({ history, match }){
     const checkOutClicked = (value) => {
         readdProduct(productInfo);
         notification.success({ 
-            message: 'Product was successfully readded to the cart',
-            placement: 'topLeft'
+            message: 'Product was successfully read to the cart',
+            placement: 'topRight'
         });
     }
 
