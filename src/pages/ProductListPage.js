@@ -158,9 +158,8 @@ class ProductListPage extends React.Component{
                         </Breadcrumb>
                         {this.state.loading ? <Spin size="large"/> : 
                             <List
-                                // grid={{ gutter:16, column:4 }}
                                 grid={{
-                                    gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
+                                    gutter: 16, column: 4
                                 }}
                                 dataSource={this.state.products}
                                 renderItem={item => (
@@ -190,7 +189,7 @@ class ProductListPage extends React.Component{
                             pageSize = {20}
                             current={this.state.pageCurrent}
                             onChange = {this.onPageNumChange}
-                            //onChange = {(pageCurrent) => this.onPageNumChange(pageCurrent)}
+                            showQuickJumper
                             
                         />
 
