@@ -59,11 +59,11 @@ class CategoryTree extends React.Component{
       )
     }
 
-    renderMenuItem = ({id, name, ordering}) => {
+    renderMenuItem = ({id, name}) => {
       return (
         
         <Menu.Item key={id} >
-          <Link to={"/productCategories/" + ordering}>
+          <Link to={"/productCategories/" + id}>
             <span>{name}</span>
           </Link>
         </Menu.Item>

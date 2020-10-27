@@ -14,6 +14,7 @@ import {
     Card,
     Image,
     Layout,
+    Spin,
     Menu,
     Breadcrumb,
     Pagination
@@ -36,6 +37,7 @@ class ProductListPage extends React.Component{
             pageCurrent: parseInt(window.location.hash.slice(1), 0) || 1,
             pageItems: '',
             pred_page: 1,
+            loading: true
         }
         this.onPageNumChange = this.onPageNumChange.bind(this);
     }
@@ -64,7 +66,8 @@ class ProductListPage extends React.Component{
                         products: response.data.items,
                         totalPage: response.data.total_pages,
                         totalItem: response.data.total_items,
-                        pageItems: response.data.page_items
+                        pageItems: response.data.page_items,
+                        loading: false
                     });
                 }
             )
@@ -112,7 +115,8 @@ class ProductListPage extends React.Component{
                             totalItem: response.data.total_items,
                             pageCurrent: response.data.page_num,
                             pageItems: response.data.page_items,
-                            pred_page: response.data.page_num
+                            pred_page: response.data.page_num,
+                            loading: false
                         });
                     }
                 )
@@ -145,32 +149,34 @@ class ProductListPage extends React.Component{
                             <span>Products</span>
                         </Breadcrumb.Item>
                     </Breadcrumb>
-                    <List
-                        // grid={{ gutter:16, column:4 }}
-                        grid={{
-                            gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
-                          }}
-                        dataSource={this.state.products}
-                        renderItem={item => (
-                            <List.Item>
-                                <Link to={"/products/" + item.productCode}>
-                                    <Card
-                                        title={item.name}
-                                        key={item.name}
-                                        hoverable
-                                        cover={<Image alt="example" 
-                                            src= {this.getImage(item.image)} 
-                                            //if image is 404 not found, show the default image
-                                            onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
-                                            <Meta key={item.productCode} 
-                                                title={item.price} 
-                                                description={item.barcode}
-                                            />
-                                    </Card>
-                                </Link>
-                            </List.Item>
-                        )}
-                    />
+                    {this.state.loading ? <Spin size="large"/> : 
+                        <List
+                            // grid={{ gutter:16, column:4 }}
+                            grid={{
+                                gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
+                            }}
+                            dataSource={this.state.products}
+                            renderItem={item => (
+                                <List.Item>
+                                    <Link to={"/products/" + item.productCode}>
+                                        <Card
+                                            title={item.name}
+                                            key={item.name}
+                                            hoverable
+                                            cover={<Image alt="example" 
+                                                src= {this.getImage(item.image)} 
+                                                //if image is 404 not found, show the default image
+                                                onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
+                                                <Meta key={item.productCode} 
+                                                    title={item.price} 
+                                                    description={item.barcode}
+                                                />
+                                        </Card>
+                                    </Link>
+                                </List.Item>
+                            )}
+                        />
+                    }
                     <Pagination //add active url for each productlist page
                         total={this.state.totalItem}
                         showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}

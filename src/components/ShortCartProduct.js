@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import modelIcon from '../assets/3dmodel.png';
 import ThreeDModelPresenter from './3DModel/ThreeDModelPresenter';
+import {
+  RotateLeftOutlined,
+  ZoomInOutlined,
+  DragOutlined,
+} from '@ant-design/icons';
 
 // Ant Design Components
 import {
@@ -11,7 +16,8 @@ import {
   InputNumber,
   Modal,
   Row,
-  Typography
+  Typography,
+  Divider
 } from 'antd';
 
 const { Text, Title } = Typography;
@@ -30,6 +36,7 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
   const [showModal, setShowModal] = useState(false);
   const [imageURL, setImageURL] = useState(null);
   const [modelURL, setModelURL] = useState(null);
+  const [presenter, setPresenter] = useState(null);
 
   // Set image location and/or model URL before rendering the component
   useEffect(() => {
@@ -61,7 +68,6 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
     onQuantityChange(product.keyProductID, quantity);
   }, [quantity]);
 
-
   // Handles quantity change as a result of changing input field value
   const handleChange = (newQuantity) => {
     setQuantity(Math.trunc(newQuantity))
@@ -78,12 +84,20 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
   // Displays the modal to interact with the 3D model if this product has one
   const handleImageClick = () => {
     if (modelURL) {
+      setPresenter(null);
       setShowModal(true);
+      setTimeout(() => {
+        setPresenter(<ThreeDModelPresenter modelUrl = {modelURL}/>);
+      }, 1000);
     }
   }
 
+
+
+
   return (
     <>
+      
       <Row justify="center">
         <Col span={18}>
           <Card
@@ -144,17 +158,27 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
         centered={true}
         closable={false}
         width="50vw"
+        //heigh="400" // new
         footer={<Button type="secondary" onClick={() => setShowModal(false)}>Close</Button>}
         maskClosable={true}
       >
+        {console.log("Modal loaded")}
         <Row justify="center" align="middle">
           <Col>
-            <div style={{ height: '50vh', width: '35vw' }}>
-              <ThreeDModelPresenter modelUrl={modelURL} />
+            <div style={{ height: '50vh', width: '35vw'}}>
+              {presenter}
+            </div>
+            <Divider>Instructions</Divider>
+            <div>
+              <RotateLeftOutlined />  Click and Drag to Rotate <br/>
+              <ZoomInOutlined />  Scroll to Zoom <br/>
+              <DragOutlined />  Arrow Keys to Pan 
             </div>
           </Col>
         </Row>
       </Modal>
+      
+
     </>
   )
 }
