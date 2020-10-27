@@ -66,10 +66,9 @@ const OrderPage = ({ history }) => {
   const [message, setMessage] = useState(null);
 
   // Global cart state
-  const { products, totalPrice, afterGstPrice } = useStoreState(state => ({
+  const { products, totalPrice } = useStoreState(state => ({
     products: state.cart.products,
-    totalPrice: state.cart.totalPrice,
-    afterGstPrice: state.cart.afterGstPrice
+    totalPrice: state.cart.totalPrice
   }))
 
   // Global cart actions
@@ -299,7 +298,7 @@ const OrderPage = ({ history }) => {
                         </Button>
                       </Col>
                       <Col span={12}>
-                        <Statistic title="GST" value={afterGstPrice} prefix="$" precision={2} />
+                        <Statistic title="GST" value={0} prefix="$" precision={2} />
                         <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
                           Checkout
                         </Button>

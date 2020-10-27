@@ -426,7 +426,7 @@ render(){
                     </Col>
                     <Col span={5}></Col>
 
-                    <Divider orientation="left">Squizz Organization Details</Divider>
+                    <Divider orientation="left">Squizz Organization Details:</Divider>
                     <Col span={23} >
                         <Form.Item   
                             style={{ fontSize: '16px'}}

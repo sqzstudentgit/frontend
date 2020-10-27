@@ -33,11 +33,10 @@ const CheckOutPage = ({ history }) =>{
     const [instruction, setInstruction] = useState("");
 
     // Global customer & cart state
-    const { customerId, products, totalPrice, afterGstPrice, deliveryAddrId, billingAddrId } = useStoreState(state => ({
+    const { customerId, products, totalPrice, deliveryAddrId, billingAddrId } = useStoreState(state => ({
         customerId: state.customer.customerId,
         products: state.cart.products,
         totalPrice: state.cart.totalPrice,
-        afterGstPrice: state.cart.afterGstPrice,
         deliveryAddrId: state.customer.deliveryAddrId,
         billingAddrId: state.customer.billingAddrId,
     }))
@@ -117,7 +116,9 @@ const CheckOutPage = ({ history }) =>{
     return(
         <Layout style={{ minHeight: '100vh' }}>
             {/* Top navigation bar */}
-            <NavigationBar history={history}/>
+            <Row justify="center" gutter={[0, 16]}>
+                <NavigationBar history={history} defaultSelected='/order'/>
+            </Row>
 
             {/* Add product form and cart information */}
             <Row style={{marginTop:'80px'}} justify="center" gutter={[0, 16]}>
@@ -143,7 +144,7 @@ const CheckOutPage = ({ history }) =>{
                                         </Button>
                                     </Col>
                                     <Col span={12}>
-                                        <Statistic title="GST" value={afterGstPrice} prefix="$" precision={2} />
+                                        <Statistic title="GST" value={0} prefix="$" precision={2} />
                                         <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
                                             Submit Order
                                         </Button>
