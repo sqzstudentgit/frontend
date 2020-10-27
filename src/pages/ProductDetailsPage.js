@@ -96,7 +96,7 @@ function ProductDetailsPage({ history, match }){
         readdProduct(productInfo);
         notification.success({ 
             message: 'Product was successfully readded to the cart',
-            placement: 'topLeft'
+            placement: 'topRight'
         });
     }
 
