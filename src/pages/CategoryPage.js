@@ -144,7 +144,7 @@ class CategoryPage extends React.Component{
                 <Spin size="large" />
                 <NavigationBar  history={history} defaultSeletced='/productList'/>
                 <Layout>
-                    <Sider width={200} className="site-layout-background">
+                    <Sider width={256} className="site-layout-background">
                         <CategoryTree />
 
                     </Sider>

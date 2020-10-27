@@ -13,7 +13,6 @@ import {
 import axios from 'axios';
 import { Redirect } from 'react-router';
 import Logout from './Logout'
-import CategoryTree from './CategoryTree'
 
 const { Header, Content, Footer } = Layout;
 const { SubMenu } = Menu;

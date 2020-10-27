@@ -139,7 +139,7 @@ class ProductListPage extends React.Component{
             <Layout>
                 <NavigationBar  history={history} defaultSelected='/productList'/>
                 <Layout>
-                    <Sider width={200} className="site-layout-background">
+                    <Sider width={256} className="site-layout-background">
                         <CategoryTree />
 
                     </Sider>
