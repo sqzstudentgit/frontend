@@ -7,6 +7,10 @@ import TallCartProduct from '../components/TallCartProduct';
 import ShortCartProduct from '../components/ShortCartProduct';
 import NavigationBar from '../components/NavigationBar';
 
+// Todo: This is the temp design for Checkout - Add Billing Address & Delivery Address function
+import AddAddressForm from '../components/AddAddressForm';
+import AddressesList from '../components/AddressesList'
+
 // Ant Design Components
 import {
   Affix,
@@ -40,7 +44,7 @@ const { Search } = Input;
 /**
  * The OrderPage component is the page that is loaded when
  * the 'Order' menu item is clicked on the top navigation bar.
- * 
+ *
  * It is responsible for:
  *    1. Allowing users to search for and add products via product code or barcode
  *    2. Displaying the products in the cart, in either tall view or short view
@@ -99,7 +103,7 @@ const OrderPage = ({ history }) => {
     changeQuantity({ keyProductID: keyProductID, quantity: quantity });
   }
 
-  
+
   /**
    * Handles addition of a product to the cart
    * @param {string} value a potential product code or barcode
@@ -156,68 +160,30 @@ const OrderPage = ({ history }) => {
         setSearchLoading(false);
       }
     }
-  } 
+  }
+
 
   /**
-   * Handles submission of an order to the backend API endpoint
+   * Handles user select "Checkout"
    */
-  const handleSubmit = async () => {
-    // First, check if the cart is empty
+  const handleSubmit = () =>{
+    // if shopping cart is empty, set alert
     if (products.length == 0) {
       notification.warning({
-        message: 'Your cart is empty',
-        description: 'Please add a product to your cart before submitting an order'
+          message: 'Your cart is empty',
+          description: 'Please add a product to your cart before submitting an order'
       })
       return;
     }
 
-    // Map products in the cart to 'lines' (i.e. order details)
-    let lines = products.map(product => ({ 
-      ...product,
-      lineType: "PRODUCT",
-      unitPrice: product.price,
-      totalPrice: product.price * product.quantity,
-      priceTotalExTax: product.price * product.quantity
-    }))
-
-    // Submit the order to the backend API endpoint
-    try {
-      setSubmitLoading(true);
-      console.log(lines)
-      const response = await axios.post('/api/purchase', {
-        lines: lines,
-        sessionKey: sessionStorage.getItem('sessionKey')
-      }, {
-        headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
-      });
-      console.log(response);
-      setSubmitLoading(false);
-
-      // Check the response, and redirect to home if successful
-      if (response.status == 200) {
-        notification.success({
-          message: 'Your order has been submitted!'
-        })
-        setTimeout(() => {
-          emptyCart()
-          history.push('/');
-        }, 4500);
-      }
-    } catch (err) {
-      console.log(err);
-      if (err.response && err.response.status == 500) {
-        notification.error({
-          message: 'Could not submit order',
-          description: 'There was an error submitting your order, please try again.'
-        })
-      }
-    }
+    // redirect to checkout page
+    history.push('/checkout');
   }
 
 
   /**
    * Handles selection of a product code or barcode from the returned search results box
-   * @param {string} value a valid product code or barcode 
+   * @param {string} value a valid product code or barcode
    */
   const handleSelect = (value) => {
     // Set input value and close the search results pane
@@ -238,16 +204,16 @@ const OrderPage = ({ history }) => {
     if (!identifier) {
       return setOptions([]);
     }
-    
+
     // Query the database for product codes or barcodes that are similar to the input identifier
     const identifierType = inputType == 'barcode' ? 'barcode' : 'productCode';
     const result = await search(`/api/products/search?identifier=${identifier}&identifierType=${identifierType}`);
-    
+
     // Result will be null in the case that the axios request was cancelled prematurely
     if (!result) {
       return setOptions([]);
     }
-    
+
     // Process the list of identifiers. Identifiers will be null if no products in the database
     // have similar barcodes or product codes to the identifier given in the query
     const { identifiers } = result;
@@ -266,7 +232,7 @@ const OrderPage = ({ history }) => {
     setOptions(searchResults);
     setOpen(true);
   }
-  
+
 
   // Check if authenticated before rendering the page, otherwise redirect to the home page
   if (!sessionStorage.getItem('user')) {
@@ -277,7 +243,7 @@ const OrderPage = ({ history }) => {
     <Layout style={{ minHeight: '100vh' }}>
       {/* Top navigation bar */}
       <NavigationBar history={history} defaultSelected='/order'/>
-      
+
       {/* Content body */}
       <Content style={{ padding: '80px 16px' }}>
 
@@ -291,7 +257,7 @@ const OrderPage = ({ history }) => {
 
                     {/* Product search form */}
                     <Form labelCol={{ span: 4 }} >
-                      <Form.Item label="Type"> 
+                      <Form.Item label="Type">
                         <Radio.Group
                           value={inputType}
                           options={[{ label: 'Product Code', value: 'product' }, { label: 'Barcode', value: 'barcode' }]}
@@ -334,7 +300,7 @@ const OrderPage = ({ history }) => {
                       <Col span={12}>
                         <Statistic title="GST" value={totalGST} prefix="$" precision={2} />
                         <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
-                          Submit Order
+                          Checkout
                         </Button>
                       </Col>
                     </Row>
@@ -348,14 +314,14 @@ const OrderPage = ({ history }) => {
           <Row justify="center" gutter={[0, 16]}>
             <Col span={18}>
               <div style={{ textAlign: 'end' }}>
-                <Button 
+                <Button
                   icon={<LayoutOutlined />}
                   onClick={() => setViewType('tall')}
                 >
                   Tall View
                 </Button>
                 <Button
-                  style={{ layout: 'inline-block' }} 
+                  style={{ layout: 'inline-block' }}
                   icon={<VerticalAlignMiddleOutlined />}
                   onClick={() => setViewType('short')}
                 >
@@ -371,8 +337,8 @@ const OrderPage = ({ history }) => {
           products.map(product =>
             <TallCartProduct
               key={product.keyProductID}
-              product={product} 
-              onRemove={handleRemove} 
+              product={product}
+              onRemove={handleRemove}
               onQuantityChange={handleQuantityChange}
             />
           )
@@ -380,14 +346,14 @@ const OrderPage = ({ history }) => {
           products.map(product =>
             <ShortCartProduct
               key={product.keyProductID}
-              product={product} 
-              onRemove={handleRemove} 
+              product={product}
+              onRemove={handleRemove}
               onQuantityChange={handleQuantityChange}
             />
           )
         )}
       </Content>
-      
+
       {/* Footer */}
       <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
     </Layout>
