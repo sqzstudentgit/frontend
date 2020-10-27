@@ -62,9 +62,10 @@ const OrderPage = ({ history }) => {
   const [message, setMessage] = useState(null);
 
   // Global cart state
-  const { products, totalPrice } = useStoreState(state => ({
+  const { products, totalPrice, totalGST } = useStoreState(state => ({
     products: state.cart.products,
-    totalPrice: state.cart.totalPrice
+    totalPrice: state.cart.totalPrice,
+    totalGST: state.cart.totalGST
   }))
 
   // Global cart actions
@@ -117,6 +118,7 @@ const OrderPage = ({ history }) => {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
       setSearchLoading(false);
+      console.log(response.data);
 
       // Check if the product exists in the database
       if (response.data.status == 'error') {
@@ -332,7 +334,7 @@ const OrderPage = ({ history }) => {
                         </Button>
                       </Col>
                       <Col span={12}>
-                        <Statistic title="GST" value={0} prefix="$" precision={2} />
+                        <Statistic title="GST" value={totalGST} prefix="$" precision={2} />
                         <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
                           Submit Order
                         </Button>
