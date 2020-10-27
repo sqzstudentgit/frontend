@@ -1,11 +1,11 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom'
 import { Layout, Menu, Row } from 'antd';
-import { 
-  HistoryOutlined, 
+import {
+  HistoryOutlined,
   HomeOutlined,
   ShopOutlined,
-  LogoutOutlined, 
+  LogoutOutlined,
   ShoppingCartOutlined,
   UserSwitchOutlined
 } from '@ant-design/icons';
@@ -26,9 +26,9 @@ class NavigationBar extends React.PureComponent{
     super(props)
 
     this.state = {
-      isLogout:false,     
+      isLogout:false,
     }
-    
+
     this.handleClick = this.handleClick.bind(this)
   }
 
@@ -39,9 +39,9 @@ class NavigationBar extends React.PureComponent{
     {
       axios(
         {
-            method: 'get',           
+            method: 'get',
             url: 'api/logout',
-        }             
+        }
       )
       .then(
         (response)=>{
@@ -64,7 +64,7 @@ class NavigationBar extends React.PureComponent{
   render() {
     if (this.state.isLogout){
       this.setState({isLogout:false})
-      
+
       return <Redirect to = {{ pathname: "/" }} />
     }
     return(
