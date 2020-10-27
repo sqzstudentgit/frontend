@@ -40,6 +40,7 @@ const cartModel = {
    // Cart state
    products: [],
    totalPrice: 0,
+   afterGstPrice: 0,
 
    // Cart state listener. It's responsibility is to recalculate the total price
    // of the cart when the state of the cart changes around the application.
@@ -59,6 +60,9 @@ const cartModel = {
      ],
      (state, _) => {
        state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
+
+      //  Todo: Change to Dynamic afterGstPrice in future
+       state.afterGstPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity * 0.1, 0);
      }
    ),
    
