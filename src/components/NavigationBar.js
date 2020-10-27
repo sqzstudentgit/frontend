@@ -71,7 +71,7 @@ class NavigationBar extends React.PureComponent{
 
       <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
         <Menu onClick={this.handleClick} theme="dark" mode="horizontal" defaultSelectedKeys={[this.props.defaultSelected]}>
-          <Menu.Item style={{ float: 'left', width: 150, textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HOLYSAS</Menu.Item>
+          <Menu.Item style={{ float: 'left', width: 150, textAlign: 'center', fontFamily: "'Roboto', sans-serif", fontSize: '1.25rem' }}>HolySAS</Menu.Item>
           <Menu.Item style={{ float: 'left' }} icon={<HomeOutlined />} key="/">Home</Menu.Item>
           <SubMenu style={{ float: 'left' }} icon={<ShopOutlined/>} key="/productList" title="Products">
             <Menu.Item key="/productList">All products</Menu.Item>

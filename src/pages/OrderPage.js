@@ -241,9 +241,7 @@ const OrderPage = ({ history }) => {
     
     // Query the database for product codes or barcodes that are similar to the input identifier
     const identifierType = inputType == 'barcode' ? 'barcode' : 'productCode';
-    const result = await search(
-      `/api/products/search?identifier=${identifier}&identifierType=${identifierType}`
-    );
+    const result = await search(`/api/products/search?identifier=${identifier}&identifierType=${identifierType}`);
     
     // Result will be null in the case that the axios request was cancelled prematurely
     if (!result) {
@@ -368,6 +366,7 @@ const OrderPage = ({ history }) => {
           </Row>
         </Affix>
 
+        {/* Map the products to product cards */}
         {viewType == 'tall' ? (
           products.map(product =>
             <TallCartProduct

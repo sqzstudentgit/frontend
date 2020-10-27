@@ -1,5 +1,5 @@
 import LoginPage from '../../src/pages/loginPage'
-import HomePage from '../../src/pages/homePage'
+import HomePage from '../../src/pages/HomePage'
 import HistoryOrdersPage from '../../src/pages/historyOrdersPage'
 import CurrentOrderPage from '../../src/pages/currentOrderPage';
 
