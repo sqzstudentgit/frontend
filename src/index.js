@@ -11,6 +11,10 @@ import ProductDetailsPage from './pages/ProductDetailsPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import HistoryPage from './pages/HistoryPage';
 import OrderPage from './pages/OrderPage';
+
+import CheckOutPage from './pages/CheckOutPage';
+
+// CSS
 import CategoryPage from './pages/CategoryPage';
 import store from './store';
 import 'antd/dist/antd.css';
@@ -42,6 +46,8 @@ const App = () => {
             <Route path="/products/:productCode*" exact component={ProductDetailsPage} />
             <Route path="/orders/:orderId" exact component={OrderDetailsPage} />
             <Route path="/productCategories/:id" exact component={CategoryPage} />
+            <Route path="/checkout" exact component={CheckOutPage} />
+            
           </div>
         </Router>
       </WaitForStateReyhydration>

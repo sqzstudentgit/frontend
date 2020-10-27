@@ -14,7 +14,7 @@ class CreatePage extends React.Component{
     render() {
         return (
             <Page>
-                    <div>
+                    <div style={{width : '90%'}}>
                         <CreateForm />
                     </div>  
             </Page>
@@ -31,5 +31,5 @@ const Page = styled.div`
     min-height: 90vh;
     -webkit-justify-content: center;
     background: #f1f1f3; // this is the color of the background of the login page
-    height: 240%
+    height: 160%
 `
