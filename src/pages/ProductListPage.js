@@ -174,7 +174,7 @@ class ProductListPage extends React.Component{
                                                     //if image is 404 not found, show the default image
                                                     onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
                                                     <Meta key={item.productCode} 
-                                                        title={item.price} 
+                                                        title={item.price}
                                                         description={item.barcode}
                                                     />
                                             </Card>
