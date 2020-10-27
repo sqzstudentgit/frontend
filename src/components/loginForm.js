@@ -1,7 +1,7 @@
 //ant design
 import { Form, Input, Button, Card} from 'antd';
 import { message as antdMessage } from 'antd' ;
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
 
 //React
 import React from "react";
@@ -120,10 +120,11 @@ class LoginForm extends React.Component{
                         onChange={this._handleChange}
                         rules={[{required: true,message: 'Please input your password!'}]}
                     >
-                        <Input
+                        <Input.Password
                             prefix={<LockOutlined className="site-form-item-icon" />}
                             type="password"
                             placeholder="Password"
+                            iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                         />
                     </Form.Item>
             
