@@ -8,16 +8,11 @@ import { CheckCircleTwoTone,
         EnvironmentOutlined,
         PhoneOutlined,
         MailOutlined,
-        MessageOutlined,
-        EyeTwoTone,
-        EyeInvisibleOutlined 
         } from '@ant-design/icons';
 //React
 import React from "react";
 import Axios from 'axios';
-import {withRouter, Redirect} from 'react-router-dom';
-
-import { useStoreState, useStoreActions } from 'easy-peasy';
+import {Redirect} from 'react-router-dom';
 
 const {Option} = Select;
 
@@ -69,7 +64,7 @@ class CreateForm extends React.Component{
                  }
              )
      }
-
+    //Update the content of the input box in the form
      _handleChangeInput(e){
          let id = e.target.id
          this.setState({
@@ -77,6 +72,7 @@ class CreateForm extends React.Component{
          })
      }
 
+    //Handles submission about creating a new customer   
     _handleSubmit(e){
         Axios({
                 method: 'post',           
@@ -145,6 +141,7 @@ render(){
         children.push(<Option key={this.state.customerCodeList[i]}>{this.state.customerCodeList[i]}</Option>);
     }
 
+    //Form UI Design
     return (
         <Form style={{width:'100%'}}
         className="register-form"
