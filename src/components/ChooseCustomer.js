@@ -1,26 +1,28 @@
 import React, { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
-import {withRouter, Redirect} from 'react-router-dom'
+import { withRouter, Redirect } from 'react-router-dom'
 import { Button, Card, Form, List, Spin, Alert } from 'antd';
 
+import { useStoreActions } from 'easy-peasy';
 
-import { useStoreState, useStoreActions } from 'easy-peasy';
-
-
+/**
+ * Choose Customer Component will list all avaliable customers for the orgnization, it allows:
+ *  1. select customer code
+ *  2. update product table
+ *  3. redirect to homepage if product table successfully loaded
+ */
 
 const ChooseCustomer = () => {
     const [users, setUsers] = useState([])
     const [redirect, setRedirect] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    const { customerId } = useStoreState(state => ({
-        customerId: state.customer.customerId
-      }))
     
-      // Global cart actions
-    const { setCustomerId, removeCustomerId } = useStoreActions(actions => ({
+    /**
+     * Global Customer Actions
+     */
+    const { setCustomerId, emptyCart } = useStoreActions(actions => ({
         setCustomerId: actions.customer.setCustomerId,
-        removeCustomerId: actions.customer.removeCustomerId,
+        emptyCart: actions.cart.emptyCart
       }))
     
     let isRendered = useRef(false);
@@ -41,32 +43,40 @@ const ChooseCustomer = () => {
         };
     }, []);
 
-    if (redirect === true){
-        return <Redirect to = {{ pathname: "/" }} />
-    }
-    
+
+    /**
+     * If Customer is select, do:
+     * 1. update customer id in state
+     * 2. update product database according to customerid
+     * 3. clear shopping cart
+     * @param {} item 
+     */
     const onSelect = (item) =>{
         const custid = item.id
 
         // update customerid in state
         setCustomerId(custid);
 
-        console.log(custid);
-
-        setLoading(true);
         // update product with new customerid
+        setLoading(true);
         const response = axios.post('/api/switch_customer',{
             customer_id: custid,
         }).then(res=>{
             console.log(res.data.message)
+            setLoading(false);
+            setRedirect(true)
         }).catch (err=>{
             console.log(err);
         })
-        setLoading(false);
 
-        setRedirect(true)
+        // Empty Shopping Cart
+        emptyCart();
     }
 
+
+    if (redirect === true){
+        return <Redirect to = {{ pathname: "/" }} />
+    }
     return (
         <>
             {loading ? (
@@ -80,6 +90,7 @@ const ChooseCustomer = () => {
             ) : (
                 null
             )}
+
             <br/>
             <Card bordered={false} style={{ width: 300 }} cover={<img alt="example" src="https://media-exp1.licdn.com/dms/image/C511BAQF1N9JzP5PU8Q/company-background_10000/0?e=2159024400&v=beta&t=SogtI3ymEudS4fqNFeyKMxH7j5-2i7R1kH9LndNbPTg" />}>
                 <Form
@@ -99,10 +110,8 @@ const ChooseCustomer = () => {
                         Create a customer account
                     </Button>
 
-                </Form>
-                            
+                </Form>    
             </Card>
-
         </>
     )
 }

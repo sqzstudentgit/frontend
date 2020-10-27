@@ -8,14 +8,11 @@ import { CheckCircleTwoTone,
         EnvironmentOutlined,
         PhoneOutlined,
         MailOutlined,
-        MessageOutlined,
-        EyeTwoTone,
-        EyeInvisibleOutlined 
         } from '@ant-design/icons';
 //React
 import React from "react";
 import Axios from 'axios';
-import {withRouter, Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 
 const {Option} = Select;
 
@@ -56,6 +53,7 @@ class CreateForm extends React.Component{
                  method: 'get',           
                  url: 'api/customer_codes',
                  headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
+                 params:{'used': 0}
              }             
              )
              .then(
@@ -66,7 +64,7 @@ class CreateForm extends React.Component{
                  }
              )
      }
-
+    //Update the content of the input box in the form
      _handleChangeInput(e){
          let id = e.target.id
          this.setState({
@@ -74,6 +72,7 @@ class CreateForm extends React.Component{
          })
      }
 
+    //Handles submission about creating a new customer   
     _handleSubmit(e){
         Axios({
                 method: 'post',           
@@ -142,6 +141,7 @@ render(){
         children.push(<Option key={this.state.customerCodeList[i]}>{this.state.customerCodeList[i]}</Option>);
     }
 
+    //Form UI Design
     return (
         <Form style={{width:'100%'}}
         className="register-form"
@@ -317,7 +317,7 @@ render(){
                     </Form.Item>
                     </Col>
 
-                    <Divider orientation="left">Delivery Addresses</Divider>
+                    <Divider orientation="left">Billing Addresses</Divider>
 
                     <Col span={5}></Col>
                     <Col span={11}>
@@ -426,7 +426,7 @@ render(){
                     </Col>
                     <Col span={5}></Col>
 
-                    <Divider orientation="left">Squizz Organization Details:</Divider>
+                    <Divider orientation="left">Squizz Organization Details</Divider>
                     <Col span={23} >
                         <Form.Item   
                             style={{ fontSize: '16px'}}

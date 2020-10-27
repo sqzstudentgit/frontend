@@ -10,18 +10,18 @@ class LoginPage extends React.Component{
 
     constructor(props) {
         super(props);
-        this.state = {
-        }
-   
+        this.state = {}
     }
 
     render() {
         return (
-            <Row style={{ height:  "100%"}} justify="space-around" align="middle">
-                <Col>
-                <LoginForm/>
-                </Col>
-            </Row>
+            <div style={{backgroundColor: '#F5F5F5'}}>
+                <Row style={{ height:  "100%"}} justify="space-around" align="middle">
+                    <Col>
+                    <LoginForm/>
+                    </Col>
+                </Row>
+            </div>
         )//end return
     }
 }

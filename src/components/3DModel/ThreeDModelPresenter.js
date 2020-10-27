@@ -55,7 +55,6 @@ function Light2 (position,intensity) {
   return <primitive object={light}/>
 }
 
-
 // Auto calculate model distance and height for camera position
 function LoadModel (props) {
   const gltf = useLoader(GLTFLoader, props.modelUrl);
@@ -70,12 +69,11 @@ function LoadModel (props) {
       if ( child instanceof THREE.Mesh  ) 
       {
         boundingBox = (child.geometry.boundingBox);
-        
       }
   });
 
   const primitiveProps = {
-    object: gltf.scene,
+    object: gltf.scene.clone(true),
     castShadow: true,
     receiveShadow: true,
   };
@@ -95,7 +93,7 @@ function Loading() {
       <sphereGeometry attach="geometry" args={[0, 0, 0]} />
       <meshStandardMaterial
         attach="material"
-        color="yellow"
+        color="gray"
         transparent
         opacity  ={0.6}
         roughness={1}
@@ -104,8 +102,6 @@ function Loading() {
     </mesh>
   );
 }
-
-
 
 
 class ThreeDModelPresenter extends React.Component 
@@ -135,11 +131,8 @@ class ThreeDModelPresenter extends React.Component
             </mesh>
 
           </Canvas>
-      
-      
         )
     }
-
 }
 export default ThreeDModelPresenter;
 
