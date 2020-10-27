@@ -62,9 +62,10 @@ const OrderPage = ({ history }) => {
   const [message, setMessage] = useState(null);
 
   // Global cart state
-  const { products, totalPrice } = useStoreState(state => ({
+  const { products, totalPrice, totalGST } = useStoreState(state => ({
     products: state.cart.products,
-    totalPrice: state.cart.totalPrice
+    totalPrice: state.cart.totalPrice,
+    totalGST: state.cart.totalGST
   }))
 
   // Global cart actions
@@ -117,6 +118,7 @@ const OrderPage = ({ history }) => {
         headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
       })
       setSearchLoading(false);
+      console.log(response.data);
 
       // Check if the product exists in the database
       if (response.data.status == 'error') {
@@ -239,9 +241,7 @@ const OrderPage = ({ history }) => {
     
     // Query the database for product codes or barcodes that are similar to the input identifier
     const identifierType = inputType == 'barcode' ? 'barcode' : 'productCode';
-    const result = await search(
-      `/api/products/search?identifier=${identifier}&identifierType=${identifierType}`
-    );
+    const result = await search(`/api/products/search?identifier=${identifier}&identifierType=${identifierType}`);
     
     // Result will be null in the case that the axios request was cancelled prematurely
     if (!result) {
@@ -332,7 +332,7 @@ const OrderPage = ({ history }) => {
                         </Button>
                       </Col>
                       <Col span={12}>
-                        <Statistic title="GST" value={0} prefix="$" precision={2} />
+                        <Statistic title="GST" value={totalGST} prefix="$" precision={2} />
                         <Button style={{ marginTop: 16 }} type="primary" onClick={() => handleSubmit()} loading={submitLoading}>
                           Submit Order
                         </Button>
@@ -366,6 +366,7 @@ const OrderPage = ({ history }) => {
           </Row>
         </Affix>
 
+        {/* Map the products to product cards */}
         {viewType == 'tall' ? (
           products.map(product =>
             <TallCartProduct
