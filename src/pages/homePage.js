@@ -1,55 +1,118 @@
-import React from "react"
-import {Link, withRouter} from 'react-router-dom'
-import { Title } from "../components/Title"
+import React from 'react';
+import { withRouter } from 'react-router-dom';
 
-// import styled from '../css/slider.css'
-import Slider from '../components/Slider'
-import Logout from '../components/Logout'
-import NavigationBar from "../components/NavigationBar";
+import { 
+  Button,
+  Col,
+  Layout,
+  Row,
+  Typography
+} from 'antd';
 
-import { Layout} from 'antd';
-const { Header, Content, Footer } = Layout;
+import {
+  CodepenOutlined,
+  HistoryOutlined,
+  ShoppingOutlined,
+  ShopOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
 
-const slideData = [
-    {
-      index: 0,
-      headline: 'Current Orders',
-      button: 'Shop now',
-      src: require('../assets/cart.png'),
-        link: '/order' },
-    
-    {
-      index: 1,
-      headline: 'History Orders',
-      button: 'Browse My History',
-      src: require('../assets/history.jpg') ,
-      link: '/viewHistoryOrder'},
-    
-    ];
-class HomePage extends React.Component{
+const { Content, Footer } = Layout;
+const { Text, Title } = Typography;
 
-    render() {
+import NavigationBar from '../components/NavigationBar';
+
+
+const HomePage = ({ history }) => {
+
+  const handleClickGetStarted = () => {
+    history.push('/productList#1');
+
+  }
+  const handleClickViewOrders = () => {
+    history.push('/history');
+  }
+
+  if (!sessionStorage.getItem("user")) {
+    history.push('/login');
+  }
+
+  return (
+    <Layout style={{ minHeight: '100vh' }}>
+      {/* Top navigation bar */}
+      <NavigationBar defaultSelected='/'/>
       
-        if(sessionStorage.getItem('user')){
-            //TODO: use another way to load the img to avoid repeated downloads
-            return (
-                <Layout style={{ minHeight: '100vh' }}>
-                    <NavigationBar  history={this.props.history} defaultSelected='/'/>
-                    <div style={{ marginTop: '50px'}}>
-                        <Content style={{ padding: '50px 50px'}}> 
-                            <Slider heading = "Example Slider" slides={slideData} history={this.props.history}/>
-                        </Content>
-                    </div>
-                    <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
-       
-                </Layout>
-            )
-        }
-        //console.log(this.props.history)
-        this.props.history.push('/login')
-        console.log(this.props.history)
-        return 'error?'
-    }
+      {/* Content body */}
+      <Content style={{ padding: '80px 80px', background: ' #fff', margin: '10vh 20vh', borderRadius: '1.25rem' }}>
+
+        {/* HolySAS brand title and description */}
+        <div style={{ textAlign: 'center', marginTop: '0vh' }}>
+          <Title style={{ fontSize: '3.5rem', marginBottom: '5vh' }} level={1}>HolySAS</Title>
+          <Row justify="center">
+            <Col span={16}>
+              <Title level={3} type="secondary ">
+                Welcome to HolySAS, home of your favourite products. 
+                We offer the latest air management solutions from Holyoake, 
+                and your favourite wholesale products from PJ SAS.
+              </Title>
+            </Col>
+          </Row>
+
+          <Row style={{ marginTop: '7.5vh' }} gutter={[24, 8]} justify="center">
+            <Col span={8}>
+              <Title level={4}>
+                <ShoppingOutlined /> Variety of Products
+              </Title>
+              <Text type="secondary">
+                View a wide range of products from both Holyoake Air Management Solutions
+                and PJ SAS Trading
+              </Text>
+            </Col>
+            <Col span={8}>
+              <Title level={4}>
+                <UserSwitchOutlined /> Customer Level Pricing
+              </Title>
+              <Text type="secondary">
+                View personalized customer-level pricing based on the selected customer
+              </Text>
+            </Col>
+            <Col span={8}>
+              <Title level={4}>
+               <CodepenOutlined /> In-Browser 3D Models
+              </Title>
+              <Text type="secondary">
+                Interact with and view the parameters of in-browser rendered 3D models, for Holyoake diffusers
+              </Text>
+            </Col>
+          </Row>
+
+          {/* Button links */}
+          <div style={{ marginTop: '10vh' }}>
+            <Button 
+              type="primary"
+              size="large" 
+              icon={<ShopOutlined />}
+              onClick={() => handleClickGetStarted()}
+            >
+              Get Started
+            </Button>
+            <Button
+              type="secondary"
+              size="large" 
+              icon={<HistoryOutlined />} 
+              style={{ marginLeft: '1vw' }}
+              onClick={() => handleClickViewOrders()}
+            >
+              View Orders
+            </Button>
+          </div>
+        </div>
+      </Content>
+
+      {/* Footer */}
+      <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
+    </Layout>
+  )
 }
 
-export default withRouter(HomePage)
+export default withRouter(HomePage);

@@ -5,11 +5,7 @@ import axios from 'axios';
 // Ant Design Components
 import { Menu } from 'antd';
 const { SubMenu } = Menu;
-// const { Sider } = Layout;
-// Ant Design Icons
-import { ShopOutlined } from '@ant-design/icons';
 
-//@withRouter
 
 class CategoryTree extends React.Component{
   
@@ -101,11 +97,12 @@ class CategoryTree extends React.Component{
 
         <Menu 
         onOpenChange={this.onOpenChange.bind(this)} //click on one parent category to show its children
-        mode="vertical"
-        style={{ width: 256 }}
-        theme="dark"
+        mode="inline"
+        style={{ width: 256, height:'100%', borderRight:0}}
+        theme="light"
         openKeys={openKeys}
         >
+          <Menu.Item  key="/productList">Products</Menu.Item>
           { // whether there are children under one parent category or not
             this.state.category && this.state.category.map(item => {
               return item.Children && item.Children.length > 0 ? this.renderSubMenu(item) : this.renderMenuItem(item)

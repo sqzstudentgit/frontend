@@ -1,5 +1,5 @@
 // This module contains the definitions for the global application state.
-// It uses the `easy-peasy` state management library, which is a wrapper around 
+// It uses the `easy-peasy` state management library, which is a wrapper around
 // Redux. It was chosen because of the much lower amount of boilerplate code needed
 // to set up global state, and the fact that there is no need to make state updates
 // side-effect free (unlike Redux). See: https://easy-peasy.now.sh/
@@ -39,20 +39,20 @@ const customerModel = {
 const cartModel = {
    // Cart state
    products: [],
-   totalPrice: 0,
-   afterGstPrice: 0,
+   totalPrice: 0,  // Total Price (Excluding GST)
+   totalGST: 0,
 
-   // Cart state listener. It's responsibility is to recalculate the total price
+   // Cart state listener. It's responsibility is to recalculate the total price and GST
    // of the cart when the state of the cart changes around the application.
-   // Note: `easy-peasy` actionOn has been used instead of `computed` for total price since 
+   // Note: `easy-peasy` actionOn has been used instead of `computed` for total price since
    // there is a bug with computed where the computed value is updated one action behind.
    //
    // See: https://easy-peasy.now.sh/docs/api/action-on.html
    //      https://easy-peasy.now.sh/docs/api/computed.html
    onCartChange: actionOn(
      actions => [
-       actions.addProduct, 
-       actions.removeProduct, 
+       actions.addProduct,
+       actions.removeProduct,
        actions.changeQuantity,
        actions.emptyCart,
        actions.readdProduct,
@@ -60,12 +60,14 @@ const cartModel = {
      ],
      (state, _) => {
        state.totalPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
-
-      //  Todo: Change to Dynamic afterGstPrice in future
-       state.afterGstPrice = state.products.reduce((acc, cur) => acc + cur.price * cur.quantity * 0.1, 0);
+       state.totalGST = state.products.reduce((acc, cur) =>
+        cur.keyTaxcodeID == '34333235303332303734313136'
+          ? acc + cur.price * 0.1 * cur.quantity
+          : acc + 0,
+       0);
      }
    ),
-   
+
    // -- CART ACTIONS --
 
    // Adds a product to the cart. Note that this action does not check whether
@@ -129,7 +131,7 @@ const cartModel = {
 }
 
 
-// Create a store for the global application state. This 
+// Create a store for the global application state. This
 // state has been configured to persist on page refreshes.
 const store = createStore(
   persist({

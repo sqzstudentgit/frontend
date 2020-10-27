@@ -4,15 +4,15 @@ import axios from 'axios';
 import ImageViewer from "../components/ImageViewer";
 import NavigationBar from "../components/NavigationBar";
 import ModelMetadata from "../components/ModelMetadata";
-import { 
+import {
     Layout,
-    Row, 
-    Col, 
+    Row,
+    Col,
     Tabs,
     Descriptions,
     InputNumber,
     Statistic,
-    Button, 
+    Button,
     Typography,
     Spin,
     notification,
@@ -32,30 +32,30 @@ const { Title } = Typography;
 
 
 function ProductDetailsPage({ history, match }){
-    
+
 
     const [productInfo, setProductInfo] = useState(0);
     const readdProduct = useStoreActions(actions => actions.cart.readdProduct);
     const [metadata, setMetadata] = useState(null);
-    
+
     // Get Product Data from API
     const getProductData = async(code) => {
-        try 
+        try
         {
-            const response = await axios.get(`/api/product`, 
+            const response = await axios.get(`/api/product`,
             {
-                params: 
+                params:
                 {
                     sessionKey: sessionStorage.getItem("sessionKey"),
                     productCode: code
                 }
-            }, 
+            },
             {
                 headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
             })
             setProductInfo(response.data.data)
-        } 
-        catch (err) 
+        }
+        catch (err)
         {
             console.log(err);
         }
@@ -63,29 +63,29 @@ function ProductDetailsPage({ history, match }){
 
     // Get Product MetaData from API
     const getProductMetaData = async(code) => {
-        try 
+        try
         {
             // Retrieve 3D model metadata (if it exists) for the product
-            const response = await axios.get('/api/metadata/get', 
+            const response = await axios.get('/api/metadata/get',
             {
-                params: 
+                params:
                 {
                   productCode: code
                 }
             });
-        
+
             // Check if 3D model metadata exists for the product
-            if (response.data.found) 
+            if (response.data.found)
             {
                 setMetadata(response.data.json_data);
             }
-        } 
-        catch (err) 
+        }
+        catch (err)
         {
             console.log(err);
         }
     }
-    
+
     // Event Handler for Product Quantity Change
     const onQuantityChange = (value) => {
         productInfo.quantity = value;
@@ -94,8 +94,8 @@ function ProductDetailsPage({ history, match }){
     // Event Handler for Checkout Button
     const checkOutClicked = (value) => {
         readdProduct(productInfo);
-        notification.success({ 
-            message: 'Product was successfully read to the cart',
+        notification.success({
+            message: 'Product was successfully readded to the cart',
             placement: 'topRight'
         });
     }
@@ -103,19 +103,19 @@ function ProductDetailsPage({ history, match }){
     useEffect(() => {
         const { params } = match;
         getProductData(params.productCode);
-        getProductMetaData(params.productCode); 
-        
+        getProductMetaData(params.productCode);
 
 
-        if(productInfo!=null && productInfo!=0) 
+
+        if(productInfo!=null && productInfo!=0)
             productInfo.quantity = 1;
     },[]);
 
 
-    
+
     if(sessionStorage.getItem('user')){
-        
-        if(productInfo==null || productInfo==0) 
+
+        if(productInfo==null || productInfo==0)
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -124,10 +124,10 @@ function ProductDetailsPage({ history, match }){
 
 
                     {/* Main Content */}
-                    <Content style={{ padding: '100px 100px'}}> 
+                    <Content style={{ padding: '100px 100px'}}>
                         <div style={{ marginTop: '150px'}}>
-                            
-                            <Row  gutter={[32, 32]}>  
+
+                            <Row  gutter={[32, 32]}>
                                 <Col flex={9} ></Col>
                                 <Col flex={0} > <Spin size="large"/> </Col>
                                 <Col flex={9}></Col>
@@ -154,10 +154,10 @@ function ProductDetailsPage({ history, match }){
 
                     {/* Top navigation bar */}
                     <NavigationBar  history={history} defaultSelected='/product'/>
-                    
+
                     {/* Main Content */}
                     <div style={{ marginTop: '50px'}}>
-                    <Content style={{ padding: '50px 50px'}}> 
+                    <Content style={{ padding: '50px 50px'}}>
                         <Card style={{ borderRadius: '1.25rem' }} hoverable={true} >
 
                             {/* Title */}
@@ -177,22 +177,22 @@ function ProductDetailsPage({ history, match }){
 
                                 {/* CheckOut Box */}
                                 <Col flex={3} >
-                                    <div style={{backgroundColor: "whiteSmoke", borderRadius: "5%"}}>  
+                                    <div style={{backgroundColor: "whiteSmoke", borderRadius: "5%"}}>
 
                                         <div style={{padding: 20}}>
                                             <Statistic title="Total Price (AUD)" value={productInfo.price} prefix="$" precision={2} />
                                         </div>
-                                        <div style={{paddingLeft: 20}}> 
+                                        <div style={{paddingLeft: 20}}>
                                             <span> Quantity: </span>
                                             <InputNumber min={1} max={100} defaultValue={1} onChange={onQuantityChange} />
                                         </div>
                                         <div style={{padding: 20}}>
                                             <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Add to cart</Button>
                                         </div>
-                                    
+
                                     </div>
                                 </Col>
-                            </Row>                            
+                            </Row>
 
                             {/* Tabs */}
                             <div style={{ padding: '25px 16px' }}>
@@ -200,29 +200,29 @@ function ProductDetailsPage({ history, match }){
                                 <Col flex={1}>
                                     <Tabs defaultActiveKey="1" >
                                         <TabPane tab="Description" key="1">
-                                            
-                                            {   
-                                                productInfo.description1=="" || productInfo.description1==null 
-                                                ? 
-                                                    'Coming Soon' 
-                                                : 
+
+                                            {
+                                                productInfo.description1=="" || productInfo.description1==null
+                                                ?
+                                                    'Coming Soon'
+                                                :
                                                     <div dangerouslySetInnerHTML={{ __html: productInfo.description1 }} />
-                                            }  
+                                            }
 
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
-                                            
-                                            {   
-                                                productInfo.description2=="" || productInfo.description2==null 
-                                                ? 
-                                                    'Coming Soon' 
-                                                : 
+
+                                            {
+                                                productInfo.description2=="" || productInfo.description2==null
+                                                ?
+                                                    'Coming Soon'
+                                                :
                                                     <div dangerouslySetInnerHTML={{ __html: productInfo.description2 }} />
-                                            }  
+                                            }
 
                                         </TabPane>
                                         { metadata ? (
-                                            
+
                                                 <TabPane tab="Parameter" key="3">
                                                     <Row gutter={[16, 16]}>
                                                         <ModelMetadata metadata={metadata} />
@@ -231,17 +231,17 @@ function ProductDetailsPage({ history, match }){
                                         ) : (
                                             null
                                         )
-                                            
+
                                         }
                                         <TabPane tab="Downloads" key="4">
-                                            
+
                                             Coming Soon
 
                                         </TabPane>
                                     </Tabs>
                                 </Col>
                             </Row>
-                            
+
                             </div>
 
                         </Card>
@@ -257,7 +257,7 @@ function ProductDetailsPage({ history, match }){
     this.props.history.push('/login')
     console.log(this.props.history)
     return 'error?'
-    
+
 }
 
 export default withRouter(ProductDetailsPage)
