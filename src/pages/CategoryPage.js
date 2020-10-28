@@ -167,7 +167,7 @@ class CategoryPage extends React.Component{
                     {this.state.loading ? <Spin size="large"/> : 
                         <List
                             grid={{
-                                gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3,
+                                gutter: 16, column: 4
                             }}
                             dataSource={this.state.cate_product}
                             renderItem={item => (
@@ -197,6 +197,7 @@ class CategoryPage extends React.Component{
                             pageSize = {20}
                             current={this.state.pageCurrent}
                             onChange = {this.onPageNumChange}
+                            showQuickJumper
                         />
 
                     <Footer style={{ textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
