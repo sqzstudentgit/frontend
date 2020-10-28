@@ -94,8 +94,8 @@ function ProductDetailsPage({ history, match }){
     // Event Handler for Checkout Button
     const checkOutClicked = (value) => {
         readdProduct(productInfo);
-        notification.success({
-            message: 'Product was successfully readded to the cart',
+        notification.success({ 
+            message: 'Product was successfully added to the cart',
             placement: 'topRight'
         });
     }
