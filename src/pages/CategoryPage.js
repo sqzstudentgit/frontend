@@ -182,7 +182,7 @@ class CategoryPage extends React.Component{
                                                 //if image is 404 not found, show the default image
                                                 onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
                                                 <Meta key={item.productCode} 
-                                                    title={item.price ? ('$ '+item.price) : ('Price not set')} 
+                                                    title={item.price ? ('$ '+item.price) : ('99.99')} 
                                                     description={item.barcode ? ('Barcode: ' + item.barcode) : ('ProductCode: ' + item.productCode)}
                                                 />
                                         </Card>
