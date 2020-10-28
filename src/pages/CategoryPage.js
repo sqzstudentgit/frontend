@@ -132,7 +132,7 @@ class CategoryPage extends React.Component{
     //if item.image cannot be gotten in a normal way, show the default image
     getImage(image){
         if(image != null && image != undefined && image != ''){
-            return image;
+            return image.smallImageLocation;
         }
             return imageComing;
     }
@@ -178,11 +178,11 @@ class CategoryPage extends React.Component{
                                             key={item.name}
                                             hoverable
                                             cover={<Image alt="example" 
-                                                src= {this.getImage(item.image)} 
+                                                src= {this.getImage(item.image[0])} 
                                                 //if image is 404 not found, show the default image
                                                 onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
                                                 <Meta key={item.productCode} 
-                                                    title={item.price ? ('$ '+item.price) : ('Price not set')} 
+                                                    title={item.price ? ('$ '+item.price) : ('99.99')} 
                                                     description={item.barcode ? ('Barcode: ' + item.barcode) : ('ProductCode: ' + item.productCode)}
                                                 />
                                         </Card>
