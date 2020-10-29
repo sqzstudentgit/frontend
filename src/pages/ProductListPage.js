@@ -17,7 +17,8 @@ import {
     Spin,
     Menu,
     Breadcrumb,
-    Pagination
+    Pagination,
+    Statistic
   } from 'antd';
 const { Meta } = Card;
 
@@ -166,7 +167,12 @@ class ProductListPage extends React.Component{
                                     <List.Item>
                                         <Link to={"/products/" + item.productCode}>
                                             <Card
-                                                title={item.name}
+                                                title=
+                                                {
+                                                    <div style={{whiteSpace:"pre-line"}}>
+                                                        {item.name} 
+                                                    </div>
+                                                }
                                                 key={item.name}
                                                 hoverable
                                                 cover={<Image alt="example" 
@@ -174,7 +180,8 @@ class ProductListPage extends React.Component{
                                                     //if image is 404 not found, show the default image
                                                     onError={(e) => {e.target.onerror = null; e.target.src=imageComing}}/>}>  
                                                     <Meta key={item.productCode} 
-                                                        title={item.price ? ('$ '+item.price) : ('Price not set')}
+                                                        //title={item.price ? ('$ '+item.price) : ('Price not set')}
+                                                        title={<Statistic value={item.price} prefix="$" precision={2} />} 
                                                         description={item.barcode ? ('Barcode: ' + item.barcode) : ('ProductCode: ' + item.productCode)}
                                                     />
                                             </Card>
