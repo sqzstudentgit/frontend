@@ -186,6 +186,9 @@ function ProductDetailsPage({ history, match }){
                                             <span> Quantity: </span>
                                             <InputNumber min={1} max={100} defaultValue={1} onChange={onQuantityChange} />
                                         </div>
+                                        <div style={{paddingLeft:20}}>
+                                            <p>In Stock Quantity: {productInfo.stockQuantity}</p>
+                                        </div>
                                         <div style={{padding: 20}}>
                                             <Button  icon={<ShoppingCartOutlined />} onClick={checkOutClicked}>Add to cart</Button>
                                         </div>
