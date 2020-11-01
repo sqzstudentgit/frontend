@@ -6,15 +6,16 @@ import {
   useThree,
   extend,
 } from "react-three-fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+//import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+//import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from 'three'
 
-extend({ OrbitControls });
 
 // Camera control for orbiting, zooming and panning.
 function CameraControls ()  {
-  // https://threejs.org/docs/#examples/en/controls/OrbitControls
+  var OrbitControls = require("three/examples/jsm/controls/OrbitControls");
+  extend({ OrbitControls });
+
   const {
   camera,
   gl: { domElement },
@@ -57,6 +58,7 @@ function Light2 (position,intensity) {
 
 // Auto calculate model distance and height for camera position
 function LoadModel (props) {
+  var GLTFLoader = require("three/examples/jsm/loaders/GLTFLoader");
   const gltf = useLoader(GLTFLoader, props.modelUrl);
 
   var boundingBox;

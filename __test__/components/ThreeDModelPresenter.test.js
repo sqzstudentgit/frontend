@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-//import ImageViewer from './../../src/components/ImageViewer'
+import ThreeDModelPresenter from './../../src/components/3DModel/ThreeDModelPresenter'
 import {isTSAnyKeyword} from '@babel/types'
 
 // Not finished
