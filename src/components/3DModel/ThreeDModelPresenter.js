@@ -13,9 +13,10 @@ import * as THREE from 'three'
 
 // Camera control for orbiting, zooming and panning.
 function CameraControls ()  {
-  var OrbitControls = require("three/examples/jsm/controls/OrbitControls");
-  extend({ OrbitControls });
+  var {OrbitControls} = require("three/examples/jsm/controls/OrbitControls");
 
+  extend({ OrbitControls });
+  
   const {
   camera,
   gl: { domElement },
@@ -58,7 +59,13 @@ function Light2 (position,intensity) {
 
 // Auto calculate model distance and height for camera position
 function LoadModel (props) {
-  var GLTFLoader = require("three/examples/jsm/loaders/GLTFLoader");
+  
+  var {GLTFLoader} = require("three/examples/jsm/loaders/GLTFLoader");
+
+  //console.log("-----------");
+  //console.log(GLTFLoader);
+  //console.log("-----------");
+
   const gltf = useLoader(GLTFLoader, props.modelUrl);
 
   var boundingBox;
