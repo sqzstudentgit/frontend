@@ -27,6 +27,7 @@ beforeAll(() => {
         removeEventListener: jest.fn(),
         dispatchEvent: jest.fn(),
       }))
+    });
   });
 
 // Pretend that the user is logged in and has access to the authenticated pages
