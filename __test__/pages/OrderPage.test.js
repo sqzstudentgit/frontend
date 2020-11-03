@@ -1,12 +1,57 @@
 import React from 'react';
-import { render, fireEvent, waitFor, cleanup } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
+import { render, waitFor, cleanup } from '@testing-library/react';
 import mockAxios from 'jest-mock-axios';
 import { MemoryRouter } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
+import { StoreProvider } from 'easy-peasy';
 import 'babel-polyfill';
 
-// Testing pages
+
+// Components to test
 import OrderPage from '../../src/pages/OrderPage';
+import store from '../../src/store';
+
+// A mock product (defined here to avoid duplication in tests)
+const mockProduct = {
+  "averageCost": null,
+  "barcode": "933044000895",
+  "barcodeInner": null,
+  "brand": null,
+  "categoryList": null,
+  "depth": 0,
+  "description1": "200ml Banana Boat Boat Baby Sunscreen SPF 30+",
+  "description2": null,
+  "description3": null,
+  "description4": null,
+  "drop": null,
+  "height": 0,
+  "id": 1,
+  "imageList": [],
+  "internalID": null,
+  "isKitted": null,
+  "isPriceTaxInclusive": null,
+  "keyProductID": "21479231976900",
+  "keySellUnitID": null,
+  "keyTaxcodeID": "34333235303332303734313231",
+  "kitProductsSetPrice": null,
+  "name": null,
+  "packQuantity": null,
+  "price": 2.25,
+  "priceList": null,
+  "productCode": "00089",
+  "productCondition": null,
+  "productName": "200ml Banana Boat Boat Baby Sunscreen SPF 30+",
+  "productSearchCode": null,
+  "sellUnits": null,
+  "sellUnitsIdList": null,
+  "stockLowQuantity": 0,
+  "stockQuantity": 0,
+  "supplierOrganizationId": null,
+  "volume": 0,
+  "weight": 0,
+  "width": 0
+};
+
 
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
@@ -28,51 +73,52 @@ beforeEach(() => {
   sessionStorage.clear();
 });
 
-
+// Unmount components
 afterEach(cleanup);
+
+// Empty the cart and reset axios mock
 afterEach(() => {
+  store.getActions().cart.emptyCart();
   mockAxios.reset();
 });
 
-
-/**
- * TODO:
- * 1. Test empty cart submission and subsequent error notification [DONE]
- * 2. Test product live search form and autocomplete               [DONE]
- * 3. Test product not found and subsequent error                  [TODO]
- */
 
 
 describe('Testing <OrderPage />', () => {
 
   test('Submitting an order while cart is empty', async () => {
-    const { getByText, queryByText } = render(
-      <MemoryRouter>
-        <OrderPage />
-      </MemoryRouter>
+    const { getByText } = render(
+      <StoreProvider store={store}>
+        <MemoryRouter>
+          <OrderPage />
+        </MemoryRouter>
+      </StoreProvider>
     );
   
-    fireEvent.click(getByText('Checkout'));
+    userEvent.click(getByText('Checkout'));
   
     await waitFor(() => {
-      expect(queryByText('Please add a product to your cart before submitting an order')).not.toBeNull();
+      expect(getByText('Please add a product to your cart before submitting an order')).not.toBeNull();
     });
   });
   
   
-  test('Product search and autocomplete functionality', async () => {
+  test('Product live search and autocomplete functionality', async () => {
+    sessionStorage.setItem('user', 'user');
     
-    const { debug, getByText, getByPlaceholderText,  } = render(
-      <MemoryRouter>
-        <OrderPage />
-      </MemoryRouter>
+    const { getByText, getByPlaceholderText } = render(
+      <StoreProvider store={store}>
+        <MemoryRouter>
+          <OrderPage />
+        </MemoryRouter>
+      </StoreProvider>
     );
   
     getByPlaceholderText('Enter barcode');
-    expect(getByPlaceholderText('Enter barcode').value).toBe(null);
-    fireEvent.change(getByPlaceholderText('Enter barcode'), { target: { value: 'CFP-' } });
-    fireEvent.click(getByText('Product'));
-  
+    expect(getByPlaceholderText('Enter barcode').value).toBe('');
+    userEvent.type(getByPlaceholderText('Enter barcode'), 'CFP-');
+    expect(getByText('Product Code')).toBeInTheDocument();
+    userEvent.click(getByText('Product Code'));
   
     // Emulate retrieving order history from backend with zero orders
     let responseData = {
@@ -86,33 +132,109 @@ describe('Testing <OrderPage />', () => {
     }
   
     mockAxios.get.mockResolvedValue({ data: responseData });
-  
-    await waitFor(() => {
-      // First call for changing input value, second call for changing
-      // input type from 'barcode' to 'product code'
-      expect(mockAxios.get).toHaveBeenCalledTimes(2);
-    });
 
     await waitFor(() => {
-      expect(queryAllByText('CFP-', { exact: false }).length).toBe(4);
+      // Expect axios to have been called five times; 4 for 'CFP-', once
+      // for switching from input type 'barcode' to 'product code'
+      expect(mockAxios).toHaveBeenCalledTimes(5);
     });
-
-    // debug();
   });
 
 
-  // test('Searching for an invalid barcode', () => {
-  //   const { debug, getByText, getByPlaceholderText,  } = render(
-  //     <MemoryRouter>
-  //       <OrderPage />
-  //     </MemoryRouter>
-  //   );
-  
-  //   getByPlaceholderText('Enter barcode');
-  //   expect(getByPlaceholderText('Enter barcode').value).toBe(null);
-  //   fireEvent.change(getByPlaceholderText('Enter barcode'), { target: { value: '12345' } });
-  //   fireEvent.click(getByText('Product'));
-    
-  // });
+  test('Searching for a product with an invalid barcode', async () => {
+    sessionStorage.setItem('user', 'user');
 
+    const { getByText, getByPlaceholderText } = render(
+      <StoreProvider store={store}>
+        <MemoryRouter>
+          <OrderPage />
+        </MemoryRouter>
+      </StoreProvider>
+    );
+    
+    // Emulate retrieving an invalid product, via barcode, from the backend
+    let responseData = { data: null, status: "error", message: "No data found" };
+    mockAxios.get.mockResolvedValue({ data: responseData });
+      
+    // Simulate searching for an invalid barcode
+    getByPlaceholderText('Enter barcode');
+    expect(getByPlaceholderText('Enter barcode').value).toBe('');
+    userEvent.type(getByPlaceholderText('Enter barcode'), '12345');
+    userEvent.type(getByPlaceholderText('Enter barcode'), '{enter}');
+
+    // Test for presence of error message
+    await waitFor(() => {
+      expect(getByText('The barcode you have entered is invalid')).not.toBeNull();
+    });
+    
+  });
+
+
+  test('Searching for a product with a valid product code', async () => {
+    sessionStorage.setItem('user', 'user');
+
+    const { getByText, getByPlaceholderText,  } = render(
+      <StoreProvider store={store}>
+        <MemoryRouter>
+          <OrderPage />
+        </MemoryRouter>
+      </StoreProvider>
+    );
+    
+    // Emulate retrieving an invalid product, via barcode, from the backend
+    let responseData = {
+      "data": mockProduct,
+      "message": "successfully retrieved product",
+      "status": "success"
+    }
+    mockAxios.get.mockResolvedValue({ data: responseData });
+      
+    // Simulate searching for a valid product code
+    userEvent.click(getByText('Product Code'));
+    expect(getByPlaceholderText('Enter product code')).toBeInTheDocument();
+    expect(getByPlaceholderText('Enter product code').value).toBe('');
+    userEvent.type(getByPlaceholderText('Enter product code'), '00089');
+    userEvent.type(getByPlaceholderText('Enter product code'), '{enter}');
+
+    // Test for presence of success message
+    await waitFor(() => {
+      expect(getByText('Your product has been added')).not.toBeNull();
+    });
+  });
+
+
+  test('Adding a duplicate product to the cart', async () => {
+    sessionStorage.setItem('user', 'user');
+
+    const { getByText, getByPlaceholderText,  } = render(
+      <StoreProvider store={store}>
+        <MemoryRouter>
+          <OrderPage />
+        </MemoryRouter>
+      </StoreProvider>
+    );
+
+    // Add mock product to the cart
+    store.getActions().cart.addProduct(mockProduct);
+    
+    // Emulate retrieving a valid product from the backend
+    let responseData = {
+      "data": mockProduct,
+      "message": "successfully retrieved product",
+      "status": "success"
+    }
+    mockAxios.get.mockResolvedValue({ data: responseData });
+      
+    // Simulate searching for a valid product code
+    userEvent.click(getByText('Product Code'));
+    expect(getByPlaceholderText('Enter product code')).toBeInTheDocument();
+    expect(getByPlaceholderText('Enter product code').value).toBe('');
+    userEvent.type(getByPlaceholderText('Enter product code'), '00089');
+    userEvent.type(getByPlaceholderText('Enter product code'), '{enter}');
+
+    // Test for presence of warning message
+    await waitFor(() => {
+      expect(getByText('You have already added this product')).not.toBeNull();
+    });
+  });
 });
