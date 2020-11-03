@@ -54,7 +54,10 @@ function ProductDetailsPage({ history, match, props }){
                 headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
             })
             setProductInfo(response.data.data)
-            console.log(response.data.data);
+            //console.log(response.data.data);
+            //console.log("----------")
+            //console.log(response)
+            //console.log("----------")
         }
         catch (err)
         {
@@ -104,22 +107,22 @@ function ProductDetailsPage({ history, match, props }){
     useEffect(() => {
         const { params, dummyData } = match;
 
-        console.log("useEffect params: "+params.productCode);
+        //console.log("useEffect params: "+params.productCode);
         
         if(dummyData==null)
         {
             getProductData(params.productCode);
             getProductMetaData(params.productCode);
-            console.log("API call")
+            //console.log("API call")
         }
         else 
         {
             setProductInfo(dummyData.data);
-            console.log("Dummy Data Load");
+            //console.log("Dummy Data Load");
         }
 
-        console.log("---- Outside Functions ----");
-        console.log(productInfo);
+        //console.log("---- Outside Functions ----");
+        //console.log(productInfo);
 
         if(productInfo!=null && productInfo!=0)
             productInfo.quantity = 1;
@@ -131,7 +134,7 @@ function ProductDetailsPage({ history, match, props }){
 
         if(productInfo==null || productInfo==0)
         {
-            console.log(">>>>> Spinner");
+            //console.log(">>>>> Spinner");
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -158,17 +161,17 @@ function ProductDetailsPage({ history, match, props }){
         }
         else
 
-            console.log(">>>>> Page Load");
+            //console.log(">>>>> Page Load");
             productInfo.quantity = 1;
             const { imageList } = productInfo;
             productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
 
-            console.log("Loaded Product Info: ");
-            console.log(productInfo)
-            console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
-            console.log("Loaded Metadata: ");
-            console.log(metadata);
-            console.log(productInfo.productName);
+            //console.log("Loaded Product Info: ");
+            //console.log(productInfo)
+            //console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
+            //console.log("Loaded Metadata: ");
+            //console.log(metadata);
+            //console.log(productInfo.productName);
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -223,7 +226,7 @@ function ProductDetailsPage({ history, match, props }){
                                 <Col flex={1}>
                                     <Tabs defaultActiveKey="1" >
                                         <TabPane tab="Description" key="1">
-
+                                            <div data-testid="descriptionTab" >
                                             {
                                                 productInfo.description1=="" || productInfo.description1==null
                                                 ?
@@ -231,10 +234,10 @@ function ProductDetailsPage({ history, match, props }){
                                                 :
                                                     <div dangerouslySetInnerHTML={{ __html: productInfo.description1 }} />
                                             }
-
+                                            </div>
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
-
+                                            <div data-testid="specificationTab" >
                                             {
                                                 productInfo.description2=="" || productInfo.description2==null
                                                 ?
@@ -242,10 +245,9 @@ function ProductDetailsPage({ history, match, props }){
                                                 :
                                                     <div dangerouslySetInnerHTML={{ __html: productInfo.description2 }} />
                                             }
-
+                                            </div>
                                         </TabPane>
                                         { metadata ? (
-
                                                 <TabPane tab="Parameter" key="3">
                                                     <Row gutter={[16, 16]}>
                                                         <ModelMetadata metadata={metadata} />

@@ -91,7 +91,7 @@ it("Create fall back image when no source is provided",()=>{
 
 // when 404
 // when []
-
+/*
 it("Load 2D Images on the Image Viewer",()=>{
 
     const imagesOnly = [
@@ -145,10 +145,8 @@ it("Load 2D Images on the Image Viewer",()=>{
 
     // No 3d model presenter is loaded
     expect(testInstance.findAllByType(ThreeDModelPresenter).length).toBe(0);
-
-    TestRenderer.unmount();
 })
-
+*/
 /*
 it("Load 3D Models on the Image Viewer",()=>{
 
