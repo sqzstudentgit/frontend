@@ -31,7 +31,7 @@ const { Title } = Typography;
 
 
 
-function ProductDetailsPage({ history, match }){
+function ProductDetailsPage({ history, match, props }){
 
 
     const [productInfo, setProductInfo] = useState(0);
@@ -46,7 +46,7 @@ function ProductDetailsPage({ history, match }){
             {
                 params:
                 {
-                    sessionKey: sessionStorage.getItem("sessionKey"),
+                    //sessionKey: sessionStorage.getItem("sessionKey"),
                     productCode: code
                 }
             },
@@ -54,6 +54,7 @@ function ProductDetailsPage({ history, match }){
                 headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
             })
             setProductInfo(response.data.data)
+            console.log(response.data.data);
         }
         catch (err)
         {
@@ -101,11 +102,24 @@ function ProductDetailsPage({ history, match }){
     }
 
     useEffect(() => {
-        const { params } = match;
-        getProductData(params.productCode);
-        getProductMetaData(params.productCode);
+        const { params, dummyData } = match;
 
+        console.log("useEffect params: "+params.productCode);
+        
+        if(dummyData==null)
+        {
+            getProductData(params.productCode);
+            getProductMetaData(params.productCode);
+            console.log("API call")
+        }
+        else 
+        {
+            setProductInfo(dummyData.data);
+            console.log("Dummy Data Load");
+        }
 
+        console.log("---- Outside Functions ----");
+        console.log(productInfo);
 
         if(productInfo!=null && productInfo!=0)
             productInfo.quantity = 1;
@@ -116,11 +130,13 @@ function ProductDetailsPage({ history, match }){
     if(sessionStorage.getItem('user')){
 
         if(productInfo==null || productInfo==0)
+        {
+            console.log(">>>>> Spinner");
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
                     {/* Top navigation bar */}
-                    <NavigationBar  history={history} defaultSelected={null} />
+                    {/*<NavigationBar  history={history} defaultSelected={null} />*/}
 
 
                     {/* Main Content */}
@@ -139,7 +155,10 @@ function ProductDetailsPage({ history, match }){
                     <Footer style={{ position: "sticky", bottom: "0", textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
                 </Layout>
             )
+        }
         else
+
+            console.log(">>>>> Page Load");
             productInfo.quantity = 1;
             const { imageList } = productInfo;
             productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
@@ -149,11 +168,12 @@ function ProductDetailsPage({ history, match }){
             console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
             console.log("Loaded Metadata: ");
             console.log(metadata);
+            console.log(productInfo.productName);
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
                     {/* Top navigation bar */}
-                    <NavigationBar  history={history} defaultSelected='/product'/>
+                    {/*<NavigationBar  history={history} defaultSelected='/product'/>*/}
 
                     {/* Main Content */}
                     <div style={{ marginTop: '50px'}}>
@@ -163,7 +183,7 @@ function ProductDetailsPage({ history, match }){
                             {/* Title */}
                             <Row  gutter={[16, 16]}>
                                 <Col flex={7} >
-                                    <Title level={2} style={{ marginLeft: '120px',fontFamily: 'sans-serif'}}> {productInfo.productName}</Title>
+                                    <Title data-testid="title" level={2} style={{ marginLeft: '120px',fontFamily: 'sans-serif'}}>{productInfo.productName}</Title>
                                 </Col>
                             </Row>
 
@@ -257,10 +277,10 @@ function ProductDetailsPage({ history, match }){
             )
     }
 
-    this.props.history.push('/login')
-    console.log(this.props.history)
+    props.history.push('/login')
+    //console.log(props.history)
     return 'error?'
 
 }
 
-export default withRouter(ProductDetailsPage)
+export default (ProductDetailsPage)

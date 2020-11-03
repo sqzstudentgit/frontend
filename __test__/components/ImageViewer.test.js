@@ -9,6 +9,11 @@ const fallbackSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAA
 import ThreeDModelPresenter from './../../src/components/3DModel/ThreeDModelPresenter'
 import modelIcon from '../assets/3dmodel.png';
 
+import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
+ 
+
+afterEach(cleanup);
+
 const imageList = [
     {
         fileName: "",
@@ -140,7 +145,10 @@ it("Load 2D Images on the Image Viewer",()=>{
 
     // No 3d model presenter is loaded
     expect(testInstance.findAllByType(ThreeDModelPresenter).length).toBe(0);
+
+    TestRenderer.unmount();
 })
+
 /*
 it("Load 3D Models on the Image Viewer",()=>{
 
