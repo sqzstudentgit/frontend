@@ -199,7 +199,7 @@ describe('Testing <OrderPage />', () => {
 
 
   test('Adding a duplicate product to the cart', async () => {
-    const { getByText, getByPlaceholderText,  } = render(
+    const { getByText, getByPlaceholderText } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
           <OrderPage />
