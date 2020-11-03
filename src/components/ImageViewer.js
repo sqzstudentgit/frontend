@@ -22,8 +22,8 @@ class ImageViewer extends React.Component {
                 <div style={{height: this.props.height, width:this.props.width}} >
                     <div style={{height: this.props.height, width:this.props.width}} >
                         <Tabs tabPosition="left" style={{ height: this.props.height }}>
-                            <TabPane key={1} tab={<Image width="50" height="50" style = {{borderRadius: "10%"}}  src={fallbackSrc}/>} >
-                                <Image width={"100%"} style = {{borderRadius: "5%"}}  src={fallbackSrc}/>
+                            <TabPane key={1} tab={<Image data-testid="buttonImage" width="50" height="50" style = {{borderRadius: "10%"}}  src={fallbackSrc}/>} >
+                                <Image data-testid="displayImage" width={"100%"} style = {{borderRadius: "5%"}}  src={fallbackSrc}/>
                             </TabPane>
                         </Tabs>
                     </div>
