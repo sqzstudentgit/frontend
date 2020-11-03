@@ -30,7 +30,7 @@ import NavigationBar from '../components/NavigationBar';
  * 
  * It is also responsible for being able to view a specific order.
  * When a 'View Order' button is clicked in the 'Manage' column of the table,
- * it renders an 'OrderDetails' component for that specific order. 
+ * it redirects to and renders the 'OrderDetailsPage' page for that specific order. 
  * 
  * @param {object} history from the React router 
  */
@@ -173,6 +173,4 @@ const HistoryPage = ({ history }) => {
   )
 }
 
-
 export default withRouter(HistoryPage);
-export { HistoryPage };

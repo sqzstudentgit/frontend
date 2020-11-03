@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import 'babel-polyfill';
 
 // Page to test
-import { HistoryPage } from '../../src/pages/HistoryPage';
+import HistoryPage from '../../src/pages/HistoryPage';
 
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
@@ -24,22 +24,24 @@ beforeAll(() => {
   });
 });
 
+// Pretend that the user is logged in and has access to the authenticated pages
 beforeEach(() => {
-  sessionStorage.clear();
+  sessionStorage.setItem('user', 'user');
 });
 
+// Unmount components
 afterEach(cleanup);
 
+// Reset axios mock, and unauthenticate the user
 afterEach(() => {
+  sessionStorage.clear();
   mockAxios.reset();
 });
 
 
 describe('Testing <HistoryPage />', () => {
 
-  test('Test order history page', async () => {
-    sessionStorage.setItem('user', 'user');
-  
+  test('Empty order history table', async () => {
     const { getByText } = render(
       <MemoryRouter>
         <HistoryPage />

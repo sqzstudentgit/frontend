@@ -69,16 +69,18 @@ beforeAll(() => {
   });
 });
 
+// Pretend that the user is logged in and has access to the authenticated pages
 beforeEach(() => {
-  sessionStorage.clear();
+  sessionStorage.setItem('user', 'user');
 });
 
 // Unmount components
 afterEach(cleanup);
 
-// Empty the cart and reset axios mock
+// Empty the cart and reset axios mock, unauthenticate user
 afterEach(() => {
   store.getActions().cart.emptyCart();
+  sessionStorage.clear();
   mockAxios.reset();
 });
 
@@ -87,8 +89,6 @@ afterEach(() => {
 describe('Testing <OrderPage />', () => {
 
   test('Submitting an order while cart is empty', async () => {
-    sessionStorage.setItem('user', 'user');
-
     const { getByText } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
@@ -106,8 +106,6 @@ describe('Testing <OrderPage />', () => {
   
   
   test('Product live search and autocomplete functionality', async () => {
-    sessionStorage.setItem('user', 'user');
-    
     const { getByText, getByPlaceholderText } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
@@ -144,8 +142,6 @@ describe('Testing <OrderPage />', () => {
 
 
   test('Searching for a product with an invalid barcode', async () => {
-    sessionStorage.setItem('user', 'user');
-
     const { getByText, getByPlaceholderText } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
@@ -172,8 +168,6 @@ describe('Testing <OrderPage />', () => {
 
 
   test('Searching for a product with a valid product code', async () => {
-    sessionStorage.setItem('user', 'user');
-
     const { getByText, getByPlaceholderText,  } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
@@ -205,8 +199,6 @@ describe('Testing <OrderPage />', () => {
 
 
   test('Adding a duplicate product to the cart', async () => {
-    sessionStorage.setItem('user', 'user');
-
     const { getByText, getByPlaceholderText,  } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
