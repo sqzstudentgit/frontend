@@ -168,7 +168,7 @@ describe('Testing <OrderPage />', () => {
 
 
   test('Searching for a product with a valid product code', async () => {
-    const { getByText, getByPlaceholderText,  } = render(
+    const { getByText, getByPlaceholderText } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
           <OrderPage />
