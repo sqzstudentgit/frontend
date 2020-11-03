@@ -31,7 +31,7 @@ const { Title } = Typography;
 
 
 
-function ProductDetailsPage({ history, match }){
+function ProductDetailsPage({ history, match, props }){
 
 
     const [productInfo, setProductInfo] = useState(0);
@@ -46,7 +46,6 @@ function ProductDetailsPage({ history, match }){
             {
                 params:
                 {
-                    sessionKey: sessionStorage.getItem("sessionKey"),
                     productCode: code
                 }
             },
@@ -101,10 +100,17 @@ function ProductDetailsPage({ history, match }){
     }
 
     useEffect(() => {
-        const { params } = match;
-        getProductData(params.productCode);
-        getProductMetaData(params.productCode);
+        const { params, dummyData } = match;
 
+        if(dummyData==null)
+        {
+            getProductData(params.productCode);
+            getProductMetaData(params.productCode);
+        }
+        else 
+        {
+            setProductInfo(dummyData.data);
+        }
 
 
         if(productInfo!=null && productInfo!=0)
@@ -116,6 +122,7 @@ function ProductDetailsPage({ history, match }){
     if(sessionStorage.getItem('user')){
 
         if(productInfo==null || productInfo==0)
+        {
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -139,16 +146,12 @@ function ProductDetailsPage({ history, match }){
                     <Footer style={{ position: "sticky", bottom: "0", textAlign: 'center' }}>SQUIZZ ©2020 Created by SQ-Wombat and SQ-Koala</Footer>
                 </Layout>
             )
+        }
         else
             productInfo.quantity = 1;
             const { imageList } = productInfo;
             productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
 
-            console.log("Loaded Product Info: ");
-            console.log(productInfo)
-            console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
-            console.log("Loaded Metadata: ");
-            console.log(metadata);
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
@@ -163,7 +166,7 @@ function ProductDetailsPage({ history, match }){
                             {/* Title */}
                             <Row  gutter={[16, 16]}>
                                 <Col flex={7} >
-                                    <Title level={2} style={{ marginLeft: '120px',fontFamily: 'sans-serif'}}> {productInfo.productName}</Title>
+                                    <Title data-testid="title" level={2} style={{ marginLeft: '120px',fontFamily: 'sans-serif'}}>{productInfo.productName}</Title>
                                 </Col>
                             </Row>
 
@@ -203,7 +206,7 @@ function ProductDetailsPage({ history, match }){
                                 <Col flex={1}>
                                     <Tabs defaultActiveKey="1" >
                                         <TabPane tab="Description" key="1">
-
+                                            <div data-testid="descriptionTab" >
                                             {
                                                 productInfo.description1=="" || productInfo.description1==null
                                                 ?
@@ -211,10 +214,10 @@ function ProductDetailsPage({ history, match }){
                                                 :
                                                     <div dangerouslySetInnerHTML={{ __html: productInfo.description1 }} />
                                             }
-
+                                            </div>
                                         </TabPane>
                                         <TabPane tab="Specification" key="2">
-
+                                            <div data-testid="specificationTab" >
                                             {
                                                 productInfo.description2=="" || productInfo.description2==null
                                                 ?
@@ -222,10 +225,9 @@ function ProductDetailsPage({ history, match }){
                                                 :
                                                     <div dangerouslySetInnerHTML={{ __html: productInfo.description2 }} />
                                             }
-
+                                            </div>
                                         </TabPane>
                                         { metadata ? (
-
                                                 <TabPane tab="Parameter" key="3">
                                                     <Row gutter={[16, 16]}>
                                                         <ModelMetadata metadata={metadata} />
@@ -257,10 +259,9 @@ function ProductDetailsPage({ history, match }){
             )
     }
 
-    this.props.history.push('/login')
-    console.log(this.props.history)
+    props.history.push('/login')
     return 'error?'
 
 }
 
-export default withRouter(ProductDetailsPage)
+export default (ProductDetailsPage)

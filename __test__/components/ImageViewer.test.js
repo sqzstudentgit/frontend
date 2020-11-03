@@ -9,6 +9,12 @@ const fallbackSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAA
 import ThreeDModelPresenter from '../../src/components/3DModel/ThreeDModelPresenter'
 import modelIcon from '../assets/3dmodel.png';
 
+
+import { render, screen, act, fireEvent, waitFor } from '@testing-library/react';
+ 
+
+//afterEach(cleanup);
+
 const imageList = [
     {
         fileName: "",
@@ -55,39 +61,26 @@ const imageList = [
     }
 ];
 
-/*
-it("renders without crashing", ()=>{
-    const div = document.createElement("div");
-    ReactDOM.render(<ImageViewer/>,div)
-})*/
 
-
-/*
-it("Create fall back image when no source is provided",()=>{
-
-    const testRenderer = TestRenderer.create(<ImageViewer />);
-    const testInstance = testRenderer.root;
-
-    const listOfImages = testInstance.findAllByType(Image);
+test("Create fall back image when no source is provided",()=>{
+    const {getAllByRole} = render ( <ImageViewer height={100} imageList={null}/> ); 
+    
+    const listOfImages = getAllByRole('img');
     
     // Check if Only 1 image is created (1 for button image + 1 for source image)
     expect(listOfImages.length).toBe(2);
     
     // Check the correct image is loaded on the button
-    expect(listOfImages[0].props.src).toBe(fallbackSrc);
+    expect(listOfImages[0].src).toBe(fallbackSrc);
 
     // Check the correct image is loaded on the main panel
-    expect(listOfImages[1].props.src).toBe(fallbackSrc);
-
-    // No 3d model presenter is loaded
-    expect(testInstance.findAllByType(ThreeDModelPresenter).length).toBe(0);
+    expect(listOfImages[1].src).toBe(fallbackSrc);
 })
-*/
 
 // when 404
 // when []
 
-it("Load 2D Images on the Image Viewer",()=>{
+test("Load 2D Images on the Image Viewer",()=>{
 
     const imagesOnly = [
         {
@@ -124,25 +117,22 @@ it("Load 2D Images on the Image Viewer",()=>{
         }
     ];
     
-    const testRenderer = TestRenderer.create(<ImageViewer imageList={imagesOnly}/>);
-    const testInstance = testRenderer.root;
-
-    const listOfImages = testInstance.findAllByType(Image);
+    const {getAllByRole} = render ( <ImageViewer height={100} imageList={imagesOnly}/> ); 
+    
+    const listOfImages = getAllByRole('img');
     
     // Check if number of images are loaded correctly
     expect(listOfImages.length).toBe(4);
     
     // Check the correct small size image is loaded on the button
-    expect(listOfImages[0].props.src).toBe(imagesOnly[0].smallImageLocation);
+    expect(listOfImages[0].src).toBe(imagesOnly[0].smallImageLocation);
 
     // Check the correct large size image is loaded on the main panel
-    expect(listOfImages[1].props.src).toBe(imagesOnly[1].largeImageLocation);
-
-    // No 3d model presenter is loaded
-    expect(testInstance.findAllByType(ThreeDModelPresenter).length).toBe(0);
+    expect(listOfImages[1].src).toBe(imagesOnly[1].largeImageLocation);
 })
-/*
-it("Load 3D Models on the Image Viewer",()=>{
+
+
+test("Load 3D Models on the Image Viewer",()=>{
 
     const modelsOnly = [
         {
@@ -157,58 +147,18 @@ it("Load 3D Models on the Image Viewer",()=>{
         }
     ];
     
-    const testRenderer = TestRenderer.create(<ImageViewer imageList={modelsOnly}/>);
-    const testInstance = testRenderer.root;
-
-    const listOfImages = testInstance.findAllByType(Image);
+    
+    const {getAllByRole} = render ( <ImageViewer height={100} imageList={modelsOnly}/> ); 
+    const listOfImages = getAllByRole('img');
     
     // Check if the button image is loaded 
-    expect(listOfImages.length).toBe(1);
+    // And no image is loaded (not even fallback image)
+    expect(listOfImages.length).toBe(4);
     
     // Check if model icon on the button  is loaded correctly
-    expect(listOfImages[0].props.src).toBe(modelIcon);
+    expect(listOfImages[0].src).toBe("http://localhost/"+modelIcon);
 
     // 3d model presenter is loaded
-    expect(testInstance.findAllByType(ThreeDModelPresenter).length).toBe(1);
+    expect(screen.getByText('Instructions')).not.toBeNull();
 
-    // check the url of the model 
-    expect(testInstance.findAllByType(ThreeDModelPresenter)[0].props.modelUrl).toBe(modelsOnly[0].threeDModelLocation);
 })
-*/
-/*
-it("Load 3D Models on the Image Viewer",()=>{
-
-    const modelsOnly = [
-        {
-            fileName: null,
-            id: 3689,
-            is3DModelType: "Y",
-            largeImageLocation: null,
-            mediumImageLocation: null,
-            productId: 3430,
-            smallImageLocation: null,
-            threeDModelLocation: "https://s3-ap-southeast-2.amazonaws.com/squizz-3d-images/3dModels/CFP-600-12-LPP.glb",
-        }
-    ];
-    
-    const testRenderer = TestRenderer.create(<ImageViewer imageList={modelsOnly}/>);
-    const testInstance = testRenderer.root;
-
-    const listOfImages = testInstance.findAllByType(Image);
-    
-    // Check if the button image is loaded 
-    expect(listOfImages.length).toBe(1);
-    
-    // Check if model icon on the button  is loaded correctly
-    expect(listOfImages[0].props.src).toBe(modelIcon);
-
-    // Check the correct large size image is loaded on the main panel
-    //expect(listOfImages[1].props.src).toBe(imagesOnly[1].largeImageLocation);
-
-    // 3d model presenter is loaded
-    expect(testInstance.findAllByType(ThreeDModelPresenter).length).toBe(1);
-
-    // check the url of the model 
-    expect(testInstance.findAllByType(ThreeDModelPresenter)[0].props.modelUrl).toBe(modelsOnly[0].threeDModelLocation);
-})
-*/
