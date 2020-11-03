@@ -14,11 +14,27 @@ jest.mock('axios')
 
 describe('loginForm', () => {
 
+    beforeAll(() => {
+        Object.defineProperty(window, "matchMedia", {
+          writable: true,
+          value: jest.fn().mockImplementation(query => ({
+            matches: false,
+            media: query,
+            onchange: null,
+            addListener: jest.fn(), // Deprecated
+            removeListener: jest.fn(), // Deprecated
+            addEventListener: jest.fn(),
+            removeEventListener: jest.fn(),
+            dispatchEvent: jest.fn(),
+          }))
+        });
+      });
+
     it('should render three elements', () => {
         render(<LoginForm />)
         expect(screen.getAllByPlaceholderText('Password').length).toBe(1);  
         expect(screen.getAllByPlaceholderText('Username').length).toBe(1);   
-        expect(screen.getAllByText('Login').length).toBe(1);
+        expect(screen.getAllByText('Log in').length).toBe(1);
     })
 
     it('Change display value when user input', () => {
@@ -33,7 +49,7 @@ describe('loginForm', () => {
         expect(screen.getByPlaceholderText('Password').value).toBe(password)
         screen.getByPlaceholderText('Password')
     })
-
+    
     it('should handle submit by sending axios request', async () => {
         render(<LoginForm />)
         
@@ -43,12 +59,17 @@ describe('loginForm', () => {
         fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: password } })
 
 
-        await fireEvent.click(screen.getByText('Login'))
+        await fireEvent.submit(screen.getByText('Log in'))
 
-        expect(mockAxios).toHaveBeenCalledTimes(1)
+        // Press enter on the password field
+        //await fireEvent.keyDown(screen.getByPlaceholderText('Password'),{ key: 'Enter', code: 'Enter' })
+        await waitFor(() => {
+         expect(mockAxios).toHaveBeenCalledTimes(1)
+        })
+
         expect(mockAxios).toHaveBeenCalledWith({
                 method: 'post',           
-                url: 'api/login',
+                url: 'api/login',
                 headers: {'Content-Type': 'application/JSON; charset=UTF-8'},
                 data:{
                     "username": username,
@@ -57,7 +78,7 @@ describe('loginForm', () => {
                     
                 })
     })
-
+    
     
 
 });

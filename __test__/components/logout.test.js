@@ -11,6 +11,22 @@ jest.mock('axios')
 
 describe('logout component', () => {
 
+    beforeAll(() => {
+        Object.defineProperty(window, "matchMedia", {
+          writable: true,
+          value: jest.fn().mockImplementation(query => ({
+            matches: false,
+            media: query,
+            onchange: null,
+            addListener: jest.fn(), // Deprecated
+            removeListener: jest.fn(), // Deprecated
+            addEventListener: jest.fn(),
+            removeEventListener: jest.fn(),
+            dispatchEvent: jest.fn(),
+          }))
+        });
+      });
+
     it('should logout user', async () => {
 
         const history = createMemoryHistory()
@@ -37,7 +53,11 @@ describe('logout component', () => {
         expect(Object.keys(sessionStorage.__STORE__).length).toBe(0);
 
         await waitFor(() => {
-            expect(screen.getByText('Welcome to SQUIZZ')).toBeInTheDocument()
-          })
+
+            expect(screen.getAllByPlaceholderText('Password').length).toBe(1);
+            expect(screen.getAllByPlaceholderText('Username').length).toBe(1);   
+            expect(screen.getAllByText('Log in').length).toBe(1);
+        
+        })
     })
 })

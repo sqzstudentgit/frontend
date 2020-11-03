@@ -30,14 +30,14 @@ import NavigationBar from '../components/NavigationBar';
  * 
  * It is also responsible for being able to view a specific order.
  * When a 'View Order' button is clicked in the 'Manage' column of the table,
- * it renders an 'OrderDetails' component for that specific order. 
+ * it redirects to and renders the 'OrderDetailsPage' page for that specific order. 
  * 
  * @param {object} history from the React router 
  */
 const HistoryPage = ({ history }) => {
   const [orders, setOrders] = useState([]);        // The actual order history
   const [orderId, setOrderId] = useState(null);    // The ID of the order to be viewed
-  const [loading, setLoading] = useState(true);    // Whether the page is loading (i.e. orders are still being retrieved)
+  const [loading, setLoading] = useState(false);    // Whether the page is loading (i.e. orders are still being retrieved)
   const [redirect, setRedirect] = useState(false); // Whether to redirect to view a specific order
 
 
@@ -161,7 +161,8 @@ const HistoryPage = ({ history }) => {
         <Row justify="center">
           <Col span={18}>
             <Title level={4}>Recent Orders</Title>
-            {loading ? <Spin /> : <Table dataSource={orders} columns={columns} rowKey={(row) => row.id} />}
+            {loading && <Spin />}
+            <Table dataSource={orders} columns={columns} rowKey={(row) => row.id} />
           </Col>
         </Row>
       </Content>
@@ -171,6 +172,5 @@ const HistoryPage = ({ history }) => {
     </Layout>
   )
 }
-
 
 export default withRouter(HistoryPage);
