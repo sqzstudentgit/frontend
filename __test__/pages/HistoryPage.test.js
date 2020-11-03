@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, waitFor, screen, cleanup } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
 import mockAxios from 'jest-mock-axios';
 import { MemoryRouter } from 'react-router-dom';
 import 'babel-polyfill';
