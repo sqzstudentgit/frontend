@@ -46,7 +46,6 @@ function ProductDetailsPage({ history, match, props }){
             {
                 params:
                 {
-                    //sessionKey: sessionStorage.getItem("sessionKey"),
                     productCode: code
                 }
             },
@@ -54,10 +53,6 @@ function ProductDetailsPage({ history, match, props }){
                 headers: { 'Content-Type': 'application/JSON; charset=UTF-8' }
             })
             setProductInfo(response.data.data)
-            //console.log(response.data.data);
-            //console.log("----------")
-            //console.log(response)
-            //console.log("----------")
         }
         catch (err)
         {
@@ -107,22 +102,16 @@ function ProductDetailsPage({ history, match, props }){
     useEffect(() => {
         const { params, dummyData } = match;
 
-        //console.log("useEffect params: "+params.productCode);
-        
         if(dummyData==null)
         {
             getProductData(params.productCode);
             getProductMetaData(params.productCode);
-            //console.log("API call")
         }
         else 
         {
             setProductInfo(dummyData.data);
-            //console.log("Dummy Data Load");
         }
 
-        //console.log("---- Outside Functions ----");
-        //console.log(productInfo);
 
         if(productInfo!=null && productInfo!=0)
             productInfo.quantity = 1;
@@ -134,12 +123,11 @@ function ProductDetailsPage({ history, match, props }){
 
         if(productInfo==null || productInfo==0)
         {
-            //console.log(">>>>> Spinner");
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
                     {/* Top navigation bar */}
-                    {/*<NavigationBar  history={history} defaultSelected={null} />*/}
+                    <NavigationBar  history={history} defaultSelected={null} />
 
 
                     {/* Main Content */}
@@ -160,23 +148,15 @@ function ProductDetailsPage({ history, match, props }){
             )
         }
         else
-
-            //console.log(">>>>> Page Load");
             productInfo.quantity = 1;
             const { imageList } = productInfo;
             productInfo.IsHolyOakes = (imageList && imageList.find(image => image.is3DModelType == 'Y'))!=null;
 
-            //console.log("Loaded Product Info: ");
-            //console.log(productInfo)
-            //console.log("Is HolyOaks: "+productInfo.IsHolyOakes)
-            //console.log("Loaded Metadata: ");
-            //console.log(metadata);
-            //console.log(productInfo.productName);
             return (
                 <Layout style={{ minHeight: '100vh' }}>
 
                     {/* Top navigation bar */}
-                    {/*<NavigationBar  history={history} defaultSelected='/product'/>*/}
+                    <NavigationBar  history={history} defaultSelected='/product'/>
 
                     {/* Main Content */}
                     <div style={{ marginTop: '50px'}}>
@@ -280,7 +260,6 @@ function ProductDetailsPage({ history, match, props }){
     }
 
     props.history.push('/login')
-    //console.log(props.history)
     return 'error?'
 
 }
