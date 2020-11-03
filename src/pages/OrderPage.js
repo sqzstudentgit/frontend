@@ -7,10 +7,6 @@ import TallCartProduct from '../components/TallCartProduct';
 import ShortCartProduct from '../components/ShortCartProduct';
 import NavigationBar from '../components/NavigationBar';
 
-// Todo: This is the temp design for Checkout - Add Billing Address & Delivery Address function
-import AddAddressForm from '../components/AddAddressForm';
-import AddressesList from '../components/AddressesList'
-
 // Ant Design Components
 import {
   Affix,
@@ -48,7 +44,7 @@ const { Search } = Input;
  * It is responsible for:
  *    1. Allowing users to search for and add products via product code or barcode
  *    2. Displaying the products in the cart, in either tall view or short view
- *    3. Submitting an order to the SQUIZZ platform
+ *    3. Checking out an order
  */
 const OrderPage = ({ history }) => {
   // General page state
