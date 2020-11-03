@@ -87,6 +87,8 @@ afterEach(() => {
 describe('Testing <OrderPage />', () => {
 
   test('Submitting an order while cart is empty', async () => {
+    sessionStorage.setItem('user', 'user');
+
     const { getByText } = render(
       <StoreProvider store={store}>
         <MemoryRouter>
@@ -166,7 +168,6 @@ describe('Testing <OrderPage />', () => {
     await waitFor(() => {
       expect(getByText('The barcode you have entered is invalid')).not.toBeNull();
     });
-    
   });
 
 

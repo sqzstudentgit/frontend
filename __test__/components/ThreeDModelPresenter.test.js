@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import ThreeDModelPresenter from './../../src/components/3DModel/ThreeDModelPresenter'
+import ThreeDModelPresenter from '../../src/components/3DModel/ThreeDModelPresenter'
 //import DoesFileExist from './../../src/components/3DModel/ThreeDModelPresenter'
-import LoadModel from './../../src/components/3DModel/ThreeDModelPresenter'
+import LoadModel from '../../src/components/3DModel/ThreeDModelPresenter'
 import {isTSAnyKeyword} from '@babel/types'
 import '@testing-library/jest-dom/extend-expect'
 import { getByTitle, render, screen, fireEvent, waitFor } from '@testing-library/react';

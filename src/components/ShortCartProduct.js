@@ -162,7 +162,6 @@ const ShortCartProduct = ({ product, onQuantityChange, onRemove }) => {
         footer={<Button type="secondary" onClick={() => setShowModal(false)}>Close</Button>}
         maskClosable={true}
       >
-        {console.log("Modal loaded")}
         <Row justify="center" align="middle">
           <Col>
             <div style={{ height: '50vh', width: '35vw'}}>

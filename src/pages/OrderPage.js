@@ -7,10 +7,6 @@ import TallCartProduct from '../components/TallCartProduct';
 import ShortCartProduct from '../components/ShortCartProduct';
 import NavigationBar from '../components/NavigationBar';
 
-// Todo: This is the temp design for Checkout - Add Billing Address & Delivery Address function
-import AddAddressForm from '../components/AddAddressForm';
-import AddressesList from '../components/AddressesList'
-
 // Ant Design Components
 import {
   Affix,
@@ -234,10 +230,10 @@ const OrderPage = ({ history }) => {
   }
 
 
-  // // Check if authenticated before rendering the page, otherwise redirect to the home page
-  // if (!sessionStorage.getItem('user')) {
-  //   history.push('/login');
-  // }
+  // Check if authenticated before rendering the page, otherwise redirect to the home page
+  if (!sessionStorage.getItem('user')) {
+    history.push('/login');
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

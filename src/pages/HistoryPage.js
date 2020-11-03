@@ -44,7 +44,7 @@ const HistoryPage = ({ history }) => {
   // Before the order history page is mounted, retrieve the orders from the database
   useEffect(() => {
     const fetchOrders = async () => {
-      // setLoading(true);
+      setLoading(true);
       const response = await axios.get('/api/history', {
         params: {
           session_id: sessionStorage.getItem("sessionKey"),
@@ -146,9 +146,9 @@ const HistoryPage = ({ history }) => {
   }
 
   // Check if authenticated before rendering the page
-  // if (!sessionStorage.getItem('user')) {
-  //   history.push('/login');
-  // }
+  if (!sessionStorage.getItem('user')) {
+    history.push('/login');
+  }
 
   // Otherwise, just render the order history table
   return (
@@ -161,7 +161,8 @@ const HistoryPage = ({ history }) => {
         <Row justify="center">
           <Col span={18}>
             <Title level={4}>Recent Orders</Title>
-            {loading ? <Spin /> : <Table dataSource={null} columns={columns} rowKey={(row) => row.id} />}
+            {loading && <Spin />}
+            <Table dataSource={orders} columns={columns} rowKey={(row) => row.id} />
           </Col>
         </Row>
       </Content>
