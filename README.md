@@ -18,7 +18,7 @@ This repository contains the frontend client for the SQUIZZ Web Ordering Applica
 ## Demo
 The website can be found at http://13.211.211.152/login
 
-The application is currently deployed on AWS. It's availability entirely depends on whether the client has chosen to terminate the instance the application was deployed on.
+The application is currently deployed on AWS. It's availability entirely depends on whether or not the client has chosen to terminate the EC2 instance that the application was deployed on.
 
 
 ## Features
