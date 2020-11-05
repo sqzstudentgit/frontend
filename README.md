@@ -1,16 +1,16 @@
 # SQUIZZ Web Ordering Application Frontend
 
 ## Table of Contents
-1. [Project Description](##Project-Description)
-2. [Demo](##Demo)
-3. [Features](##Features)
-4. [Documentation](##Documentation)
-5. [System Requirements](##System-Requirements)
-6. [Technologies Used](##Technologies-Used)
-7. [Setup Guide](##Setup-Guide)
-8. [Testing](##Testing)
-9. [Release History](##Release-History)
-10. [Attribution](##Attribution)
+1. **[Project Description](#Project-Description)**
+2. **[Demo](#Demo)**
+3. **[Features](#Features)**
+4. **[Documentation](#Documentation)**
+5. **[System Requirements](#System-Requirements)**
+6. **[Technologies Used](#Technologies-Used)**
+7. **[Setup Guide](#Setup-Guide)**
+8. **[Testing](#Testing)**
+9. **[Release History](#Release-History)**
+10. **[Attribution](#Attribution)**
 
 
 ## Project Description
