@@ -2,13 +2,14 @@
 
 ## Table of Contents
 1. [Project Description](##Project-Description)
-2. [Features](##Features)
-3. [Documentation](##Documentation)
-4. [System Requirements](##System-Requirements)
-5. [Technologies Used](##Technologies-Used)
-6. [Setup Guide](##Setup-Guide)
-7. [Testing](##Testing)
-8. [Attribution](##Attribution)
+2. [Demo](##Demo)
+3. [Features](##Features)
+4. [Documentation](##Documentation)
+5. [System Requirements](##System-Requirements)
+6. [Technologies Used](##Technologies-Used)
+7. [Setup Guide](##Setup-Guide)
+8. [Testing](##Testing)
+9. [Attribution](##Attribution)
 
 
 ## Project Description
