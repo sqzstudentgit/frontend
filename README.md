@@ -15,6 +15,12 @@
 This repository contains the frontend client for the SQUIZZ Web Ordering Application. The client supports in-browser rendered 3D models for different swirl diffuser products, and also dynamic customer-level pricing for Holyoake and PJ SAS products.
 
 
+## Demo
+The website can be found at http://13.211.211.152/login
+
+The application is currently deployed on AWS. It's availability entirely depends on whether the client has chosen to terminate the instance the application was deployed on.
+
+
 ## Features
 * User authentication (login/logout)
 * Customer account creation and switching
@@ -54,7 +60,7 @@ We also recommend using [Visual Studio Code](https://code.visualstudio.com/downl
 ## Setup Guide
 There are three different methods to run the application, either locally or in production.
 
-**Note**: The frontend relies on the backend and database to be running.
+**Note**: The frontend relies on the backend and database to be running. Please refer to the [backend repository](https://github.com/ansabkhaliq/backend) for more details.
 
 ### Using Docker
 You can use Docker to run a container for the frontend. The repository contains a multi-stage build Dockerfile to serve the frontend using `nginx` as a reverse proxy. This is the method we have used in production. It is not advisable to use for local deployment.
@@ -108,7 +114,7 @@ The steps below indicate how to run the frontend with `webpack-dev-server`.
     ```
 
 ## Testing
-We have written integration and unit tests for various frontend components and pages.
+We have written integration and unit tests for various frontend components and pages. The tests can be found [here](./__test__/), in the `__test__` directory.
 
 To run the all of the tests:
 ```bash
