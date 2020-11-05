@@ -9,7 +9,8 @@
 6. [Technologies Used](##Technologies-Used)
 7. [Setup Guide](##Setup-Guide)
 8. [Testing](##Testing)
-9. [Attribution](##Attribution)
+9. [Release History](##Release-History)
+10. [Attribution](##Attribution)
 
 
 ## Project Description
@@ -121,6 +122,28 @@ To run the all of the tests:
 ```bash
 $ npm run test
 ```
+
+## Release History
+### Sprint 2
+* 1.0.0 - Feature development from userstory *ID: 3; Name: Display 3D model on product listing page* on [branch](https://github.com/ansabkhaliq/frontend/tree/Display3DModelsInProductListPage)
+* 1.0.0 - Feature development from userstory *ID: 7; Name: Display 3D model on cart page* on [branch](https://github.com/ansabkhaliq/frontend/tree/CartPage)
+* 1.0.0 - Feature development from userstory *ID: 8; Name: View parameterized data for 3D model(s)* on [branch](https://github.com/ansabkhaliq/frontend/tree/CartPage)
+* 1.0.0 - Feature development from userstory *ID: 9; Name: Display multiple 3D model if available* on [branch](https://github.com/ansabkhaliq/frontend/tree/ShowMultipleModels)
+* 1.0.0 - Feature development from userstory *ID: 10; Name: Add to Cart button in order history page* on [branch](https://github.com/ansabkhaliq/frontend/tree/OrderHistoryRedesign)
+* 1.0.0 - Bugfix at userstory *ID: 9; Name: Display multiple 3D model if available* on [branch](https://github.com/ansabkhaliq/frontend/tree/DisplaySame3DModelMultipleTimes)
+* 1.0.0 - Bugfix at userstory *ID: 9; Name: Display multiple 3D model if available* on [branch](https://github.com/ansabkhaliq/frontend/tree/BugFixNoFallBackImage)
+* 1.0.0 - Enhancement at userstory *ID: 10; Name: Add to Cart button in order history page* for displaying GST amount on [branch](https://github.com/ansabkhaliq/frontend/tree/DisplayGST)
+* 1.0.0 - Enhancement at userstory t*ID: 10; Name: Add to Cart button in order history page* for persisting cart state on [branch](https://github.com/ansabkhaliq/frontend/tree/PersistStateOnRefresh)
+* 1.0.0 - Bugfix at userstory *ID: 7; Name: Display 3D model on cart page* for product search bar on [branch](https://github.com/ansabkhaliq/frontend/tree/FixInvalidProductSearchBug)
+* 1.0.0 - Introducing Docker for frontend on [branch](https://github.com/ansabkhaliq/frontend/tree/DockerizeFrontend)
+* 1.0.0 - Bugfix at userstory *ID: 3; Name: Display 3D model on product listing page* for fixing popup size that has 3D model on [branch](https://github.com/ansabkhaliq/frontend/tree/BugFixModelPreviewSize)
+* 1.0.0 - Unit testing on [branch](https://github.com/ansabkhaliq/frontend/tree/FrontendUnitTesting)
+* 1.0.0 - Integration testing on [branch](https://github.com/ansabkhaliq/frontend/tree/FrontendIntegrationTesting)
+
+### Sprint 1
+* 1.0.0 - Feature development from userstory *ID: 2; Name: Display 3D model on product detail page* on [branch](https://github.com/ansabkhaliq/frontend/tree/ProductDetailPage)
+* 1.0.0 - Feature development from userstory *ID: 1; Name: Display interactive 3D model on website* on [branch](https://github.com/ansabkhaliq/frontend/tree/interactive3DModel)
+* 1.0.0 - Client feedback at userstory *ID: 2; Name: Display 3D model on product detail page* on [branch](https://github.com/ansabkhaliq/frontend/tree/ProductDetailPageClientFeedback)
 
 ## Attribution
 Created by SQ-Wombat and SQ-Koala
