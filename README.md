@@ -124,6 +124,7 @@ $ npm run test
 ```
 
 ## Release History
+*Note:* The release history has been maintained and published by SQ-Wombat Only. No Contribution was made by SQ-Koala in this aspect
 ### Sprint 2
 * 1.0.0 - Feature development from userstory *ID: 3; Name: Display 3D model on product listing page* on [branch](https://github.com/ansabkhaliq/frontend/tree/Display3DModelsInProductListPage)
 * 1.0.0 - Feature development from userstory *ID: 7; Name: Display 3D model on cart page* on [branch](https://github.com/ansabkhaliq/frontend/tree/CartPage)
